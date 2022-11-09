@@ -76,6 +76,8 @@ mv ${clash_data_dir}/scripts/template ${clash_data_dir}/
 ui_print "- Move Cert&Geo"
 mv ${clash_data_dir}/scripts/cacert.pem ${MODPATH}${ca_path}
 mv ${MODPATH}/GeoX/* ${clash_data_dir}/
+mv ${MODPATH}/proxy_providers/ ${clash_data_dir}/
+mv ${MODPATH}/rule_providers/ ${clash_data_dir}/
 
 if [ ! -d /data/adb/service.d ] ; then
     ui_print "- Make folder service"
@@ -121,7 +123,7 @@ rm -rf ${MODPATH}/scripts
 rm -rf ${MODPATH}/GeoX
 rm -rf ${MODPATH}/binary
 rm -rf ${MODPATH}/clash_service.sh
-rm -rf ${clash_data_dir}/scripts/config.yaml
+#rm -rf ${clash_data_dir}/scripts/config.yaml  为什么删除配置？
 rm -rf ${clash_data_dir_kernel}/curl
 
 sleep 1
