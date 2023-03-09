@@ -3,5 +3,5 @@ name=Clash-MIX
 version=v3.0.1
 versionCode=20230113
 author=tamalin魔改
-description=Clash透明代理 内核:Meta 
+description=Clash透明代理 内核:Meta 1.14.2
 updateJson=https://github.com/AXEVO/Clash-MIX/raw/master/update.json
