@@ -1,16 +1,145 @@
 proxies:
-proxy-groups:
-  - name: "LLYCORIS"
-    type: select
-    use:
-      - provide
+#自己单独的节点/自建节点可以往这里写一下，参见教程里面的格式，一般都是用来放免流配置的
 proxy-providers:
-  provide:
-    type: file
-    path: ./assets/akun.yaml
+  
+  机场1:
+    type: http
+    url: "此处填写订阅链接"
+    path: ./proxy_providers/机场1.yaml
+    interval: 10800
     health-check:
       enable: true
-      url: http://cp.cloudflare.com/generate_204
-      interval: 1200
+      url: http://www.gstatic.com/generate_204
+      interval: 900
+  机场2:
+    type: http
+    url: "此处填写订阅链接"
+    path: ./proxy_providers/机场2.yaml
+    interval: 10800
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 900
+  机场3:
+    type: http
+    url: "此处填写订阅链接"
+    path: ./proxy_providers/机场3.yaml
+    interval: 10800
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 900
+  机场4:
+    type: http
+    url: "此处填写订阅链接"
+    path: ./proxy_providers/机场4.yaml
+    interval: 10800
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 900    
+#-------------------------------------------------------------------
+#data/clash/proxy-provider里面有白嫖节点可以使用，也欢迎提交更多白嫖节点
+#使用p核时，如果无法正常更新订阅，请打开proxy provider 里面的机场yaml配置文件查看
+#如果是乱码，需要自己在订阅链接结尾加上 &flag=clash  强制订阅服务器下发clash的配置文件
+# 机场2 机场1 机场3为机场名，可以更换，要换必须全换，建议使用编辑器的查找功能避免遗漏
+
+proxy-groups:
+  - name: 机场
+    type: select
+    proxies:
+      - 机场1
+      - 机场2
+      - 机场3
+      - 机场4
+      - 美国节点
+      - 负载均衡
+
+  - name: 机场1
+    type: select
+    use:
+      - 机场1
+
+  - name: 机场2
+    type: select
+    use:
+      - 机场2
+
+  - name: 机场3
+    type: select
+    use:
+      - 机场3
+      
+  - name: 机场4
+    type: select
+    use:
+      - 机场4
+    
+  - name: 美国节点
+    type: select
+    use:
+      - 机场1
+      - 机场2
+      - 机场3
+      - 机场4
+    filter: '美国|USA|美國'
+#meta的特性，如果你经常使用某个地区节点可以使用过滤器便于选择 美国节点 可以改为其他
+#但是要改就得全改，建议使用编辑器的替换功能防止遗漏。过滤器内容用 | 分割，支持通配符
+  - name: 负载均衡
+    type: load-balance
+    use:
+      - 机场1
+    url: 'http://www.gstatic.com/generate_204'
+    interval: 900
+    filter: '美国|USA|美國.*1.0'
+    strategy: consistent-hashing
+
+
+  - name: 墙内网址
+    type: select
+    proxies:
+      - DIRECT
+      - 机场
+
+  - name: 其他
+    type: select
+    proxies:
+      - DIRECT
+      - 机场
+      - 墙内网址
+#用户自定义规则，文件在data/clash/rule-provider/
+#需要的自己写入，格式参照备用里面的clash官方文档
+#有一些规则已经预装但是未使用 比如fcm相关规则
+
+rule-providers:
+
+  userDirect:
+    type: file
+    behavior: classical
+    path: ./rule_providers/userDirect.yaml
+
+  userProxy:
+    type: file
+    behavior: classical
+    path: ./rule_providers/userProxy.yaml
+
+  Local:
+    type: file
+    behavior: classical
+    path: ./rule_providers/Local.yaml
+
+
 rules:
-  - MATCH,LLYCORIS
+  - RULE-SET,Local,DIRECT
+  - RULE-SET,userProxy,机场
+  - RULE-SET,userDirect,墙内网址
+
+  - GEOSITE,category-ads-all,REJECT
+  - GEOSITE,geolocation-cn,墙内网址
+  - GEOSITE,geolocation-!cn,机场
+
+  - GEOIP,private,DIRECT
+  - GEOIP,CN,墙内网址
+  - GEOIP,!CN,机场
+
+  - MATCH,其他
