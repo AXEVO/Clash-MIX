@@ -70,8 +70,8 @@ dns:
       - https://223.5.5.5/dns-query
       - https://120.53.53.53/dns-query
     "geosite:!cn":
-      - https://8.8.4.4/dns-query
-      - https://1.0.0.1/dns-query
+      - https://8.8.4.4/dns-query#机场
+      - https://1.0.0.1/dns-query#机场
   proxy-server-nameserver:
     - https://223.5.5.5/dns-query
     - https://120.53.53.53/dns-query
