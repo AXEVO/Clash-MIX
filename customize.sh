@@ -95,8 +95,6 @@ tar -xjf ${MODPATH}/binary/${ARCH}.tar.bz2 -C ${clash_data_dir_kernel}/&& echo "
 mv ${clash_data_dir_kernel}/setcap ${MODPATH}${bin_path}/
 mv ${clash_data_dir_kernel}/getpcaps ${MODPATH}${bin_path}/
 mv ${clash_data_dir_kernel}/getcap ${MODPATH}${bin_path}/
-mv ${clash_data_dir}/scripts/clash.config ${clash_data_dir}/
-mv ${clash_data_dir}/scripts/dnstt/dnstt-client ${clash_data_dir_kernel}/
 
 if [ ! -f "${bin_path}/ss" ] ; then
     mv ${clash_data_dir_kernel}/ss ${MODPATH}${bin_path}/
@@ -117,6 +115,8 @@ mv ${MODPATH}/rule_providers/ ${clash_data_dir}/
 mv ${MODPATH}/proxy_providers/ ${clash_data_dir}/
 mv ${MODPATH}/assets/ ${clash_data_dir}/
 mv ${MODPATH}/备用/ ${clash_data_dir}/
+mv ${clash_data_dir}/scripts/clash.config ${clash_data_dir}/
+mv ${clash_data_dir}/scripts/dnstt/dnstt-client ${clash_data_dir_kernel}/
 
 ui_print "- 正在安装配置"
 mv ${clash_data_dir}/scripts/config.yaml ${clash_data_dir}/
@@ -136,8 +136,8 @@ if [ ! -f "${dns_path}/resolv.conf" ] ; then
     touch ${MODPATH}${dns_path}/resolv.conf
     echo nameserver 8.8.8.8 > ${MODPATH}${dns_path}/resolv.conf
     echo nameserver 1.1.1.1 >> ${MODPATH}${dns_path}/resolv.conf
-    echo nameserver 9.9.9.9 >> ${MODPATH}${dns_path}/resolv.conf
-    echo nameserver 149.112.112.112 >> ${MODPATH}${dns_path}/resolv.conf
+    echo nameserver 223.5.5.5 >> ${MODPATH}${dns_path}/resolv.conf
+    echo nameserver 120.53.53.53 >> ${MODPATH}${dns_path}/resolv.conf
 fi
 
 ui_print "- 创建黑白名单"

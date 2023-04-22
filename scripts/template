@@ -59,6 +59,10 @@ dns:
   fake-ip-range: 198.18.0.1/16
   fake-ip-filter:
     - localhost.ptlogin2.qq.com
+    - '*.*.*.*.srv.nintendo.net'
+    - '*.*.*.stun.playstation.net'
+    - 'xbox.*.microsoft.com'
+    - '*.*.*.xboxlive.com'
     - '*.lan'
     - '*.linksys.com'
     - '*.ntp.*'
@@ -66,7 +70,7 @@ dns:
     - '+.cn'
 
   nameserver-policy:
-    "geosite:cn": 
+    "geosite:cn,private": 
       - https://223.5.5.5/dns-query
       - https://120.53.53.53/dns-query
     "geosite:!cn":
