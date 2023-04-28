@@ -1,4 +1,4 @@
-#!/system/bin/sh
+#!/system/bin/shecholog
 
 scripts=$(realpath $0)
 scripts_dir=$(dirname ${scripts})
@@ -11,8 +11,8 @@ find_packages_uid() {
       ${busybox_path} awk '$1~/'^"${package}"$'/{print $2}' ${system_packages_file} >> ${appuid_file}
     done
   else
-    log "[info] enhanced-mode: ${Clash_enhanced_mode} "
-    log "[info] if you want to use whitelist and blacklist, use enhanced-mode: redr-host"
+    log "[info] 服务模式: ${Clash_enhanced_mode} "
+    log "[info] 如需使用黑白名单，请使用redr-host模式"
   fi
 }
 
@@ -22,9 +22,9 @@ restart_clash() {
   sleep 0.5
   ${scripts_dir}/clash.service -s && ${scripts_dir}/clash.iptables -s
   if [ "$?" == "0" ] ; then
-    log "[info] $(date), Clash restart"
+    log "[info] $(date), Clash核心已重启"
   else
-    log "[error] $(date), Clash Failed to restart."
+    log "[error] $(date), Clash核心重启失败"
   fi
 }
 
@@ -71,7 +71,7 @@ update_geo() {
 config_online() {
   clash_pid=$(cat ${Clash_pid_file})
   match_count=0
-  log "[warning] Download Config online" > ${CFM_logs_file}
+  log "[warning] 正在下载在线配置" > ${CFM_logs_file}
   update_file ${Clash_config_file} ${Subcript_url}
   sleep 0.5
   if [ -f "${Clash_config_file}" ] ; then
@@ -79,10 +79,10 @@ config_online() {
   fi
 
   if [ ${match_count} -ge 1 ] ; then
-    log "[info] download succes."
+    log "[info] 下载成功"
     exit 0
   else
-    log "[error] download failed, Make sure the Url is not empty"
+    log "[error] 下载失败，请检查url"
     exit 1
   fi
 }
@@ -95,11 +95,11 @@ port_detection() {
   then
     clash_port=$(ss -antup | grep "clash" | ${busybox_path} awk '$7~/'pid="${clash_pid}"*'/{print $5}' | ${busybox_path} awk -F ':' '{print $2}' | sort -u)
   else
-    logs "[info] skip port detected"
+    logs "[info] 跳过端口检测"
     exit 0
   fi
 
-  logs "[info] port detected: "
+  logs "[info] 已检测到端口: "
   for sub_port in ${clash_port[*]} ; do
     sleep 0.5
     echo -n "${sub_port} " >> ${CFM_logs_file}
@@ -140,26 +140,26 @@ update_kernel() {
         if (gunzip "${Clash_data_dir}/${file_kernel}.gz"); then
           echo ""
         else
-          log "[error] gunzip ${file_kernel}.gz failed"  > ${CFM_logs_file}
-          log "[warning] periksa kembali url"
+          log "[error] 解压 ${file_kernel}.gz 失败"  > ${CFM_logs_file}
+          log "[warning] 请检查下载地址"
           if [ -f "${Clash_data_dir}/${file_kernel}.gz.bak" ] ; then
             rm -rf "${Clash_data_dir}/${file_kernel}.gz.bak"
           else
             rm -rf "${Clash_data_dir}/${file_kernel}.gz"
           fi
           if [ -f ${Clash_run_path}/clash.pid ] ; then
-            log "[info] Clash service is running (PID: $(cat ${Clash_pid_file}))"
-            log "[info] Connect"
+            log "[info] Clash服务正在运行 (PID: $(cat ${Clash_pid_file}))"
+            log "[info] 已连接"
           fi
           exit 1
         fi
        else
-        log "[warning] gunzip ${file_kernel}.gz failed" 
-        log "[warning] pastikan ada koneksi internet" 
+        log "[warning] 解压 ${file_kernel}.gz 失败" 
+        log "[warning] 请确认网络链接正常" 
         exit 1
       fi
     else
-      log "[error] gunzip not found" 
+      log "[error] 解压程序异常" 
       exit 1
     fi
   fi
@@ -173,7 +173,7 @@ update_kernel() {
   if [ -f "${Clash_pid_file}" ] && [ ${flag} == true ] ; then
     restart_clash
   else
-     log "[warning] Clash tidak dimulai ulang"
+     log "[warning] Clash 内核没有重新启动"
   fi
 }
 
@@ -187,10 +187,10 @@ cgroup_limit() {
 
   mkdir -p "${Cgroup_memory_path}/clash"
   echo $(cat ${Clash_pid_file}) > "${Cgroup_memory_path}/clash/cgroup.procs" \
-  && log "[info] ${Cgroup_memory_path}/clash/cgroup.procs"  
+  && log "[info] 内存限制：${Cgroup_memory_path}/clash/cgroup.procs"  
 
   echo "${Cgroup_memory_limit}" > "${Cgroup_memory_path}/clash/memory.limit_in_bytes" \
-  && log "[info] ${Cgroup_memory_path}/clash/memory.limit_in_bytes"
+  && log "[info] 内存限制：${Cgroup_memory_path}/clash/memory.limit_in_bytes"
 }
 
 update_dashboard () {
@@ -215,18 +215,18 @@ dnstt_client() {
          sleep 1
          local dnstt_pid=$(cat ${Clash_run_path}/dnstt.pid 2> /dev/null)
          if (cat /proc/$dnstt_pid/cmdline | grep -q ${dnstt_bin_name}); then
-           log "[info] ${dnstt_bin_name} is enable."
+           log "[info] ${dnstt_bin_name} 已启用."
          else
            log "[error] ${dnstt_bin_name} The configuration is incorrect,"
            log "[error] the startup fails, and the following is the error"
            kill -9 $(cat ${Clash_run_path}/dnstt.pid)
          fi
       else
-        log "[warning] ${dnstt_bin_name} tidak aktif," 
-        log "[warning] (nsdomain) & (pubkey) kosong," 
+        log "[warning] ${dnstt_bin_name} 未启用" 
+        log "[warning] (nsdomain)和(pubkey)为空" 
       fi
     else
-      log "[error] kernel ${dnstt_bin_name} tidak ada."
+      log "[error] ${dnstt_bin_name}内核未找到."
     fi
   fi
 }

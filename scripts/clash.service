@@ -198,6 +198,10 @@ start_clash() {
   else
     log "[error] ${Clash_config_file} file is missing" && exit 1
   fi
+
+  echo "0 * * * * ${scripts_dir}/upSub.sh -s " >> ${Clash_run_path}/root \
+  && log "info: 自动更新套餐流量已开启." >> ${CFM_logs_file}
+
 }
 
 kill_tool() {
@@ -222,6 +226,9 @@ stop_clash() {
   else
     log "[error] failed stop Clash"
   fi
+
+  rm -rf ${Clash_run_path}/root \
+  && log "info: 自动更新流量信息已关闭." >> ${CFM_logs_file}
 }
 
 while getopts ":sk" signal ; do
