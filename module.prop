@@ -1,7 +1,7 @@
 id=ClashForMagisk
 name=Clash-MIX
-version=v3.0.1
-versionCode=20230113
+version=v3.0
+versionCode=20230429
 author=tamalin魔改
-description=Clash透明代理 内核:Meta 1.14.2
+description=Clash透明代理 内核:Meta 1.14.4
 updateJson=https://github.com/AXEVO/Clash-MIX/raw/master/update.json
