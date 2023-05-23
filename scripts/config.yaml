@@ -1,5 +1,20 @@
 proxies:
 #自己单独的节点/自建节点可以往这里写一下，参见教程里面的格式，一般都是用来放免流配置的
+  # - name: "WARP"
+  #   type: wireguard
+  #   server: engage.cloudflareclient.com
+  #   port: 2408
+  #   ip: "172.16.0.2/32"
+  #   ipv6: "2606::1/128"        # 自行替换
+  #   private-key: "private-key" # 自行替换
+  #   public-key: "public-key"   # 自行替换
+  #   udp: true
+  #   reserved: "abba"           # 自行替换
+  #   mtu: 1280
+  #   dialer-proxy: "dns"
+  #   remote-dns-resolve: true
+  #   dns:
+  #     - https://dns.cloudflare.com/dns-query
 proxy-providers:
   
   机场1:
@@ -90,9 +105,10 @@ proxy-groups:
     use:
       - 机场1
     url: 'http://www.gstatic.com/generate_204'
-    interval: 900
+    interval: 300
     filter: '美国|USA|美國.*1.0'
     strategy: consistent-hashing
+    lazy: true
 
 
   - name: 墙内网址
@@ -130,6 +146,8 @@ rule-providers:
 
 
 rules:
+  - AND,(AND,(DST-PORT,443),(NETWORK,UDP)),(GEOSITE,geolocation-!cn),REJECT # 屏蔽quic
+
   - RULE-SET,Local,DIRECT
   - RULE-SET,userProxy,机场
   - RULE-SET,userDirect,墙内网址

@@ -20,14 +20,16 @@ yacd_dir="${clash_data_dir}/dashboard"
 latest=$(date +%Y%m%d%H%M)
 #--------------------------------------------------
 ui_print "- 正在检测安装环境"
-if [ -d "${CPFM_mode_dir}" ] ; then
-    touch ${CPFM_mode_dir}/remove && ui_print "- CPFM古董模块在重启后将会被删除."
+if [ -d "${CPFM_mode_dir}" ]; then
+    touch "${CPFM_mode_dir}/remove" && ui_print "- CPFM古董模块在重启后将会被删除."
 fi
 
-if [ $BOOTMODE ! = true ] ; then
-  abort "请在magisk manager中安装模块"
+if [ "$BOOTMODE" != true ]; then
+  abort "请在Magisk Manager中安装模块"
+else
+  ui_print "- Magisk版本： $MAGISK_VER ($MAGISK_VER_CODE)"
+fi 
 
-ui_print "- Magisk版本： $MAGISK_VER ($MAGISK_VER_CODE)"
 if [ "$API" -lt 19 ]; then
   ui_print "不支持的sdk: $API"
   abort "- 最小支持版本Android 4.4"
@@ -124,7 +126,7 @@ mv ${clash_data_dir}/scripts/template ${clash_data_dir}/
 
 ui_print "- 正在安装密钥和Geo文件"
 mv ${clash_data_dir}/scripts/cacert.pem ${MODPATH}${ca_path}
-mv ${MODPATH}/geo/* ${clash_data_dir}/
+mv ${MODPATH}/GeoX/* ${clash_data_dir}/
 
 ui_print "- 配置开机自启"
 if [ ! -d /data/adb/service.d ] ; then
@@ -151,12 +153,38 @@ unzip -j -o "${ZIPFILE}" 'uninstall.sh' -d ${MODPATH} >&2
 unzip -j -o "${ZIPFILE}" 'clash_service.sh' -d ${clash_service_dir} >&2
 
 ui_print "- 正在安装控制器"
-mv ${MODPATH}/APP/xyz.chz.clash/ /data/app/
+chmod a+x "$MODPATH"/APP/clash.apk
+fullApkPath=$(ls "$MODPATH"/clash*.apk)
+apkPath=$TMPDIR/clash.apk
+mv -f "$fullApkPath" "$apkPath"
+chmod 666 "$apkPath"
+output=$(pm install -r -f "$apkPath" 2>&1)
+if [ "$output" == "Success" ]; then
+    echo "- 控制器安装成功"
+    rm -rf "$apkPath"
+else
+    echo "- 控制器安装失败, 原因: [$output] 正在尝试重新安装"
+    pm uninstall xyz.chz.clash
+    sleep 1
+    output=$(pm install -r -f "$apkPath" 2>&1)
+    if [ "$output" == "Success" ]; then
+        echo "- 重装成功"
+        rm -rf "$apkPath"
+    else
+        apkPathSdcard="/sdcard/clash_${module_version}.apk"
+        cp -f "$apkPath" "$apkPathSdcard"
+        echo "!!! *********************** !!!"
+        echo "  控制器安装失败, 原因: [$output]"
+        echo "  请手动安装 [ $apkPathSdcard ]"
+        echo "  如果是降级安装, 请手动重装"
+        echo "!!! *********************** !!!"
+    fi
+fi
 
 ui_print "- 删除源文件"
 rm -rf ${MODPATH}/dashboard.zip
 rm -rf ${MODPATH}/scripts
-rm -rf ${MODPATH}/geo
+rm -rf ${MODPATH}/GeoX
 rm -rf ${MODPATH}/binary
 rm -rf ${MODPATH}/clash_service.sh
 rm -rf ${clash_data_dir}/scripts/config.yaml
@@ -208,15 +236,7 @@ set_perm  ${clash_data_dir}/assets/ 0  0  0755
 #echo "author=t@amarin 魔改" >> ${MODPATH}/module.prop
 #echo "description= Clash透明代理   Mosdns Aria(88端口)  内核:meta 1.13.1" >> ${MODPATH}/module.prop
 #echo "updateJson=/Clash-Mix/master/version.json" >> ${MODPATH}/module.prop
-#安装控制器 已使用新方案，在任何机型上都能正常发挥作用
-#if [ "$(pm list packages | grep xyz.chz.clash)" ] || [ "$(pm list packages | grep -s xyz.chz.clash)" ];then
-#ui_print "- 无需安装DashBoard."
-#else
-#ui_print "- 开始安装DashBoard."
-#pm install -r --user 0 data/clash/备用/控制器.apk
-#ui_print "- ↑显示Success即为安装完成."
-#ui_print "- 如果失败请手动安装 安装包文件在:/data/clash/备用/控制器.apk"
-#fi
+
 sleep 1
 ui_print "- 控制器已经安装，卸载模块后会自动删除"
 ui_print "- 标准版请进入data/clash/config.yaml 指定位置填写订阅链接"
