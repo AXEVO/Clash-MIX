@@ -1,0 +1,2 @@
+请挂上代理，查看clash meta提供的官方配置详解，非常全面
+https://wiki.metacubex.one/config/

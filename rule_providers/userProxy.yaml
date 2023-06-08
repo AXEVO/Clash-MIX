@@ -1,8 +1,8 @@
 payload:
 #自定义规则 格式请参考教程--------------
-  - 
-  -
-  -
+  - DOMAIN,short.weixin.qq.com
+  - DOMAIN,extshort.weixin.qq.com
+  - DOMAIN,dns.weixin.qq.com         #让微信稳定使用fcm推送
 #-------------------------------------
 
 #---------国外dns走代理---------------
