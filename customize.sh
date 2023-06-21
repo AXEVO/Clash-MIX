@@ -154,7 +154,7 @@ unzip -j -o "${ZIPFILE}" 'clash_service.sh' -d ${clash_service_dir} >&2
 
 ui_print "- 正在安装控制器"
 chmod a+x "$MODPATH"/APP/clash.apk
-fullApkPath=$(ls "$MODPATH"/clash*.apk)
+fullApkPath=$(ls "$MODPATH"/APP/clash*.apk)
 apkPath=$TMPDIR/clash.apk
 mv -f "$fullApkPath" "$apkPath"
 chmod 666 "$apkPath"

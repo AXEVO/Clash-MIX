@@ -48,13 +48,6 @@ tun:
   auto-detect-interface: true
   strict-route: false
 
-hosts:
-  mtalk.google.com: 108.177.97.188
-  alt7-mtalk.google.com: 64.233.177.188
-  alt2-mtalk.google.com: 142.250.138.188
-  alt1-mtalk.google.com: 74.125.137.188
-  alt5-mtalk.google.com: 142.250.10.188
-#让fcm推送走直连
 dns:
   enable: true
   ipv6: false
