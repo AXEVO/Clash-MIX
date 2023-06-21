@@ -15,9 +15,8 @@ payload:
   - DOMAIN-KEYWORD,msftconnecttest.com    #win系统的连通性检测地址，不走直连可能会导致系统报网络未连接
   - DOMAIN-KEYWORD,msftncsi.com           #win系统的连通性检测地址（旧版系统）
   - DOMAIN-KEYWORD,windowsupdate.com      #win系统更新不走代理以免浪费流量
-  - IP-CIDR,120.53.53.53/32
+  - IP-CIDR,120.53.53.53/32               #为稳定运行，国内DNS将全部设置为直连不走免流
   - IP-CIDR,223.5.5.5/32
-#为稳定运行，国内DNS将全部设置为直连不走免流---
 #- DOMAIN-KEYWORD,www.gstatic.com  #检测连接的地址，不出问题不需调整
 #rule-provider里面不能使用and not or等逻辑判断类规则
 

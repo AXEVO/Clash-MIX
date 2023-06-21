@@ -17,9 +17,9 @@ geodata-mode: true
 geodata-loader: memconservative
 enable-process: true
 geox-url:
-  geoip: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat"
-  geosite: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
-  mmdb: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb"
+  geoip: "https://testingcf.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat/raw/release/geoip.dat"
+  geosite: "https://testingcf.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat/raw/release/geosite.dat"
+  mmdb: "https://testingcf.jsdelivr.net/gh/Loyalsoldier/geoip/raw/release/Country.mmdb"
 profile:
   store-selected: true
   store-fake-ip: true
