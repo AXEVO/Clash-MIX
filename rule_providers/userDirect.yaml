@@ -6,18 +6,15 @@ payload:
 #----------------------------------------
   - DOMAIN,cdn.jsdelivr.net
   - DOMAIN,fastgit.org
-  - DOMAIN-KEYWORD,ghproxy.com
-  - DOMAIN-SUFFIX,speedtest.net
+  - DOMAIN,ghproxy.com
   - DOMAIN-SUFFIX,syncthing.net
   - PROCESS-NAME,libsyncthingnative.so
-  - DOMAIN-SUFFIX,push.apple.com         #苹果推送，热点机可以启用
-  - DOMAIN-KEYWORD,10010.com             #联通营业厅走直连，以免免流时出现问题
-  - IP-CIDR,120.53.53.53/32
+  - DOMAIN-SUFFIX,push.apple.com          #苹果推送，热点机可以启用
+  - DOMAIN-KEYWORD,10010.com              #联通营业厅走直连，以免免流时出现问题
+  - DOMAIN-SUFFIX,msftconnecttest.com     #win系统的连通性检测地址，不走直连可能会导致系统报网络未连接
+  - DOMAIN-SUFFIX,msftncsi.com            #win系统的连通性检测地址（旧版系统）
+  - IP-CIDR,120.53.53.53/32               #为稳定运行，国内DNS将全部设置为直连不走免流---
   - IP-CIDR,223.5.5.5/32
-#为稳定运行，国内DNS将全部设置为直连不走免流---
+
 #- DOMAIN-SUFFIX,www.gstatic.com  #检测连接的地址，不出问题不需调整
 #rule-provider里面不能使用and not or等逻辑判断类规则
-
-#---微软走直连，用于热点机-------------------
-  - DOMAIN-KEYWORD,msftconnecttest.com    #win系统的连通性检测地址，不走直连可能会导致系统报网络未连接
-  - DOMAIN-KEYWORD,msftncsi.com           #win系统的连通性检测地址（旧版系统）

@@ -153,17 +153,6 @@ else
 fi
 sleep2
 
-ui_print "- 正在更新模块信息"
-rm -rf ${MODPATH}/module.prop
-touch ${MODPATH}/module.prop
-echo "id=ClashForMagisk" > ${MODPATH}/module.prop
-echo "name=Clash For Magisk" >> ${MODPATH}/module.prop
-echo "version=v2.0" >> ${MODPATH}/module.prop
-echo "versionCode=20231017" >> ${MODPATH}/module.prop
-echo "author=t@amarin 魔改" >> ${MODPATH}/module.prop
-echo "description= Clash透明代理 内核:meta 1.16.0" >> ${MODPATH}/module.prop
-echo "updateJson=https://raw.githubusercontent.com/Gayhub666/Clash-Mix/master/version.json" >> ${MODPATH}/module.prop
-
 ui_print "- 正在设置权限"
 set_perm_recursive ${MODPATH} 0 0 0755 0644
 set_perm_recursive ${clash_service_dir} 0 0 0755 0755
