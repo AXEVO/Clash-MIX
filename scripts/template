@@ -5,7 +5,7 @@ allow-lan: true
 unified-delay: false
 tcp-concurrent: true
 find-process-mode: strict
-log-level: info
+log-level: warning
 ipv6: false
 external-controller: 0.0.0.0:9090
 external-ui: dashboard/metacubexd
@@ -34,17 +34,13 @@ tun:
   auto-detect-interface: true
 
 sniffer:
-  enable: false
-  sniffing: [tls, http]
-  force-domain: [+]
-  port-whitelist:
-    - 80
-    - 443
-  skip-domain:
-    - 'Mijia Cloud'
-    - 'dlg.io.mi.com'
-    - '+.apple.com'
-    - '*.baidu.com'
+  enable: true
+  sniff:
+    TLS:
+      ports: [443, 8443]
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true
 
 dns:
   enable: true

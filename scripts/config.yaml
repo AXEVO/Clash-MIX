@@ -53,7 +53,8 @@ proxy-groups:
       - 赔钱机场
       - 养鸡场
       - 美国节点
-      - 负载均衡
+      - 负载均衡-大带宽
+      - 负载均衡-好节点
 
   - name: 可乐云
     type: select
@@ -85,10 +86,20 @@ proxy-groups:
     filter: '美国|USA|美國|us|US'
 #meta的特性，如果你经常使用某个地区节点可以使用过滤器便于选择 美国节点 可以改为其他
 #但是要改就得全改，建议使用编辑器的替换功能防止遗漏。过滤器内容用 | 分割，支持通配符
-  - name: 负载均衡
+  - name: 负载均衡-大带宽
     type: load-balance
     use:
       - 赔钱机场
+    url: 'http://www.gstatic.com/generate_204'
+    interval: 900
+    filter: '美国|USA|美國'
+    lazy: true
+    strategy: consistent-hashing
+
+  - name: 负载均衡-好节点
+    type: load-balance
+    use:
+      - 养鸡场
     url: 'http://www.gstatic.com/generate_204'
     interval: 900
     filter: '美国|USA|美國'
@@ -130,14 +141,7 @@ rule-providers:
     behavior: classical
     path: ./rule_providers/userProxy.yaml
 
-  Local:
-    type: file
-    behavior: classical
-    path: ./rule_providers/Local.yaml
-
-
 rules:
-  - RULE-SET,Local,DIRECT
   - RULE-SET,userProxy,机场
   - RULE-SET,userDirect,墙内网址
 
