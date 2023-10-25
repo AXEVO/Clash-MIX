@@ -36,7 +36,7 @@ if [ -d "${clash_data_dir}" ] ; then
         rm -rf /data/clash.old
     fi
     mkdir -p /data/clash.old
-    mv ${clash_data_dir}/* data/clash.old/
+    mv ${clash_data_dir}/* /data/clash.old/
 fi
 
 ui_print "- 正在准备安装环境"
@@ -79,7 +79,6 @@ mv ${MODPATH}/rule_providers/ ${clash_data_dir}/
 mv ${MODPATH}/proxy_providers/ ${clash_data_dir}/
 mv ${MODPATH}/confs/ ${clash_data_dir}/
 mv ${MODPATH}/备用/ ${clash_data_dir}/
-mv ${MODPATH}/mosdns/ ${clash_data_dir}/
 ui_print "- 正在安装主要配置"
 cp ${clash_data_dir}/scripts/config.yaml ${clash_data_dir}/
 mv ${clash_data_dir}/scripts/clash.config ${clash_data_dir}/
