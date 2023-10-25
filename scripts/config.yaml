@@ -38,6 +38,16 @@ proxy-providers:
       enable: true
       url: http://www.gstatic.com/generate_204
       interval: 900    
+
+  泡泡狗:
+    type: http
+    url: "订阅链接"
+    path: ./proxy_providers/泡泡狗.yaml
+    interval: 10800
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 900 
 #-------------------------------------------------------------------
 #data/clash/proxy-provider里面有白嫖节点可以使用，也欢迎提交更多白嫖节点
 #使用p核时，如果无法正常更新订阅，请打开proxy provider 里面的机场yaml配置文件查看
@@ -52,6 +62,7 @@ proxy-groups:
       - 魔戒
       - 赔钱机场
       - 养鸡场
+      - 泡泡狗
       - 美国节点
       - 负载均衡-大带宽
       - 负载均衡-好节点
@@ -75,7 +86,12 @@ proxy-groups:
     type: select
     use:
       - 养鸡场
-    
+
+  - name: 泡泡狗
+    type: select
+    use:
+      - 泡泡狗
+
   - name: 美国节点
     type: select
     use:
@@ -83,20 +99,21 @@ proxy-groups:
       - 魔戒
       - 赔钱机场
       - 养鸡场
+      - 泡泡狗
     filter: '美国|USA|美國|us|US'
 #meta的特性，如果你经常使用某个地区节点可以使用过滤器便于选择 美国节点 可以改为其他
 #但是要改就得全改，建议使用编辑器的替换功能防止遗漏。过滤器内容用 | 分割，支持通配符
   - name: 负载均衡-大带宽
     type: load-balance
     use:
-      - 赔钱机场
+      - 泡泡狗
     url: 'http://www.gstatic.com/generate_204'
     interval: 900
     filter: '美国|USA|美國'
     lazy: true
     strategy: consistent-hashing
 
-  - name: 负载均衡-好节点
+  - name: 负载均衡-优IP
     type: load-balance
     use:
       - 养鸡场
