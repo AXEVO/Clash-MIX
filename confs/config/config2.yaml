@@ -1,0 +1,474 @@
+#！！！完全免流版！！！ 先改才能用，不再维护
+
+
+proxies:
+  # - name: "自建免流 UDP 代理 - WS"
+  #   type: vmess
+  #   server: abc.com
+  #   port: 443
+  #   uuid: 7faee31e-0253-4abf-a529-7f1948a6f054
+  #   alterId: 4
+  #   cipher: auto
+  #   tls: true
+  #   udp: true
+  #   servername: abc.com
+  #   tls-hostname: abc.com
+  #   sni: abc.com
+  #   skip-cert-verify: true
+  #   network: ws
+  #   ws-opts:
+  #     path: /neuromancer
+  #     headers:
+  #       Host: abc.com
+  # - name: "自建免流 UDP 代理 - HTTP"
+  #   type: "vmess"
+  #   server: "abc.com"
+  #   port: "80"
+  #   uuid: "f18f5469-28b2-4f30-8589-21a5ed6848c1"
+  #   alterId: 0
+  #   tls: false
+  #   tfo: true
+  #   udp: true
+  #   cipher: auto
+  #   skip-cert-verify: true
+  #   vmess-aead: true
+  #   network: "http"
+  #   http-opts:
+  #     path:
+  #       - "/"
+  #     headers:
+  #       method:
+  #         - "GET"
+  #       Host:
+  #         - abc.com
+  - name: "🆓 百度免流"
+    type: http
+    server: 157.0.148.53
+    port: 443
+    headers:
+      X-T5-Auth: "1962898709"
+      User-Agent:
+        "okhttp/3.11.0 Dalvik/2.1.0 (Linux; U; Android 11; Redmi K30 5G Build/RKQ1.200826.002)
+        baiduboxapp/11.0.5.12 (Baidu; P1 11)"
+  # - name: "🆓 UC 免流"
+  #   type: http
+  #   server: 101.71.140.5
+  #   port: 8128
+  #   username: uc10.7.163.144
+  #   password: 1f47d3ef53b035443451c7ee7873ff38
+
+proxy-groups:
+  - name: "🇨🇳 墙内"
+    type: select
+    proxies:
+      - "DIRECT"
+      - "🆓🇨🇳 墙内免流"
+    ssid-policy:
+      cellular: "🆓🇨🇳 墙内免流"
+      default: "DIRECT"
+  - name: "🆓🇨🇳 墙内免流"
+    type: select
+    proxies:
+      - "🆓🇨🇳✈️ 免流墙内机场"
+      - "🆓🌑✈️ 免流墙外机场"
+      - DIRECT
+  - name: "🌑 墙外"
+    type: select
+    proxies:
+      - "🚀🌑 墙外非免流"
+      - "🆓🌑 墙外免流"
+    ssid-policy:
+      cellular: "🆓🌑 墙外免流"
+      default: "🚀🌑 墙外非免流"
+  - name: "🚀🌑 墙外非免流"
+    type: select
+    proxies:
+      - "🆓🌑✈️ 免流墙外机场"
+      - "🆓🇨🇳✈️ 免流墙内机场"
+  - name: "🆓🌑 墙外免流"
+    type: select
+    proxies:
+      - "🆓🌑✈️ 免流墙外机场"
+      - "🆓🇨🇳✈️ 免流墙内机场"
+  - name: "🇨🇳 墙内受限"
+    type: select
+    proxies:
+      - "🇨🇳 墙内"
+      - "🆓🇨🇳 墙内受限免流"
+    ssid-policy:
+      cellular: "🆓🇨🇳 墙内受限免流"
+      default: "🇨🇳 墙内"
+  - name: "🆓🇨🇳 墙内受限免流"
+    type: select
+    proxies:
+      - "🆓 百度免流"
+      # - "🆓 UC 免流"
+      - "🆓🇨🇳 墙内免流"
+  - name: "🛑 拦截"
+    type: select
+    proxies:
+      - "REJECT"
+      - "🌑 墙外"
+      - "🇨🇳 墙内"
+  - name: "🇨🇳 墙内 UDP"
+    type: select
+    proxies:
+      - "🇨🇳 墙内"
+      - "🆓🇨🇳 墙内免流 UDP"
+    ssid-policy:
+      cellular: "🆓🇨🇳 墙内免流 UDP"
+      default: "🇨🇳 墙内"
+  - name: "🆓🇨🇳 墙内免流 UDP"
+    type: select
+    proxies:
+      - "🆓🇨🇳 墙内免流"
+      - "UDP 🆓🇨🇳✈️ 免流墙内机场-手动选择"
+      - "UDP 🆓🌑✈️ 免流墙外机场-手动选择"
+      # - "自建免流 UDP 代理 - HTTP"
+      # - "自建免流 UDP 代理 - WS"
+  - name: "🌑 墙外 UDP"
+    type: select
+    proxies:
+      - "🚀🌑 墙外非免流 UDP"
+      - "🆓🌑 墙外 UDP"
+    ssid-policy:
+      cellular: "🆓🌑 墙外 UDP"
+      default: "🚀🌑 墙外非免流 UDP"
+  - name: "🚀🌑 墙外非免流 UDP"
+    type: select
+    proxies:
+      - "🆓🌑 墙外免流"
+      - "UDP 🆓🌑✈️ 免流墙外机场-手动选择"
+      - "UDP 🆓🇨🇳✈️ 免流墙内机场-手动选择"
+      # - "自建免流 UDP 代理 - HTTP"
+      # - "自建免流 UDP 代理 - WS"
+  - name: "🆓🌑 墙外 UDP"
+    type: select
+    proxies:
+      - "🆓🌑 墙外免流"
+      - "UDP 🆓🌑✈️ 免流墙外机场-手动选择"
+      - "UDP 🆓🇨🇳✈️ 免流墙内机场-手动选择"
+      # - "自建免流 UDP 代理 - HTTP"
+      # - "自建免流 UDP 代理 - WS"
+  - name: "🆓🇨🇳✈️ 免流墙内机场"
+    type: select
+    proxies:
+      - "🆓🇨🇳✈️ 免流墙内机场-故障转移"
+      - "🆓🇨🇳✈️ 免流墙内机场-自动测速"
+      - "🆓🇨🇳✈️ 免流墙内机场-负载均衡"
+      - "🆓🇨🇳✈️ 免流墙内机场-手动选择"
+  - name: "UDP 🆓🇨🇳✈️ 免流墙内机场-手动选择"
+    type: select
+    use:
+      - cnAirport
+  - name: "🆓🇨🇳✈️ 免流墙内机场-手动选择"
+    type: select
+    use:
+      - cnAirport
+
+  - name: "🆓🇨🇳✈️ 免流墙内机场-负载均衡"
+    type: load-balance
+    strategy: consistent-hashing
+    url: http://cp.cloudflare.com/generate_204
+    tolerance: 50
+    lazy: true
+    interval: 60
+    use:
+      - cnAirport
+  - name: "🆓🇨🇳✈️ 免流墙内机场-故障转移"
+    type: fallback
+    url: http://cp.cloudflare.com/generate_204
+    tolerance: 50
+    lazy: true
+    interval: 60
+    use:
+      - cnAirport
+
+  - name: "🆓🇨🇳✈️ 免流墙内机场-自动测速"
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+    tolerance: 50
+    lazy: true
+    interval: 60
+    use:
+      - cnAirport
+
+  - name: "🆓🌑✈️ 免流墙外机场"
+    type: select
+    proxies:
+      - "🆓🌑✈️ 免流墙外机场-故障转移"
+      - "🆓🌑✈️ 免流墙外机场-自动测速"
+      - "🆓🌑✈️ 免流墙外机场-负载均衡"
+      - "🆓🌑✈️ 免流墙外机场-手动选择"
+  - name: "UDP 🆓🌑✈️ 免流墙外机场-手动选择"
+    type: select
+    use:
+      - airport
+  - name: "🆓🌑✈️ 免流墙外机场-手动选择"
+    type: select
+    use:
+      - airport
+
+  - name: "🆓🌑✈️ 免流墙外机场-故障转移"
+    type: fallback
+    url: http://cp.cloudflare.com/generate_204
+    tolerance: 50
+    lazy: true
+    interval: 60
+    use:
+      - airport
+  - name: "🆓🌑✈️ 免流墙外机场-负载均衡"
+    type: load-balance
+    strategy: consistent-hashing
+    url: http://cp.cloudflare.com/generate_204
+    tolerance: 50
+    lazy: true
+    interval: 60
+    use:
+      - airport
+
+  - name: "🆓🌑✈️ 免流墙外机场-自动测速"
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+    tolerance: 50
+    lazy: true
+    interval: 60
+    use:
+      - airport
+
+  - name: "🍎 苹果推送"
+    type: select
+    proxies:
+      - "🇨🇳 墙内"
+      - "🇨🇳 墙内受限"
+      - "🌑 墙外"
+      - DIRECT
+
+  - name: "DNS-CN"
+    type: select
+    proxies:
+      - "🇨🇳 墙内"
+      - "🇨🇳 墙内受限"
+      - "🌑 墙外"
+      - DIRECT
+
+  - name: "DNS-GLOBAL"
+    type: select
+    proxies:
+      - "🌑 墙外"
+      - "🇨🇳 墙内"
+      - "🇨🇳 墙内受限"
+      - DIRECT
+proxy-providers:
+  airport:
+    type: http
+    # 国外机场节点订阅
+    url: "https://api.tsutsu.one/sub?target=clash&url=https%3A%2F%2Fopenit.daycat.space%2Flong&insert=true&config=https%3A%2F%2Fraw.githubusercontent.com%2FMeilieage%2Fwebcdn%2Fmain%2Frule%2FArea_Media_NoAuto.ini&append_type=true&strict=true&sort=true&emoji=true&list=true&udp=true&tfo=true&expand=true&scv=true&fdn=true&surge.doh=true&clash.doh=true&new_name=true"
+    interval: 3600
+    path: "./proxy_providers/airport.yaml"
+    health-check:
+      enable: true
+      interval: 60
+      url: http://cp.cloudflare.com/generate_204
+  cnAirport:
+    type: http
+    # 国内机场节点订阅
+    url: "https://api.tsutsu.one/sub?target=clash&url=https%3A%2F%2Fopenit.daycat.space%2Flong&insert=true&config=https%3A%2F%2Fraw.githubusercontent.com%2FMeilieage%2Fwebcdn%2Fmain%2Frule%2FArea_Media_NoAuto.ini&append_type=true&strict=true&sort=true&emoji=true&list=true&udp=true&tfo=true&expand=true&scv=true&fdn=true&surge.doh=true&clash.doh=true&new_name=true"
+    interval: 3600
+    path: "./proxy_providers/cnAirport.yaml"
+    health-check:
+      enable: true
+      interval: 60
+      url: http://cp.cloudflare.com/generate_204
+rule-providers:
+  Unbreak:
+    type: http
+    behavior: classical
+    url: "https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Direct/Direct.yaml"
+    path: ./ruleset/Unbreak.yaml
+    interval: 3600
+
+  # Advertising:
+  #   type: http
+  #   behavior: classical
+  #   url: "https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Advertising/Advertising.yaml"
+  #   path: ./ruleset/Advertising.yaml
+  #   interval: 3600
+  # AdvertisingDomain:
+  #   type: http
+  #   behavior: domain
+  #   url: "https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Advertising/Advertising_Domain.yaml"
+  #   path: ./ruleset/AdvertisingDomain.yaml
+  #   interval: 3600
+
+  Microsoft:
+    type: http
+    behavior: classical
+    url: "https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Microsoft/Microsoft.yaml"
+    path: ./ruleset/Microsoft.yaml
+    interval: 3600
+  AppleProxy:
+    type: http
+    behavior: classical
+    url: "https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AppleProxy/AppleProxy.yaml"
+    path: ./ruleset/AppleProxy.yaml
+    interval: 3600
+
+  Apple:
+    type: http
+    behavior: classical
+    url: "https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple.yaml"
+    path: ./ruleset/Apple.yaml
+    interval: 3600
+  TestFlight:
+    type: http
+    behavior: classical
+    url: "https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/TestFlight/TestFlight.yaml"
+    path: ./ruleset/TestFlight.yaml
+    interval: 3600
+  Tencent:
+    type: http
+    behavior: classical
+    url: "https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Tencent/Tencent.yaml"
+    path: ./ruleset/Tencent.yaml
+    interval: 3600
+  WeChat:
+    type: http
+    behavior: classical
+    url: "https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/WeChat/WeChat.yaml"
+    path: ./ruleset/WeChat.yaml
+    interval: 3600
+
+  China:
+    type: http
+    behavior: classical
+    url: "https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/China/China.yaml"
+    path: ./ruleset/China.yaml
+    interval: 3600
+  ChinaMaxDomain:
+    type: http
+    behavior: domain
+    url: "https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaMax/ChinaMax_Domain.yaml"
+    path: ./ruleset/ChinaMaxDomain.yaml
+    interval: 3600
+
+  Global:
+    type: http
+    behavior: classical
+    url: "https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Global/Global.yaml"
+    path: ./ruleset/Global.yaml
+    interval: 3600
+
+  GlobalDomain:
+    type: http
+    behavior: domain
+    url: "https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Global/Global_Domain.yaml"
+    path: ./ruleset/GlobalDomain.yaml
+    interval: 3600
+
+  Lan:
+    type: http
+    behavior: classical
+    url: "https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Lan/Lan.yaml"
+    path: ./ruleset/Lan.yaml
+    interval: 3600
+rules:
+  # > 防止回环
+  - IP-CIDR,127.0.0.1/32,REJECT,no-resolve
+  # - PROCESS-NAME,clash,REJECT
+
+  # > 拦截 quic
+  - AND,((NETWORK,UDP),(DST-PORT,443/4483/9305)),🛑 拦截
+
+  # > google 部分服务直连
+  - AND,((DST-PORT,5228-5230),(NETWORK,TCP),(DOMAIN-KEYWORD,google)),🇨🇳 墙内
+
+  # > ghproxy.com 直连
+  - AND,((NETWORK,TCP),(DOMAIN-SUFFIX,ghproxy.com),(DST-PORT,80/443)),🇨🇳 墙内受限
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,ghproxy.com)),🇨🇳 墙内 UDP
+  - DOMAIN-SUFFIX,ghproxy.com,🇨🇳 墙内
+
+  # > 苹果推送 热点机使用 应该在策略组里改成 DIRECT
+  - DOMAIN-SUFFIX,push.apple.com,🍎 苹果推送
+
+  # > 一些 dns 的规则
+  - AND,((NETWORK,TCP),(IP-CIDR,1.12.12.12/32,no-resolve),(DST-PORT,80/443)),🇨🇳 墙内受限
+  - AND,((NETWORK,UDP),(IP-CIDR,1.12.12.12/32,no-resolve)),🇨🇳 墙内 UDP
+  - IP-CIDR,1.12.12.12/32,🇨🇳 墙内,no-resolve
+
+  - AND,((NETWORK,TCP),(IP-CIDR,120.53.53.53/32,no-resolve),(DST-PORT,80/443)),🇨🇳 墙内受限
+  - AND,((NETWORK,UDP),(IP-CIDR,120.53.53.53/32,no-resolve)),🇨🇳 墙内 UDP
+  - IP-CIDR,120.53.53.53/32,🇨🇳 墙内,no-resolve
+
+  - AND,((NETWORK,TCP),(IP-CIDR,223.5.5.5/32,no-resolve),(DST-PORT,80/443)),🇨🇳 墙内受限
+  - AND,((NETWORK,UDP),(IP-CIDR,223.5.5.5/32,no-resolve)),🇨🇳 墙内 UDP
+  - IP-CIDR,223.5.5.5/32,🇨🇳 墙内,no-resolve
+
+  - AND,((NETWORK,TCP),(IP-CIDR,119.29.29.29/32,no-resolve),(DST-PORT,80/443)),🇨🇳 墙内受限
+  - AND,((NETWORK,UDP),(IP-CIDR,119.29.29.29/32,no-resolve)),🇨🇳 墙内 UDP
+  - IP-CIDR,119.29.29.29/32,🇨🇳 墙内,no-resolve
+
+  # > 优先直连(防误拦截) 以此为例 优先判断是否走受限代理, 其次判断UDP
+  - AND,((NETWORK,TCP),(RULE-SET,Unbreak),(DST-PORT,80/443)),🇨🇳 墙内受限
+  - AND,((NETWORK,UDP),(RULE-SET,Unbreak)),🇨🇳 墙内 UDP
+  - RULE-SET,Unbreak,🇨🇳 墙内
+
+  # # > 去广告
+  # - "RULE-SET,Advertising,🛑 拦截"
+  # # > 下面这个去广告可能误杀较多 看情况自己修改
+  # - "RULE-SET,AdvertisingDomain,🛑 拦截"
+
+  # > 腾讯 直连
+  - AND,((NETWORK,TCP),(RULE-SET,Tencent),(DST-PORT,80/443)),🇨🇳 墙内受限
+  - AND,((NETWORK,UDP),(RULE-SET,Tencent)),🇨🇳 墙内 UDP
+  - RULE-SET,Tencent,🇨🇳 墙内
+
+  # > 微信 直连
+  - AND,((NETWORK,TCP),(RULE-SET,WeChat),(DST-PORT,80/443)),🇨🇳 墙内受限
+  - AND,((NETWORK,UDP),(RULE-SET,WeChat)),🇨🇳 墙内 UDP
+  - RULE-SET,WeChat,🇨🇳 墙内
+
+  # > 微软 代理(我直连下载慢 代理快 看情况自己修改)
+  - AND,((NETWORK,UDP),(RULE-SET,Microsoft)),🌑 墙外 UDP
+  - RULE-SET,Microsoft,🌑 墙外
+
+  # > 苹果服务里需要代理的部分
+  - AND,((NETWORK,UDP),(RULE-SET,AppleProxy)),🌑 墙外 UDP
+  - RULE-SET,AppleProxy,🌑 墙外
+  - AND,((NETWORK,UDP),(RULE-SET,TestFlight)),🌑 墙外 UDP
+  - RULE-SET,TestFlight,🌑 墙外
+
+  # > 全球服务 代理
+  - AND,((NETWORK,UDP),(RULE-SET,GlobalDomain)),🌑 墙外 UDP
+  - RULE-SET,GlobalDomain,🌑 墙外
+
+  - AND,((NETWORK,UDP),(RULE-SET,Global)),🌑 墙外 UDP
+  - RULE-SET,Global,🌑 墙外
+
+  # > 苹果服务里需要直连的部分(根据情况 可以选择把这一段放在 全球服务 的上面)
+  - AND,((NETWORK,TCP),(RULE-SET,Apple),(DST-PORT,80/443)),🇨🇳 墙内受限
+  - AND,((NETWORK,UDP),(RULE-SET,Apple)),🇨🇳 墙内 UDP
+  - RULE-SET,Apple,🇨🇳 墙内
+
+  # > 国内
+  - AND,((NETWORK,TCP),(RULE-SET,ChinaMaxDomain),(DST-PORT,80/443)),🇨🇳 墙内受限
+  - AND,((NETWORK,UDP),(RULE-SET,ChinaMaxDomain)),🇨🇳 墙内 UDP
+  - RULE-SET,ChinaMaxDomain,🇨🇳 墙内
+  - AND,((NETWORK,TCP),(RULE-SET,China),(DST-PORT,80/443)),🇨🇳 墙内受限
+  - AND,((NETWORK,UDP),(RULE-SET,China)),🇨🇳 墙内 UDP
+  - RULE-SET,China,🇨🇳 墙内
+  - AND,((NETWORK,TCP),(GEOIP,CN,no-resolve),(DST-PORT,80/443)),🇨🇳 墙内受限
+  - AND,((NETWORK,UDP),(GEOIP,CN,no-resolve)),🇨🇳 墙内 UDP
+  - GEOIP,CN,🇨🇳 墙内,no-resolve
+
+  # > 局域网等
+  - RULE-SET,Lan,DIRECT
+
+  # > 国内 IP
+  - AND,((NETWORK,TCP),(GEOIP,CN),(DST-PORT,80/443)),🇨🇳 墙内受限
+  - AND,((NETWORK,UDP),(GEOIP,CN)),🇨🇳 墙内 UDP
+  - GEOIP,CN,🇨🇳 墙内
+
+  # > 兜底代理
+  - NETWORK,UDP,🌑 墙外 UDP
+  - MATCH,🌑 墙外

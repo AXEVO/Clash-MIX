@@ -1,0 +1,7 @@
+id=ClashForMagisk
+name=Clash for Magisk
+version=v1.13.0
+versionCode=20220724
+author=t@amarin
+description=Clash core with service scripts for Android
+updateJson=https://github.dev/Gayhub666/Clash-Mix/raw/master/version.json

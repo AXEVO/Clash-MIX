@@ -1,0 +1,72 @@
+tproxy-port: 9898
+mixed-port: 7890
+mode: rule
+allow-lan: true
+unified-delay: false
+tcp-concurrent: true
+find-process-mode: strict
+log-level: info
+ipv6: false
+external-controller: 0.0.0.0:9090
+external-ui: dashboard/metacubexd
+secret: ""
+external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
+#面板可选，打开dashboard文件夹自行查看和修改
+#interface-name: tun0   #出口网卡名称 可用来桥接VPN类软件
+geodata-mode: true
+geox-url:
+  geoip: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat"
+  geosite: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
+  mmdb: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb"
+profile:
+  store-selected: true
+  store-fake-ip: true
+auto-redir: 
+  - enable: false
+  - auto-route: false
+
+tun:
+  enable: false
+  stack: system      #gvisor 可切换
+  dns-hijack:
+    - any:53
+  auto-route: true
+  auto-detect-interface: true
+
+sniffer:
+  enable: false
+  sniffing: [tls, http]
+  force-domain: [+]
+  port-whitelist:
+    - 80
+    - 443
+  skip-domain:
+    - 'Mijia Cloud'
+    - 'dlg.io.mi.com'
+    - '+.apple.com'
+    - '*.baidu.com'
+
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: redir-host
+  use-hosts: true
+  listen: 0.0.0.0:1053
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter:
+    - localhost.ptlogin2.qq.com
+    - '*.lan'
+    - '*.linksys.com'
+    - '*.ntp.*'
+    - '+.lan'
+    - '+.cn'
+  nameserver-policy:
+    "geosite:geolocation-cn,private": 
+      - https://223.5.5.5/dns-query
+      - https://120.53.53.53/dns-query
+    "geosite:!geolocation-cn":
+      - https://8.8.4.4/dns-query#机场
+      - https://1.0.0.1/dns-query#机场
+  proxy-server-nameserver:
+    - https://223.5.5.5/dns-query
+    - https://120.53.53.53/dns-query

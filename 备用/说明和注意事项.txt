@@ -1,0 +1,172 @@
+就可以看到可以添加包名的地方，记得用一个一行写在双引号里面
+scripts文件夹下打开终端输入 ./upSub.sh -s  即可手动更新套餐信息，默认为1小时自动更新一次
+安装模块自动安装汉化版控制器，可以自行选装大王版控制器
+----------------------------------------------
+对于热点机用户，备用 文件夹中附带了一个xposed模块，用于固定热点机的IP地址
+这样可以在连接的终端上方便的远程访问dashboard进行节点切换等操作
+该软件更新地址   https://github.com/XhyEax/SoftApHelper/releases/tag/v1.010
+----------------------------------------------
+通配符说明 适用于过滤器
+[转发自频道 Kattesnive (kattesnive)]
+(A).*(B)             节点名既有 A 也有 B 
+(A)|(B)              节点名有 A 或者 B   
+^(?!.*A)             节点名不含有 A 
+^(?!.*A).*(B)        节点名不含有 A 但含有 B
+^(?!.*(A|B))         节点名既不含有 A 也不含有 B
+----------------------------------------------
+clash自动测试命令 请在终端输入后查看报错信息进行故障排除
+clash -t -f /data/clash/run/config.yaml
+-----------------------------------------------
+由于rule-provider效率较低，目前已经转为使用geo规则，使用的geo文件地址如下
+https://github.com/Loyalsoldier/v2ray-rules-dat
+
+善用geo文件，所有可用的标签列表：
+https://github.com/v2fly/domain-list-community/tree/master/data
+
+检测是否连接成功网址
+https://ip.skk.moe/
+
+防止回环的另外一种办法
+rules:
+  - IP-CIDR,127.0.0.1/32,REJECT,no-resolve
+  - PROCESS-NAME,clash,REJECT # 解决回环小妙招 打开会导致无法手动更新订阅，只能等待自动更新，cfm现已内置完善的防回环措施，非调试不建议使用
+
+小知识
+脚本中写入
+PATH=$PATH:/data/data/com.termux/files/usr/bin/
+即可在任意终端使用系统没有而 Termux 有的命令.
+
+meta内核实时更新的配置文件教程地址：
+https://github.com/MetaCubeX/Clash.Meta/blob/Alpha/docs/config.yaml
+
+no-resolve表示不要解析这条规则，只处理ip访问请求
+
+
+
+
+
+------------------------------------------以下为部分可自行替换配置，更多配置请看 教程与模板 文件夹内配置-----------------------------------------------
+负载均衡实列
+proxy-groups:
+  - name: 代理
+    type: select
+    proxies:
+      - 机场1
+      - 机场2
+      - 机场3
+      - 备用1
+      - 备用2
+      - 备用3
+      - 自动选择1
+      - 自动选择2
+      - 自动选择3 
+      - 负载均衡(HK)   
+  - name: 负载均衡(HK)
+    filter: "港|香港|HK|HongKong"
+    type: load-balance
+    use:
+      - 机场1
+      - 机场2
+      - 机场3
+    url: http://www.gstatic.com/generate_204
+    interval: 600
+
+
+#其他的dns，不知道哪个更好一点
+nameserver:
+    - https://h.iqiq.io:777/dns-query
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+
+    - https://doh.360.cn/dns-query#CN-)TCP
+    - dns.alidns.com#CN-)UDP
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+fallback:
+    - https://h.iqiq.io:777/dns-query
+    - https://doh.opendns.com/dns-query
+    - https://dns.adguard.com/dns-query
+    - https://dns.google/dns-query
+
+    - https://doh.opendns.com/dns-query#MATCH-)TCP
+    - dns.google#MATCH-)UDP
+    - https://dns.adguard.com/dns-query
+    - https://dns.google/dns-query#DNS
+    - https://cloudflare-dns.com/dns-query#DNS
+
+
+可选规则 
+  GoogleFCM:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GoogleFCM/GoogleFCM.yaml
+    path: ./rule_providers/GoogleFCM.yaml
+    interval: 21600
+
+  AD:
+    type: http
+    behavior: domain
+    url: https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-clash.yaml
+    path: ./rule_providers/Ad.yaml
+    interval: 21600
+  Google:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.yaml
+    path: ./rule_providers/Google.yaml
+    interval: 21600
+  WeChat:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/WeChat/WeChat.yaml
+    path: ./rule_providers/WeChat.yaml
+    interval: 21600
+  BiliBili:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/BiliBili/BiliBili.yaml
+    path: ./rule_providers/BiliBili.yaml
+    interval: 21600
+  Tencent:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Tencent/Tencent.yaml
+    path: ./rule_providers/Tencent.yaml
+    interval: 21600
+
+  Local:
+    type: file
+    behavior: classical
+    path: ./rule_providers/Locale.yaml
+
+  - AND,((NETWORK,TCP),(IP-CIDR,223.5.5.5/32,no-resolve),(DST-PORT,80/443))
+  - AND,((NETWORK,UDP),(IP-CIDR,223.5.5.5/32,no-resolve))
+
+  - AND,((NETWORK,TCP),(IP-CIDR,120.53.53.53/32,no-resolve),(DST-PORT,80/443))
+  - AND,((NETWORK,UDP),(IP-CIDR,120.53.53.53/32,no-resolve))
+
+  - AND,((DST-PORT,5228-5230),(NETWORK,TCP),(DOMAIN-KEYWORD,google))  #谷歌推送
+  - AND,((NETWORK,TCP),(DOMAIN-SUFFIX,ghproxy.com),(DST-PORT,80/443))
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,ghproxy.com))
+
+规则可用的关键字（机翻）
+
+DOMAIN:DOMAIN,www.google.com,policy只路由www.google.com到policy.
+DOMAIN-SUFFIX:将任何以,或,DOMAIN-SUFFIX,youtube.com,policy结尾的 FQDN 路由到. 这类似于通配符。youtube.comwww.youtube.comfoo.bar.youtube.compolicy+
+DOMAIN-KEYWORD:DOMAIN-KEYWORD,google,policy将任何包含google,www.google.com或googleapis.com, 的 FQDN 路由到policy.
+GEOIP:GEOIP,CN,policy将任何到中国 IP 地址的请求路由到policy.
+IP-CIDR：IP-CIDR,127.0.0.0/8,DIRECT将任何数据包路由127.0.0.0/8到DIRECT策略。
+IP-CIDR6:IP-CIDR6,2620:0:2d0:200::7/32,policy将任何数据包路由2620:0:2d0:200::7/32到policy.
+SRC-IP-CIDR：将SRC-IP-CIDR,192.168.1.201/32,DIRECT任何数据包路由到 策略。192.168.1.201/32DIRECT
+SRC-PORT:将任何数据包从端口 80SRC-PORT,80,policy路由到.policy
+DST-PORT:将DST-PORT,80,policy任何数据包路由到端口 80 到policy.
+PROCESS-NAME:PROCESS-NAME,nc,DIRECT将进程路由nc到DIRECT. (支持macOS、Linux、FreeBSD和Windows)
+MATCH:MATCH,policy将其余数据包路由到policy. 这条规则是必需的。
+还有两个额外的特殊政策：
+
+DIRECT：直接连接到目标，不涉及任何代理
+REJECT：数据包的黑洞。Clash 不会处理此策略的任何 I/O。
+策略可以是DIRECT、REJECT、代理组或代理服务器。
+
+没有解决
+no-resolve是 、 或 规则的GEOIP附加IP-CIDR选项IP-CIDR6。附加,no-resolve到这些规则以启用。默认情况下，Clash 在遇到 IP 规则时会将域名转换为 IP 地址。当遇到具有 FQDN 目标的数据包时，Clash 会跳过启用此选项的 IP 规则。
