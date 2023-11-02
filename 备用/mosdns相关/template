@@ -1,0 +1,92 @@
+tproxy-port: 9898
+mixed-port: 7890
+mode: rule
+allow-lan: true
+unified-delay: false
+bind-address: "*"
+log-level: info
+ipv6: false
+udp: true
+geodata-mode: true
+#interface-name: en0        #出口网卡名称 可用来桥接VPN类软件
+external-controller: 0.0.0.0:9090
+external-ui: dashboard/dist
+#external-ui: dashboard/Razord
+#两个面板二选一
+tcp-concurrent: false
+interface-name: ""
+enable-process: true
+geodata-loader: memconservative
+inbound-tfo: false
+secret: ""
+profile:
+  store-selected: true
+  store-fake-ip: true
+auto-redir: 
+  - enable: false
+  - auto-route: false
+
+tun:
+  enable: false
+  stack: system  # gvisor 可切换
+  dns-hijack:
+    - any:53
+  auto-route: true
+  auto-detect-interface: true
+
+sniffer:
+  enable: false
+  sniffing: [tls, http]
+  force-domain: [+]
+  skip-domain: [+.google.com]
+
+dns:
+  enable: true
+  device: Meta
+  ipv6: false
+  prefer-h3: false
+  listen: 0.0.0.0:1053
+  use-hosts: true
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter:
+    - localhost.ptlogin2.qq.com
+    - '*.lan'
+    - '*.linksys.com'
+    - '*.ntp.*'
+    - '+.lan'
+    - '+.cn'
+  default-nameserver:
+    - 119.29.29.29
+    - 223.5.5.5
+  proxy-server-namesever:
+    - https://120.53.53.53/dns-query
+    - https://223.5.5.5/dns-query
+  nameserver:
+    #- 119.29.29.29
+    #- 223.5.5.5
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+    #使用了大部分机场的默认dns设置，仅供参考
+    #警告：修改dns设置可能导致免流出现故障
+  fallback:
+    #- 1.1.1.1#机场
+    #- 8.8.4.4#机场
+    - https://doh.dns.sb/dns-query
+    - https://dns.cloudflare.com/dns-query
+    - https://dns.twnic.tw/dns-query
+  fallback-filter:
+    geosite: ["!CN"]
+    ipcidr:
+      - 240.0.0.0/4
+      - 0.0.0.0/32
+    domain:
+      - +.google.com
+      - +.facebook.com
+      - +.twitter.com
+      - +.youtube.com
+      - +.google.cn
+      - +.googleapis.cn
+      - +.googlevideo.com
+      - +.github.com
+      - +.githubusercontent.com

@@ -3,19 +3,95 @@
 scripts=`realpath $0`
 scripts_dir=`dirname ${scripts}`
 . /data/clash/clash.config
+mos_err=0
+
+#上面的是mosdns的故障信号 每次启动时候会被重置为0
+#启动mosdns时候如果遇到问题会变成1，然后启动clash的函数检测到1会直接退出
 
 fuck_log() {
     if [ -f /data/clash/run/run.logs ] ; then
     mv data/clash/run/run.logs data/clash/run/log.old
     fi
+    rm -rf  /data/clash/run/mosdns.log
+    #清除mosdns日志
+    echo '' > ${mosdns_logs_file}
+    rm -f ${mos_kernel_logs_file}
 }
 
+start_mos() {
+    if [ "${run_mode}" == "1" ]; then
+        mosdns_pid=`cat ${mos_pid_file} 2> /dev/null`
+        if (cat /proc/${mosdns_pid}/cmdline | grep -q mosdns) ; then
+            echo $date_log"info: 检测到mosdns已启动,此次不启动." >> ${CFM_logs_file}
+            exit 1
+        fi
+    fi
+    
+    if [ !-f "/data/clash/mosdns/mosdns" ] ; then 
+        echo $date_log"err: mosdns内核丢失." >> ${CFM_logs_file}
+        mos_err=1
+        exit 1
+    fi
 
+    if [ -f ${mosdns_config_file} ] ; then
+        if [ "${run_mode}" == "1" ]; then
+          nohup ${mosdns_bin_path} start -d ${mosdns_data_dir} > ${mosdns_logs_file} 2>&1 &
+          echo -n $! "" > ${mos_pid_file}
+          sleep 0.05
+          mosdns_run_pid=`cat ${mos_pid_file} 2> /dev/null | awk -F ' ' '{print $1}'`
+            if (cat /proc/${mosdns_run_pid}/cmdline | grep -q mosdns) ; then
+              echo $date_log"info: mosdns已启动." >> ${CFM_logs_file}
+            else
+              echo $date_log"error: mosdns配置有误,启动失败,以下为错误" >> ${CFM_logs_file}
+              echo $date_log"$(cat /data/clash/run/mosdns.log | grep Error)" >> ${CFM_logs_file}
+              mos_err=1
+              exit 1
+            fi
+        else
+          echo $date_log"info: mosdns已禁用" >> ${CFM_logs_file}
+        fi
+    else
+        echo $date_log"info: mosdns配置文件缺失." >> ${CFM_logs_file}
+        mos_err=1
+        exit 1
+    fi
+
+
+    if [ !-x "/data/clash/mosdns/mosdns" ] ; then
+        echo $date_log"err: mosdns权限异常." >> ${CFM_logs_file}
+        mos_err=1
+        exit 1
+    fi
+}
+
+stop_mos() {
+    if [ "${run_mode}" == "1" ]; then
+      kill -15 `cat ${mos_pid_file}`
+      echo $date_log"info: 停止mosdns内核." >> ${CFM_logs_file}
+      cp -f ${mos_kernel_logs_file} ${Clash_run_path}/mos_kernel.log.bak
+    else
+      echo $date_log"info: mosdns未启用" >> ${CFM_logs_file}
+    fi
+}
 
 
 start_clash() {
     nohup /data/adb/magisk/busybox crond -c /data/clash/run > /dev/null 2>&1 &
     touch /data/clash/run/cmdRunning && rm -rf /data/clash/run/DEBUG*
+
+    if [ $mos_err == 1 ]; then
+        exit 1
+    fi
+    #mosdns故障时不允许打开clash
+    if [ "${config_online}" == "true" ] ; then
+        if ! [ "$(head -1 /data/clash/run/root)" == "disable" ] ; then
+            if ! (${scripts_dir}/clash.tool -o) ; then
+                echo $date_log"err: 下载配置文件失败 请确认网络连接正常" >> ${CFM_logs_file}
+                stop_mos
+                exit 1
+            fi
+        fi
+    fi
 
     echo "启动时间 ${date_day}" >> ${CFM_logs_file}
     echo "Clash for Magisk v2.0  魔改版" >> ${CFM_logs_file}
@@ -118,10 +194,12 @@ start_clash() {
            sed -i '/^[  ]*$/d' ${temporary_config_file}.swp
         else
            echo $date_log"err: ${Clash_config_file} 未找到" >> ${CFM_logs_file}
+           stop_mos
            exit 1
         fi
     else
         echo $date_log"err: ${Clash_dns} 未找到" >> ${CFM_logs_file}
+        stop_mos
         exit 1
     fi
 
@@ -130,6 +208,7 @@ start_clash() {
 
     if [ ! -f "${temporary_config_file}" ] ; then
        echo $date_log"err: ${temporary_config_file} 未找到" >> ${CFM_logs_file}
+       stop_mos
        exit 1
     fi
 
@@ -173,8 +252,12 @@ start_clash() {
         else
             echo $date_log"info: 自动绕过本地IP已关闭" >> ${CFM_logs_file}
         fi
+        ${scripts_dir}/upSub.sh -s
+        echo "0 * * * * ${scripts_dir}/upSub.sh -s " >> ${Clash_run_path}/root \
+        && echo $date_log"info: 自动更新流量使用信息已开启." >> ${CFM_logs_file}
     else
         echo $date_log"内核 ${Clash_bin_path} 未找到" >> ${CFM_logs_file}
+        stop_mos
         exit 1
     fi
 
@@ -210,26 +293,30 @@ start_clash() {
                 while read p; do
                     echo ${date_log}"err:" "$p" >> ${CFM_logs_file}
                 done <${Clash_run_path}/config.logs
-                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" >> ${CFM_logs_file}
+                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" >> ${CFM_logs_file}
                 if [ "${use_config}" == "false" ]; then
                     mv ${temporary_config_file} ${Clash_data_dir}/config.yaml
                 else
                     mv ${temporary_config_file} ${Clash_data_dir}/confs/config/${use_config}
                 fi
                 echo $date_log"err: 出现问题，请检查 ${Clash Config_file} 和模板" >> ${CFM_logs_file}
+                stop_mos
                 exit 1
             fi
         else
             echo $date_log"err: 核心已损坏或不支持">> ${CFM_logs_file}
+            stop_mos
             exit 1
         fi
     else
         echo $date_log"err: ${Clash_config_file}未找到" >> ${CFM_logs_file}
+        stop_mos
         exit 1
     fi
 
     if [ "${port_detect}" == "true" ]; then
         if ! (${scripts_dir}/clash.tool -p) ; then
+            stop_mos
             exit 0
         fi
     else
@@ -272,6 +359,8 @@ stop_clash() {
 
     rm -rf /data/clash/run/clash.pid
 
+    rm -rf ${Clash_run_path}/root \
+    && echo $date_log"info: 自动更新流量使用信息已关闭." >> ${CFM_logs_file}
 }
 
 while getopts ":sk" signal ; do
@@ -279,9 +368,11 @@ while getopts ":sk" signal ; do
         s)
             fuck_log &>> /data/clash/run/service.log
             start_clash &>> /data/clash/run/service.log
+            start_mos &>> /data/clash/run/service.log
             ;;
         k)
             stop_clash &>> /data/clash/run/service.log
+            stop_mos &>> /data/clash/run/service.log
             ;;
         ?)
             echo ""

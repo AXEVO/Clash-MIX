@@ -1,7 +1,7 @@
 id=ClashForMagisk
 name=Clash for Magisk
-version=v2.0
-versionCode=20231025
-author=t@amarin 魔改
-description=Clash透明代理   内核:Meta 1.16.0
-updateJson=https://github.com/AXEVO/Clash-Mix/raw/Clash-MIX-2.0-稳定版/version.json
+version=v1.13.0
+versionCode=20220724
+author=t@amarin
+description=Clash core with service scripts for Android
+updateJson=https://github.dev/Gayhub666/Clash-Mix/raw/master/version.json

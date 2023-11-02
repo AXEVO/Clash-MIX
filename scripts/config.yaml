@@ -4,7 +4,7 @@ proxy-providers:
   
   可乐云:
     type: http
-    url: "订阅链接"
+    url: "https://www.mysubsoft.com/api/v1/client/subscribe?token=5a40d73f778debb631547fc9d35e87da"
     path: ./proxy_providers/可乐云.yaml
     interval: 10800
     health-check:
@@ -13,7 +13,7 @@ proxy-providers:
       interval: 900
   魔戒:
     type: http
-    url: "订阅链接"
+    url: "https://mojie.mx/api/v1/client/subscribe?token=ad574f2c01a21012d582005b77890a2e"
     path: ./proxy_providers/魔戒.yaml
     interval: 10800
     health-check:
@@ -22,7 +22,7 @@ proxy-providers:
       interval: 900
   赔钱机场:
     type: http
-    url: "订阅链接"
+    url: "https://pqjc.site/api/v1/client/subscribe?token=7a9a1343209886924316c61174e67d3e"
     path: ./proxy_providers/赔钱机场.yaml
     interval: 10800
     health-check:
@@ -31,23 +31,13 @@ proxy-providers:
       interval: 900
   养鸡场:
     type: http
-    url: "订阅链接"
+    url: "https://dy.xftld.xyz/api/v1/client/subscribe?token=bcae7992e9e2fa0b259744a01b530ef3"
     path: ./proxy_providers/养鸡场.yaml
     interval: 10800
     health-check:
       enable: true
       url: http://www.gstatic.com/generate_204
       interval: 900    
-
-  泡泡狗:
-    type: http
-    url: "订阅链接"
-    path: ./proxy_providers/泡泡狗.yaml
-    interval: 10800
-    health-check:
-      enable: true
-      url: http://www.gstatic.com/generate_204
-      interval: 900 
 #-------------------------------------------------------------------
 #data/clash/proxy-provider里面有白嫖节点可以使用，也欢迎提交更多白嫖节点
 #使用p核时，如果无法正常更新订阅，请打开proxy provider 里面的机场yaml配置文件查看
@@ -62,10 +52,8 @@ proxy-groups:
       - 魔戒
       - 赔钱机场
       - 养鸡场
-      - 泡泡狗
       - 美国节点
-      - 负载均衡-大带宽
-      - 负载均衡-好节点
+      - 负载均衡
 
   - name: 可乐云
     type: select
@@ -86,12 +74,7 @@ proxy-groups:
     type: select
     use:
       - 养鸡场
-
-  - name: 泡泡狗
-    type: select
-    use:
-      - 泡泡狗
-
+    
   - name: 美国节点
     type: select
     use:
@@ -99,28 +82,16 @@ proxy-groups:
       - 魔戒
       - 赔钱机场
       - 养鸡场
-      - 泡泡狗
-    filter: '美国|USA|美國|us|US'
+    filter: '美国|USA|美國'
 #meta的特性，如果你经常使用某个地区节点可以使用过滤器便于选择 美国节点 可以改为其他
 #但是要改就得全改，建议使用编辑器的替换功能防止遗漏。过滤器内容用 | 分割，支持通配符
-  - name: 负载均衡-大带宽
+  - name: 负载均衡
     type: load-balance
     use:
-      - 泡泡狗
+      - 可乐云
     url: 'http://www.gstatic.com/generate_204'
     interval: 900
     filter: '美国|USA|美國'
-    lazy: true
-    strategy: consistent-hashing
-
-  - name: 负载均衡-优IP
-    type: load-balance
-    use:
-      - 养鸡场
-    url: 'http://www.gstatic.com/generate_204'
-    interval: 900
-    filter: '美国|USA|美國'
-    lazy: true
     strategy: consistent-hashing
 
 
@@ -128,18 +99,12 @@ proxy-groups:
     type: select
     proxies:
       - DIRECT
-      - REJECT
       - 机场
-
-  - name: 广告屏蔽
-    type: select
-    proxies:
-      - REJECT
-      - DIRECT
 
   - name: 其他
     type: select
     proxies:
+      - DIRECT
       - 机场
       - 墙内网址
 #用户自定义规则，文件在data/clash/rule-provider/
@@ -158,11 +123,18 @@ rule-providers:
     behavior: classical
     path: ./rule_providers/userProxy.yaml
 
+  Local:
+    type: file
+    behavior: classical
+    path: ./rule_providers/Local.yaml
+
+
 rules:
+  - RULE-SET,Local,DIRECT
   - RULE-SET,userProxy,机场
   - RULE-SET,userDirect,墙内网址
 
-  - GEOSITE,category-ads-all,广告屏蔽
+  - GEOSITE,category-ads-all,REJECT
   - GEOSITE,geolocation-cn,墙内网址
   - GEOSITE,geolocation-!cn,机场
 

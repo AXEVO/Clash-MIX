@@ -117,24 +117,24 @@ create_mangle_output_filter() {
 
 create_nat_prerouting_dns() {
     ${iptables_wait} -t nat -N DNS_PRE
-    ${iptables_wait} -t nat -A DNS_PRE -p udp -j REDIRECT --to-ports ${Clash_dns_port}
+    ${iptables_wait} -t nat -A DNS_PRE -p udp -j REDIRECT --to-ports ${dns_port}
 
     if [ "${ipv6}" = "true" ] ; then
         if [ "${nat_kernel}" = "true" ] ; then
             ${ip6tables_wait} -t nat -N DNS_PRE
-            ${ip6tables_wait} -t nat -A DNS_PRE -p udp -j REDIRECT --to-ports ${Clash_dns_port}
+            ${ip6tables_wait} -t nat -A DNS_PRE -p udp -j REDIRECT --to-ports ${dns_port}
         fi
     fi
 }
 
 create_nat_output_dns() {
     ${iptables_wait} -t nat -N DNS_OUT
-    ${iptables_wait} -t nat -A DNS_OUT -p udp -j REDIRECT --to-ports ${Clash_dns_port}
+    ${iptables_wait} -t nat -A DNS_OUT -p udp -j REDIRECT --to-ports ${dns_port}
 
     if [ "${ipv6}" = "true" ] ; then
         if [ "${nat_kernel}" = "true" ] ; then
             ${ip6tables_wait} -t nat -N DNS_OUT
-            ${ip6tables_wait} -t nat -A DNS_OUT -p udp -j REDIRECT --to-ports ${Clash_dns_port}
+            ${ip6tables_wait} -t nat -A DNS_OUT -p udp -j REDIRECT --to-ports ${dns_port}
             fi
     fi
 }
