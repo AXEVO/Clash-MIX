@@ -4,7 +4,7 @@ proxy-providers:
   
   可乐云:
     type: http
-    url: "https://www.mysubsoft.com/api/v1/client/subscribe?token=5a40d73f778debb631547fc9d35e87da"
+    url: "订阅地址"
     path: ./proxy_providers/可乐云.yaml
     interval: 10800
     health-check:
@@ -13,7 +13,7 @@ proxy-providers:
       interval: 900
   魔戒:
     type: http
-    url: "https://mojie.mx/api/v1/client/subscribe?token=ad574f2c01a21012d582005b77890a2e"
+    url: "订阅地址"
     path: ./proxy_providers/魔戒.yaml
     interval: 10800
     health-check:
@@ -22,7 +22,7 @@ proxy-providers:
       interval: 900
   赔钱机场:
     type: http
-    url: "https://pqjc.site/api/v1/client/subscribe?token=7a9a1343209886924316c61174e67d3e"
+    url: "订阅地址"
     path: ./proxy_providers/赔钱机场.yaml
     interval: 10800
     health-check:
@@ -31,7 +31,7 @@ proxy-providers:
       interval: 900
   养鸡场:
     type: http
-    url: "https://dy.xftld.xyz/api/v1/client/subscribe?token=bcae7992e9e2fa0b259744a01b530ef3"
+    url: "订阅地址"
     path: ./proxy_providers/养鸡场.yaml
     interval: 10800
     health-check:

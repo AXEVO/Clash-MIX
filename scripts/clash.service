@@ -252,9 +252,7 @@ start_clash() {
         else
             echo $date_log"info: 自动绕过本地IP已关闭" >> ${CFM_logs_file}
         fi
-        ${scripts_dir}/upSub.sh -s
-        echo "0 * * * * ${scripts_dir}/upSub.sh -s " >> ${Clash_run_path}/root \
-        && echo $date_log"info: 自动更新流量使用信息已开启." >> ${CFM_logs_file}
+
     else
         echo $date_log"内核 ${Clash_bin_path} 未找到" >> ${CFM_logs_file}
         stop_mos
@@ -359,8 +357,6 @@ stop_clash() {
 
     rm -rf /data/clash/run/clash.pid
 
-    rm -rf ${Clash_run_path}/root \
-    && echo $date_log"info: 自动更新流量使用信息已关闭." >> ${CFM_logs_file}
 }
 
 while getopts ":sk" signal ; do

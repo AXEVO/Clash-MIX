@@ -6,8 +6,6 @@ payload:
 #----------------------------------------
   - DOMAIN,cdn.jsdelivr.net
   - DOMAIN,fastgit.org
-  - DOMAIN-KEYWORD,ghproxy.com
-  - DOMAIN-SUFFIX,speedtest.net
   - DOMAIN-SUFFIX,syncthing.net
   - PROCESS-NAME,libsyncthingnative.so
   - DOMAIN-SUFFIX,push.apple.com         #苹果推送，热点机可以启用

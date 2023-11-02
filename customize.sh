@@ -36,7 +36,7 @@ if [ -d "${clash_data_dir}" ] ; then
         rm -rf /data/clash.old
     fi
     mkdir -p /data/clash.old
-    mv ${clash_data_dir}/* data/clash.old/
+    mv ${clash_data_dir}/* /data/clash.old/
 fi
 
 ui_print "- 正在准备安装环境"
@@ -81,7 +81,7 @@ mv ${MODPATH}/confs/ ${clash_data_dir}/
 mv ${MODPATH}/备用/ ${clash_data_dir}/
 mv ${MODPATH}/mosdns/ ${clash_data_dir}/
 ui_print "- 正在安装主要配置"
-mv ${clash_data_dir}/scripts/config.yaml ${clash_data_dir}/
+cp ${clash_data_dir}/scripts/config.yaml ${clash_data_dir}/
 mv ${clash_data_dir}/scripts/clash.config ${clash_data_dir}/
 mv ${clash_data_dir}/scripts/template ${clash_data_dir}/
 
@@ -137,7 +137,6 @@ rm -rf ${MODPATH}/scripts
 rm -rf ${MODPATH}/GeoX
 rm -rf ${MODPATH}/binary
 rm -rf ${MODPATH}/clash_service.sh
-rm -rf ${clash_data_dir}/scripts/config.yaml
 sleep 2
 
 if [  -f "/data/clash.old/config.yaml" ] ; then
@@ -152,18 +151,9 @@ else
     ui_print "- >>>>>全新安装 请根据提示在指定位置填写订阅链接<<<<<" 
     fi
 fi
-sleep2
+sleep 2
 
-ui_print "- 正在更新模块信息"
-rm -rf ${MODPATH}/module.prop
-touch ${MODPATH}/module.prop
-echo "id=ClashForMagisk" > ${MODPATH}/module.prop
-echo "name=Clash For Magisk" >> ${MODPATH}/module.prop
-echo "version=v2.0" >> ${MODPATH}/module.prop
-echo "versionCode=20230430" >> ${MODPATH}/module.prop
-echo "author=t@amarin 魔改" >> ${MODPATH}/module.prop
-echo "description= Clash透明代理   Mosdns  内核:meta 1.14.5" >> ${MODPATH}/module.prop
-echo "updateJson=https://raw.githubusercontent.com/Gayhub666/Clash-Mix/master/version.json" >> ${MODPATH}/module.prop
+
 
 ui_print "- 正在设置权限"
 set_perm_recursive ${MODPATH} 0 0 0755 0644
@@ -188,7 +178,6 @@ set_perm  ${clash_data_dir}/scripts/clash.inotify 0  0  0755
 set_perm  ${clash_data_dir}/scripts/clash.service 0  0  0755
 set_perm  ${clash_data_dir}/scripts/clash.cron 0  0  0755
 set_perm  ${clash_data_dir}/scripts/start.sh 0  0  0755
-set_perm  ${clash_data_dir}/scripts/upSub.sh 0  0  0755
 set_perm  ${clash_data_dir}/clash.config ${uid} ${gid} 0755
 set_perm  ${clash_service_dir}/clash_service.sh  0  0  0755
 set_perm  ${clash_data_dir}/rule_providers/ 0  0  0755
@@ -207,17 +196,9 @@ ln -s ${clash_data_dir}/GeoIP.dat ${clash_data_dir}/mosdns/GeoIP.dat
 set_perm ${clash_data_dir}/mosdns/GeoSite.dat 0 0 0777
 set_perm ${clash_data_dir}/mosdns/GeoIP.dat 0 0 0777
 
-#安装控制器 已使用新方案，在任何机型上都能正常发挥作用
-#if [ "$(pm list packages | grep xyz.chz.clash)" ] || [ "$(pm list packages | grep -s xyz.chz.clash)" ];then
-#ui_print "- 无需安装DashBoard."
-#else
-#ui_print "- 开始安装DashBoard."
-#pm install -r --user 0 data/clash/备用/控制器.apk
-#ui_print "- ↑显示Success即为安装完成."
-#ui_print "- 如果失败请手动安装 安装包文件在:/data/clash/备用/控制器.apk"
-#fi
+
 sleep 3
-ui_print "- dashboard已安装为系统应用，卸载模块后会自动删除"
+ui_print "- 控制器已安装为系统应用，卸载模块后会自动删除"
 ui_print "- 标准版请进入data/clash/config.yaml 指定位置填写订阅链接"
 ui_print "- 免流版 极简版请打开/data/clash/confs/查看说明"
 ui_print "- 在对应配置文件内填写订阅链接并在控制台切换到相应配置文件"
