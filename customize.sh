@@ -20,47 +20,47 @@ yacd_dir="${clash_data_dir}/dashboard"
 latest=$(date +%Y%m%d%H%M)
 
 if $BOOTMODE; then
-  ui_print "- Installing from Magisk app"
+  ui_print "- 从Magisk应用安装"
 else
   ui_print "*********************************************************"
-  ui_print "! Install from recovery is NOT supported"
-  ui_print "! Some recovery has broken implementations, install with such recovery will finally cause CFM modules not working"
-  ui_print "! Please install from Magisk app"
+  ui_print "! 不支持从恢复模式安装"
+  ui_print "! 一些恢复模式存在问题的实现，使用这样的恢复模式最终会导致CFM模块无法工作"
+  ui_print "! 请从Magisk应用安装"
   abort "*********************************************************"
 fi
 
-# check Magisk
-ui_print "- Magisk version: $MAGISK_VER ($MAGISK_VER_CODE)"
+# 检查Magisk版本
+ui_print "- Magisk版本: $MAGISK_VER ($MAGISK_VER_CODE)"
 
-# check android
+# 检查Android版本
 if [ "$API" -lt 19 ]; then
-  ui_print "! Unsupported sdk: $API"
-  abort "! Minimal supported sdk is 19 (Android 4.4)"
+  ui_print "! 不支持的SDK版本: $API"
+  abort "! 最小支持的SDK版本为19（Android 4.4）"
 else
-  ui_print "- Device sdk: $API"
+  ui_print "- 设备SDK版本: $API"
 fi
 
-# check architecture
+# 检查架构
 if [ "$ARCH" != "arm" ] && [ "$ARCH" != "arm64" ] && [ "$ARCH" != "x86" ] && [ "$ARCH" != "x64" ]; then
-  abort "! Unsupported platform: $ARCH"
+  abort "! 不支持的平台: $ARCH"
 else
-  ui_print "- Device platform: $ARCH"
+  ui_print "- 设备平台: $ARCH"
 fi
 
-ui_print "- Installing Clash for Magisk"
+ui_print "- 开始准备安装"
 
 if [ -d "${clash_data_dir}" ] ; then
-    ui_print "- Backup Clash"
+    ui_print "- 检测到旧模块，已备份"
     mkdir -p ${clash_data_dir}/${latest}
     mv ${clash_data_dir}/* ${clash_data_dir}/${latest}/
 fi
 
 if [ -f ${clash_data_dir}/${latest}/*.yaml ] ; then
-    ui_print "- Restore config.yaml"
+    ui_print "- 恢复config.yaml"
     cp ${clash_data_dir}/${latest}/*.yaml ${clash_data_dir}/
 fi
 
-ui_print "- Create folder Clash."
+ui_print "- 创建文件夹"
 mkdir -p ${clash_data_dir}
 mkdir -p ${clash_data_dir_kernel}
 mkdir -p ${MODPATH}${ca_path}
@@ -87,24 +87,24 @@ esac
 
 unzip -o "${ZIPFILE}" -x 'META-INF/*' -d $MODPATH >&2
 
-ui_print "- Extract Dashboard"
+ui_print "- 安装网页控制面板"
 unzip -o ${MODPATH}/dashboard.zip -d ${clash_data_dir}/dashboard/ >&2
 
-ui_print "- Move Scripts Clash"
+ui_print "- 安装脚本"
 mv ${MODPATH}/scripts/* ${clash_data_dir}/scripts/
-mv ${clash_data_dir}/scripts/config.yaml ${clash_data_dir}/
-mv ${clash_data_dir}/scripts/template ${clash_data_dir}/
+cp ${clash_data_dir}/scripts/config.yaml ${clash_data_dir}/
+cp ${clash_data_dir}/scripts/template ${clash_data_dir}/
 
-ui_print "- Move Cert&Geo"
+ui_print "- 安装密钥和Geo文件"
 mv ${clash_data_dir}/scripts/cacert.pem ${MODPATH}${ca_path}
 mv ${MODPATH}/geo/* ${clash_data_dir}/
 
 if [ ! -d /data/adb/service.d ] ; then
-    ui_print "- Make folder service"
+    ui_print "- 创建magisk配置"
     mkdir -p /data/adb/service.d
 fi
 
-ui_print "- Create resolv.conf"
+ui_print "- 创建系统DNS配置"
 if [ ! -f "${dns_path}/resolv.conf" ] ; then
     touch ${MODPATH}${dns_path}/resolv.conf
     echo nameserver 8.8.8.8 > ${MODPATH}${dns_path}/resolv.conf
@@ -113,7 +113,7 @@ if [ ! -f "${dns_path}/resolv.conf" ] ; then
     echo nameserver 149.112.112.112 >> ${MODPATH}${dns_path}/resolv.conf
 fi
 
-ui_print "- Make packages.list"
+ui_print "- 创建黑白名单"
 if [ ! -f "${clash_data_dir}/scripts/packages.list" ] ; then
     touch ${clash_data_dir}/packages.list
 fi
@@ -122,8 +122,8 @@ unzip -j -o "${ZIPFILE}" 'service.sh' -d ${MODPATH} >&2
 unzip -j -o "${ZIPFILE}" 'uninstall.sh' -d ${MODPATH} >&2
 unzip -j -o "${ZIPFILE}" 'clash_service.sh' -d ${clash_service_dir} >&2
 
-ui_print "- Extract binary-$ARCH "
-tar -xjf ${MODPATH}/binary/${ARCH}.tar.bz2 -C ${clash_data_dir_kernel}/&& echo "- extar kernel Succes" || echo "- extar kernel gagal"
+ui_print "- 安装二进制文件-$ARCH "
+tar -xjf ${MODPATH}/binary/${ARCH}.tar.bz2 -C ${clash_data_dir_kernel}/&& echo "- 提取内核成功" || echo "- 提取内核失败"
 mv ${clash_data_dir_kernel}/setcap ${MODPATH}${bin_path}/
 mv ${clash_data_dir_kernel}/getpcaps ${MODPATH}${bin_path}/
 mv ${clash_data_dir_kernel}/getcap ${MODPATH}${bin_path}/
@@ -147,7 +147,7 @@ rm -rf ${clash_data_dir_kernel}/curl
 
 sleep 1
 
-ui_print "- Set Permissons"
+ui_print "- 设置权限"
 set_perm_recursive ${MODPATH} 0 0 0755 0644
 set_perm_recursive ${clash_service_dir} 0 0 0755 0755
 set_perm_recursive ${clash_data_dir} ${uid} ${gid} 0755 0644
@@ -174,4 +174,4 @@ set_perm  ${clash_data_dir}/clash.config ${uid} ${gid} 0755
 set_perm  ${clash_data_dir}/kernel/dnstt-client  0  0  0755
 set_perm  ${clash_service_dir}/clash_service.sh  0  0  0755
 sleep 1
-ui_print "- Installation is complete, reboot your device"
+ui_print "- 安装完成，请重新启动设备"

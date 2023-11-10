@@ -1,9 +1,12 @@
 #!/system/bin/sh
 
+# 获取脚本的绝对路径和目录
 scripts=$(realpath $0)
 scripts_dir=$(dirname ${scripts})
+# 导入Clash的配置文件
 source /data/clash/clash.config
 
+# 查找应用程序UID的函数
 find_packages_uid() {
   echo -n "" > ${appuid_file} 
   if [ "${Clash_enhanced_mode}" == "redir-host" ] ; then
@@ -12,22 +15,24 @@ find_packages_uid() {
     done
   else
     log "[info] enhanced-mode: ${Clash_enhanced_mode} "
-    log "[info] if you want to use whitelist and blacklist, use enhanced-mode: redr-host"
+    log "[info] 如果您想使用白名单和黑名单，请使用 enhanced-mode: redr-host"
   fi
 }
 
+# 重启Clash的函数
 restart_clash() {
   ${scripts_dir}/clash.service -k && ${scripts_dir}/clash.iptables -k
   echo -n "disable" > ${Clash_run_path}/root
   sleep 0.5
   ${scripts_dir}/clash.service -s && ${scripts_dir}/clash.iptables -s
   if [ "$?" == "0" ] ; then
-    log "[info] $(date), Clash restart"
+    log "[info] $(date), Clash 重启"
   else
-    log "[error] $(date), Clash Failed to restart."
+    log "[error] $(date), Clash 重启失败."
   fi
 }
 
+# 更新文件的函数
 update_file() {
     file="$1"
     file_bak="${file}.bak"
@@ -47,6 +52,7 @@ update_file() {
     fi
 }
 
+# 更新地理位置和订阅的函数
 update_geo() {
   if [ "${auto_updateGeoX}" == "true" ] ; then
      update_file ${Clash_GeoIP_file} ${GeoIP_dat_url}
@@ -68,10 +74,11 @@ update_geo() {
   fi
 }
 
+# 在线下载配置的函数
 config_online() {
   clash_pid=$(cat ${Clash_pid_file})
   match_count=0
-  log "[warning] Download Config online" > ${CFM_logs_file}
+  log "[warning] 在线下载配置" > ${CFM_logs_file}
   update_file ${Clash_config_file} ${Subcript_url}
   sleep 0.5
   if [ -f "${Clash_config_file}" ] ; then
@@ -79,14 +86,15 @@ config_online() {
   fi
 
   if [ ${match_count} -ge 1 ] ; then
-    log "[info] download succes."
+    log "[info] 下载成功。"
     exit 0
   else
-    log "[error] download failed, Make sure the Url is not empty"
+    log "[error] 下载失败，请确保Url不为空"
     exit 1
   fi
 }
 
+# 端口检测的函数
 port_detection() {
   clash_pid=$(cat ${Clash_pid_file})
   match_count=0
@@ -95,11 +103,11 @@ port_detection() {
   then
     clash_port=$(ss -antup | grep "clash" | ${busybox_path} awk '$7~/'pid="${clash_pid}"*'/{print $5}' | ${busybox_path} awk -F ':' '{print $2}' | sort -u)
   else
-    logs "[info] skip port detected"
+    logs "[info] 跳过端口检测"
     exit 0
   fi
 
-  logs "[info] port detected: "
+  logs "[info] 检测到端口: "
   for sub_port in ${clash_port[*]} ; do
     sleep 0.5
     echo -n "${sub_port} " >> ${CFM_logs_file}
@@ -107,6 +115,7 @@ port_detection() {
     echo "" >> ${CFM_logs_file}
 }
 
+# 更新内核函数
 update_kernel() {
   if [ "${use_premium}" == "false" ] ; then
     if [ "${meta_alpha}" == "false" ] ; then
@@ -140,26 +149,26 @@ update_kernel() {
         if (gunzip "${Clash_data_dir}/${file_kernel}.gz"); then
           echo ""
         else
-          log "[error] gunzip ${file_kernel}.gz failed"  > ${CFM_logs_file}
-          log "[warning] periksa kembali url"
+          log "[error] 解压内核 ${file_kernel}.gz 失败"  > ${CFM_logs_file}
+          log "[warning] 请检查URL"
           if [ -f "${Clash_data_dir}/${file_kernel}.gz.bak" ] ; then
             rm -rf "${Clash_data_dir}/${file_kernel}.gz.bak"
           else
             rm -rf "${Clash_data_dir}/${file_kernel}.gz"
           fi
           if [ -f ${Clash_run_path}/clash.pid ] ; then
-            log "[info] Clash service is running (PID: $(cat ${Clash_pid_file}))"
-            log "[info] Connect"
+            log "[info] Clash 服务正在运行 (PID: $(cat ${Clash_pid_file}))"
+            log "[info] 已连接"
           fi
           exit 1
         fi
        else
-        log "[warning] gunzip ${file_kernel}.gz failed" 
-        log "[warning] pastikan ada koneksi internet" 
+        log "[warning] 解压 ${file_kernel}.gz 失败" 
+        log "[warning] 请确保互联网连接" 
         exit 1
       fi
     else
-      log "[error] gunzip not found" 
+      log "[error] 无法解压" 
       exit 1
     fi
   fi
@@ -173,7 +182,7 @@ update_kernel() {
   if [ -f "${Clash_pid_file}" ] && [ ${flag} == true ] ; then
     restart_clash
   else
-     log "[warning] Clash tidak dimulai ulang"
+     log "[warning] Clash 重新启动失败"
   fi
 }
 
@@ -193,6 +202,7 @@ cgroup_limit() {
   && log "[info] ${Cgroup_memory_path}/clash/memory.limit_in_bytes"
 }
 
+# 更新仪表板的函数
 update_dashboard () {
   url_dashboard="https://github.com/taamarin/yacd/archive/refs/heads/gh-pages.zip"
   file_dasboard="${Clash_data_dir}/dashboard.zip"
@@ -204,6 +214,7 @@ update_dashboard () {
   rm -rf ${file_dasboard}
 }
 
+# dnstt客户端函数
 dnstt_client() {
   if [ "${run_dnstt}" == "1" ] ; then
     if [ -f ${dnstt_client_bin} ] ; then
@@ -215,18 +226,18 @@ dnstt_client() {
          sleep 1
          local dnstt_pid=$(cat ${Clash_run_path}/dnstt.pid 2> /dev/null)
          if (cat /proc/$dnstt_pid/cmdline | grep -q ${dnstt_bin_name}); then
-           log "[info] ${dnstt_bin_name} is enable."
+           log "[info] ${dnstt_bin_name} 已启用"
          else
-           log "[error] ${dnstt_bin_name} The configuration is incorrect,"
-           log "[error] the startup fails, and the following is the error"
+           log "[error] ${dnstt_bin_name} 配置不正确"
+           log "[error] 启动失败，以下是错误信息"
            kill -9 $(cat ${Clash_run_path}/dnstt.pid)
          fi
       else
-        log "[warning] ${dnstt_bin_name} tidak aktif," 
-        log "[warning] (nsdomain) & (pubkey) kosong," 
+        log "[warning] ${dnstt_bin_name} 未启用" 
+        log "[warning] (nsdomain) & (pubkey) 为空" 
       fi
     else
-      log "[error] kernel ${dnstt_bin_name} tidak ada."
+      log "[error] 内核 ${dnstt_bin_name} 不存在"
     fi
   fi
 }
