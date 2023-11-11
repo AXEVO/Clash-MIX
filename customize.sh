@@ -24,7 +24,6 @@ if $BOOTMODE; then
 else
   ui_print "*********************************************************"
   ui_print "! 不支持从恢复模式安装"
-  ui_print "! 一些恢复模式存在问题的实现，使用这样的恢复模式最终会导致CFM模块无法工作"
   ui_print "! 请从Magisk应用安装"
   abort "*********************************************************"
 fi
@@ -50,15 +49,25 @@ fi
 ui_print "- 开始准备安装"
 
 if [ -d "${clash_data_dir}" ] ; then
-    ui_print "- 检测到旧模块，已备份"
+    ui_print "- 旧的模块配置已备份"
     mkdir -p ${clash_data_dir}/${latest}
     mv ${clash_data_dir}/* ${clash_data_dir}/${latest}/
 fi
 
 if [ -f ${clash_data_dir}/${latest}/*.yaml ] ; then
-    ui_print "- 恢复config.yaml"
+    ui_print "- >>>>>本次安装为模块升级，已恢复config.yaml<<<<<"
     cp ${clash_data_dir}/${latest}/*.yaml ${clash_data_dir}/
+else 
+    if [ -f "/data/clash.delete/config.yaml" ] ; then
+    ui_print "- >>>>>检测到上次卸载Clash模块时的配置信息（内含订阅链接）<<<<<"
+    ui_print "- >>>>>已移动到Clash/config.old 如需要，请自行复制订阅链接<<<<<"
+    mv /data/clash.delete/config.yaml ${clash_data_dir}/config.old
+    else
+    ui_print "- >>>>>全新安装 请根据提示在指定位置填写订阅链接<<<<<" 
+    fi
 fi
+
+
 
 ui_print "- 创建文件夹"
 mkdir -p ${clash_data_dir}
@@ -92,12 +101,16 @@ unzip -o ${MODPATH}/dashboard.zip -d ${clash_data_dir}/dashboard/ >&2
 
 ui_print "- 安装脚本"
 mv ${MODPATH}/scripts/* ${clash_data_dir}/scripts/
+mv ${MODPATH}/rule_providers/ ${clash_data_dir}/
+mv ${MODPATH}/proxy_providers/ ${clash_data_dir}/
+mv ${MODPATH}/assets/ ${clash_data_dir}/
+mv ${MODPATH}/备用/ ${clash_data_dir}/
 cp ${clash_data_dir}/scripts/config.yaml ${clash_data_dir}/
 cp ${clash_data_dir}/scripts/template ${clash_data_dir}/
 
 ui_print "- 安装密钥和Geo文件"
 mv ${clash_data_dir}/scripts/cacert.pem ${MODPATH}${ca_path}
-mv ${MODPATH}/geo/* ${clash_data_dir}/
+mv ${MODPATH}/GeoX/* ${clash_data_dir}/
 
 if [ ! -d /data/adb/service.d ] ; then
     ui_print "- 创建magisk配置"
@@ -109,8 +122,8 @@ if [ ! -f "${dns_path}/resolv.conf" ] ; then
     touch ${MODPATH}${dns_path}/resolv.conf
     echo nameserver 8.8.8.8 > ${MODPATH}${dns_path}/resolv.conf
     echo nameserver 1.1.1.1 >> ${MODPATH}${dns_path}/resolv.conf
-    echo nameserver 9.9.9.9 >> ${MODPATH}${dns_path}/resolv.conf
-    echo nameserver 149.112.112.112 >> ${MODPATH}${dns_path}/resolv.conf
+    echo nameserver 223.5.5.5 >> ${MODPATH}${dns_path}/resolv.conf
+    echo nameserver 120.53.53.53 >> ${MODPATH}${dns_path}/resolv.conf
 fi
 
 ui_print "- 创建黑白名单"
@@ -138,10 +151,9 @@ fi
 
 rm -rf ${MODPATH}/dashboard.zip
 rm -rf ${MODPATH}/scripts
-rm -rf ${MODPATH}/geo
+rm -rf ${MODPATH}/GeoX
 rm -rf ${MODPATH}/binary
 rm -rf ${MODPATH}/clash_service.sh
-rm -rf ${clash_data_dir}/scripts/config.yaml
 rm -rf ${clash_data_dir}/scripts/dnstt
 rm -rf ${clash_data_dir_kernel}/curl
 
@@ -157,6 +169,7 @@ set_perm_recursive ${clash_data_dir}/dashboard ${uid} ${gid} 0755 0644
 set_perm  ${MODPATH}/service.sh  0  0  0755
 set_perm  ${MODPATH}/uninstall.sh  0  0  0755
 set_perm  ${MODPATH}/system/bin/setcap  0  0  0755
+set_perm  ${MODPATH}/system/bin/curl  0  0  0755
 set_perm  ${MODPATH}/system/bin/getcap  0  0  0755
 set_perm  ${MODPATH}/system/bin/getpcaps  0  0  0755
 set_perm  ${MODPATH}/system/bin/ss 0 0 0755
@@ -173,5 +186,11 @@ set_perm  ${clash_data_dir}/scripts/usage.sh 0  0  0755
 set_perm  ${clash_data_dir}/clash.config ${uid} ${gid} 0755
 set_perm  ${clash_data_dir}/kernel/dnstt-client  0  0  0755
 set_perm  ${clash_service_dir}/clash_service.sh  0  0  0755
-sleep 1
-ui_print "- 安装完成，请重新启动设备"
+set_perm  ${clash_data_dir}/rule_providers/ 0  0  0755
+set_perm  ${clash_data_dir}/proxy_providers/ 0  0  0755
+set_perm  ${clash_data_dir}/备用/ 0  0  0755
+set_perm  ${clash_data_dir}/assets/ 0  0  0755
+sleep 3
+ui_print "- 控制器已安装为系统应用，卸载模块后会自动删除"
+ui_print "- 标准版请进入data/clash/config.yaml 指定位置填写订阅链接"
+ui_print "- 建议打开 备用 文件夹仔细查看详细说明和配置模板"
