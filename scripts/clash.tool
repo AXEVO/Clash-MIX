@@ -14,8 +14,8 @@ find_packages_uid() {
       ${busybox_path} awk '$1~/'^"${package}"$'/{print $2}' ${system_packages_file} >> ${appuid_file}
     done
   else
-    log "[info] enhanced-mode: ${Clash_enhanced_mode} "
-    log "[info] 如果您想使用白名单和黑名单，请使用 enhanced-mode: redr-host"
+    log "[info] 服务模式: ${Clash_enhanced_mode} "
+    log "[info] 如需使用黑白名单，请使用redr-host模式"
   fi
 }
 
@@ -26,9 +26,9 @@ restart_clash() {
   sleep 0.5
   ${scripts_dir}/clash.service -s && ${scripts_dir}/clash.iptables -s
   if [ "$?" == "0" ] ; then
-    log "[info] $(date), Clash 重启"
+    log "[info] $(date), Clash核心已重启"
   else
-    log "[error] $(date), Clash 重启失败."
+    log "[error] $(date), Clash核心重启失败"
   fi
 }
 
@@ -78,7 +78,7 @@ update_geo() {
 config_online() {
   clash_pid=$(cat ${Clash_pid_file})
   match_count=0
-  log "[warning] 在线下载配置" > ${CFM_logs_file}
+  log "[warning] 正在下载在线配置" > ${CFM_logs_file}
   update_file ${Clash_config_file} ${Subcript_url}
   sleep 0.5
   if [ -f "${Clash_config_file}" ] ; then
@@ -86,10 +86,10 @@ config_online() {
   fi
 
   if [ ${match_count} -ge 1 ] ; then
-    log "[info] 下载成功。"
+    log "[info] 下载成功"
     exit 0
   else
-    log "[error] 下载失败，请确保Url不为空"
+    log "[error] 下载失败，请检查地址设置"
     exit 1
   fi
 }
@@ -107,7 +107,7 @@ port_detection() {
     exit 0
   fi
 
-  logs "[info] 检测到端口: "
+  logs "[info] 已检测到端口: "
   for sub_port in ${clash_port[*]} ; do
     sleep 0.5
     echo -n "${sub_port} " >> ${CFM_logs_file}
@@ -149,22 +149,22 @@ update_kernel() {
         if (gunzip "${Clash_data_dir}/${file_kernel}.gz"); then
           echo ""
         else
-          log "[error] 解压内核 ${file_kernel}.gz 失败"  > ${CFM_logs_file}
-          log "[warning] 请检查URL"
+          log "[error] 解压 ${file_kernel}.gz 失败"  > ${CFM_logs_file}
+          log "[warning] 请检查下载地址"
           if [ -f "${Clash_data_dir}/${file_kernel}.gz.bak" ] ; then
             rm -rf "${Clash_data_dir}/${file_kernel}.gz.bak"
           else
             rm -rf "${Clash_data_dir}/${file_kernel}.gz"
           fi
           if [ -f ${Clash_run_path}/clash.pid ] ; then
-            log "[info] Clash 服务正在运行 (PID: $(cat ${Clash_pid_file}))"
+            log "[info] Clash服务正在运行 (PID: $(cat ${Clash_pid_file}))"
             log "[info] 已连接"
           fi
           exit 1
         fi
        else
         log "[warning] 解压 ${file_kernel}.gz 失败" 
-        log "[warning] 请确保互联网连接" 
+        log "[warning] 请确认网络连接正常" 
         exit 1
       fi
     else
@@ -237,7 +237,7 @@ dnstt_client() {
         log "[warning] (nsdomain) & (pubkey) 为空" 
       fi
     else
-      log "[error] 内核 ${dnstt_bin_name} 不存在"
+      log "[error] 内核 ${dnstt_bin_name} 未找到"
     fi
   fi
 }

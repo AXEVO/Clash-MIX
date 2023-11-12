@@ -13,8 +13,8 @@ dow_config() {
     if ! [ "$(head -1 ${Clash_run_path}/root)" = "disable" ] ; then
       # 使用clash.tool工具下载配置文件
       if ! (${scripts_dir}/clash.tool -o) ; then
-        log "[error] 配置文件下载失败"
-        log "[error] 请确保已连接到互联网" && exit 1
+        log "[error] 下载配置文件失败"
+        log "[error] 确保您已连接至互联网" && exit 1
       fi
     fi
   fi
@@ -24,7 +24,7 @@ dow_config() {
 replace_kernel() {
   # 修改文件权限并删除旧的clash二进制文件
   chmod 0755 ${Clash_lib}/* && rm -rf ${Clash_bin}/clash
-  err="内核替换失败。"
+  err="更换内核失败。"
   if [ "${use_premium}" = "true" ] ; then
     # 如果使用Clash Premium，则复制Premium版本的二进制文件
     cp -f ${Clash_Premium} ${Clash_bin}/clash && echo "" || log "[error] ${err}"
@@ -38,14 +38,12 @@ replace_kernel() {
 use_clash() {
   # 根据配置使用Clash Premium或Clash Meta，并输出相应信息
   [ "${use_premium}" = "true" ] \
-  && log "[info] ☑ Clash Premium已启用。" || log "[info] ☑ Clash Meta已启用。"
-  
-  # 检查内核文件是否存在
+  && log "[info] ☑ 启用 Clash Premium内核" || log "[info] ☑ 启用 Clash Meta内核"
   if [ ! -f "${Clash_bin_path}" ] ; then
-    log "[error] 未检测到内核文件 ${Clash_bin_path}"
+    log "[error] 找不到内核 ${Clash_bin_path}"
     exit 1
   fi
-  log "[info] 配置文件路径：${Clash_config_file}。"
+  log "[info] 使用配置文件 ${Clash_config_file}."
 }
 
 
@@ -53,7 +51,7 @@ use_clash() {
 ceks_clash() {
   local PID=$(pidof clash 2> /dev/null)
   if (cat /proc/${PID}/cmdline | grep -q ${Clash_bin_name}) ; then
-    log "[warning] Clash服务仍在运行" && exit 1
+    log "[warning] Clash 服务正在运行" && exit 1
   fi
 }
 
@@ -68,21 +66,21 @@ tun_tproxy() {
   if [ "${Clash_tun_status}" = "true" ] ; then
     if [ ${arm} = "aarch64" ] ; then
       tun_alive
-      log "[info] 开启tun模式，堆栈：[${Clash_stack_mode}] "
-      log "[info] 创建 /dev/net/tun。"
+      log "[info] 启用 TUN 模式代理方式: [${Clash_stack_mode}] "
+      log "[info] 创建 /dev/net/tun."
       sed -i 's/auto-detect-interface:.*/auto-detect-interface: true/' ${Clash_template}
       sed -i 's/auto-route:.*/auto-route: true/' ${Clash_template}
       sed -i 's/tproxy-port:.*/tproxy-port: 0/' ${Clash_template}
       sed -i 's/network_mode=.*/network_mode="MIXED"/' /data/clash/clash.config
     else
-      log "[error] tun仅适用于arm64/armv8" && exit 1
+      log "[error] TUN模式只支持arm64/armv8" && exit 1
     fi
   else
     sed -i 's/auto-detect-interface:.*/auto-detect-interface: false/' ${Clash_template}
     sed -i 's/auto-route:.*/auto-route: false/' ${Clash_template}
     sed -i 's/tproxy-port:.*/tproxy-port: 9898/' ${Clash_template}
     sed -i 's/network_mode=.*/network_mode="UDP"/' /data/clash/clash.config
-    log "[info] 开启tproxy模式."
+    log "[info] 启用 TProxy 模式."
   fi
 }
 
@@ -94,10 +92,10 @@ temporary_config_file() {
       sed -n -E '/^proxies:$/,$p' ${Clash_config_file} >> ${temporary_config_file}.temp
       sed -i '/^[  ]*$/d' ${temporary_config_file}.temp
     else
-      log "[error] ${Clash_config_file} 文件丢失!!!" && exit 1
+      log "[error] ${Clash_config_file} 文件不存在" && exit 1
     fi
   else
-    log "[error] ${Clash_template} 文件丢失 !!!" && exit 1
+    log "[error] ${Clash_template} 文件不存在" && exit 1
   fi
 
   mv ${temporary_config_file}.temp ${temporary_config_file} \
