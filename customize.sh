@@ -149,6 +149,7 @@ else
     rm -rf ${clash_data_dir_kernel}/ss
 fi
 
+ui_print "- 删除源文件"
 rm -rf ${MODPATH}/dashboard.zip
 rm -rf ${MODPATH}/scripts
 rm -rf ${MODPATH}/GeoX

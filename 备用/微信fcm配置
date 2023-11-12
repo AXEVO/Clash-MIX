@@ -1,0 +1,7 @@
+#让微信稳定使用fcm推送----------------
+  - DOMAIN,short.weixin.qq.com
+  - DOMAIN,extshort.weixin.qq.com
+  - DOMAIN,dns.weixin.qq.com
+#-------------------------------------
+
+#复制进userproxy有助于微信fcm能正常运行，同时也需要其他配套模块
