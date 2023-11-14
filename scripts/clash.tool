@@ -14,8 +14,8 @@ find_packages_uid() {
       ${busybox_path} awk '$1~/'^"${package}"$'/{print $2}' ${system_packages_file} >> ${appuid_file}
     done
   else
-    log "[info] 服务模式: ${Clash_enhanced_mode} "
-    log "[info] 如需使用黑白名单，请使用redr-host模式"
+    log "[info] 当前DNS服务模式: ${Clash_enhanced_mode} "
+    log "[info] 如需使用黑白名单，请使用redr-host"
   fi
 }
 

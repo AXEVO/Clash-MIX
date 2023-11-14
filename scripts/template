@@ -27,8 +27,8 @@ profile:
   store-selected: true
   store-fake-ip: true
 auto-redir: 
-  - enable: true
-  - auto-route: true
+  - enable: false
+  - auto-route: false
 
 sniffer:
   enable: false
@@ -42,7 +42,6 @@ sniffer:
 tun:
   enable: false
   device: utun
-  mtu: 9000
   stack: system        #可切换# gvisor / lwip / system
   dns-hijack:
     - any:53
@@ -55,8 +54,8 @@ dns:
   ipv6: false
   use-hosts: true
   listen: 0.0.0.0:1053
-  use-hosts: true
-  enhanced-mode: fake-ip    # redir-host / fake-ip
+  enhanced-mode: redir-host
+  # redir-host / fake-ip
   fake-ip-range: 198.18.0.1/16
   fake-ip-filter:
     - localhost.ptlogin2.qq.com

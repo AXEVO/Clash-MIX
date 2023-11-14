@@ -20,7 +20,7 @@ yacd_dir="${clash_data_dir}/dashboard"
 latest=$(date +%Y%m%d%H%M)
 
 if $BOOTMODE; then
-  ui_print "- 从Magisk应用安装"
+  ui_print "- 准备安装模块"
 else
   ui_print "*********************************************************"
   ui_print "! 不支持从恢复模式安装"
@@ -46,30 +46,16 @@ else
   ui_print "- 设备平台: $ARCH"
 fi
 
-ui_print "- 开始准备安装"
+ui_print "- 开始安装"
 
 if [ -d "${clash_data_dir}" ] ; then
-    ui_print "- 旧的模块配置已备份"
-    mkdir -p ${clash_data_dir}/${latest}
-    mv ${clash_data_dir}/* ${clash_data_dir}/${latest}/
+    ui_print "- 旧的clash文件已移动到clash.old"
+    mkdir -p /data/clash.old/${latest}
+    mv ${clash_data_dir}/* /data/clash.old/${latest}
+    rm -rf ${clash_data_dir}
 fi
 
-if [ -f ${clash_data_dir}/${latest}/*.yaml ] ; then
-    ui_print "- >>>>>本次安装为模块升级，已恢复config.yaml<<<<<"
-    cp ${clash_data_dir}/${latest}/*.yaml ${clash_data_dir}/
-else 
-    if [ -f "/data/clash.delete/config.yaml" ] ; then
-    ui_print "- >>>>>检测到上次卸载Clash模块时的配置信息（内含订阅链接）<<<<<"
-    ui_print "- >>>>>已移动到Clash/config.old 如需要，请自行复制订阅链接<<<<<"
-    mv /data/clash.delete/config.yaml ${clash_data_dir}/config.old
-    else
-    ui_print "- >>>>>全新安装 请根据提示在指定位置填写订阅链接<<<<<" 
-    fi
-fi
-
-
-
-ui_print "- 创建文件夹"
+ui_print "- 创建安装目录"
 mkdir -p ${clash_data_dir}
 mkdir -p ${clash_data_dir_kernel}
 mkdir -p ${MODPATH}${ca_path}
@@ -160,6 +146,20 @@ rm -rf ${clash_data_dir_kernel}/curl
 
 sleep 1
 
+if [  -f "/data/clash.old/${latest}/config.yaml" ] ; then
+    ui_print "- >>>>>本次安装为模块升级，已恢复原订阅链接<<<<<"
+    mv /data/clash.old/config.yaml ${clash_data_dir}/
+else 
+    if [  -f "/data/clash.delete/config.yaml" ] ; then
+    ui_print "- >>>>>检测到上次卸载Clash模块时的配置信息（内含订阅链接）<<<<<"
+    ui_print "- >>>>>已移动到Clash文件夹/config.old 如需要，请自行复制订阅链接<<<<<"
+    mv /data/clash.delete/config.yaml ${clash_data_dir}/config.old
+    else
+    ui_print "- >>>>>全新安装 请根据提示在指定位置填写订阅链接<<<<<" 
+    fi
+fi
+
+sleep 1
 ui_print "- 设置权限"
 set_perm_recursive ${MODPATH} 0 0 0755 0644
 set_perm_recursive ${clash_service_dir} 0 0 0755 0755

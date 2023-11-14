@@ -53,7 +53,7 @@ start_redirect() {
     if [ "$(cat ${filter_packages_file[*]})" = "" ] ; then
       # 路由所有流量
       ${iptables_wait} -t nat -A BOX_LOCAL -p tcp -j REDIRECT --to-ports ${Clash_redir_port}
-      log "[info] 所有应用的透明代理."
+      log "[info] 对全部应用启用透明代理."
     else
       # 绕过应用
       for appid in $(cat ${appuid_file[*]}) ; do
@@ -164,7 +164,7 @@ start_tproxy() {
     ${iptables_wait} -t mangle -A BOX_EXTERNAL -p tcp -i ${ap} -j TPROXY --on-port ${Clash_tproxy_port} --tproxy-mark ${mark_id}
     ${iptables_wait} -t mangle -A BOX_EXTERNAL -p udp -i ${ap} -j TPROXY --on-port ${Clash_tproxy_port} --tproxy-mark ${mark_id}
   done
-  log "[info] ${ap_list[*]} 透明代理。"
+  log "[info] 网卡${ap_list[*]} 已启用透明代理。"
   if [ "${ipv6}" = "true" ] ; then
     for ap6 in ${ap_list[*]} ; do
       ${ip6tables_wait} -t mangle -A BOX_EXTERNAL -p tcp -i ${ap6} -j TPROXY --on-port ${Clash_tproxy_port} --tproxy-mark ${mark_id}
@@ -237,7 +237,7 @@ start_tproxy() {
         ${ip6tables_wait} -t mangle -A BOX_LOCAL -p tcp -j MARK --set-mark ${mark_id}
         ${ip6tables_wait} -t mangle -A BOX_LOCAL -p udp -j MARK --set-mark ${mark_id}
       fi
-      log "[info] 所有应用透明代理。"
+      log "[info] 对全部应用启用透明代理"
     else
       # 绕过应用
       for appid in $(cat ${appuid_file[*]}) ; do

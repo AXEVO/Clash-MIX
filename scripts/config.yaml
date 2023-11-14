@@ -39,6 +39,16 @@ proxy-providers:
       url: http://www.gstatic.com/generate_204
       interval: 900    
 
+  备用:
+    type: http
+    url: "订阅链接"
+    path: ./proxy_providers/备用.yaml
+    interval: 10800
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 900   
+
 #-------------------------------------------------------------------
 #data/clash/proxy-provider里面有白嫖节点可以使用，也欢迎提交更多白嫖节点
 #使用p核时，如果无法正常更新订阅，请打开proxy provider 里面的机场yaml配置文件查看
@@ -53,6 +63,7 @@ proxy-groups:
       - 魔戒
       - 赔钱机场
       - 养鸡场
+      - 备用
       - 美国节点
       - 负载均衡-大带宽
       - 负载均衡-优IP
@@ -77,6 +88,11 @@ proxy-groups:
     use:
       - 养鸡场
 
+  - name: 备用
+    type: select
+    use:
+      - 备用
+
 
   - name: 美国节点
     type: select
@@ -85,6 +101,7 @@ proxy-groups:
       - 魔戒
       - 赔钱机场
       - 养鸡场
+      - 备用
     filter: '美国|USA|美國|us|US'
 #meta的特性，如果你经常使用某个地区节点可以使用过滤器便于选择 美国节点 可以改为其他
 #但是要改就得全改，建议使用编辑器的替换功能防止遗漏。过滤器内容用 | 分割，支持通配符
