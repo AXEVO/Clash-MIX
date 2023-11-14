@@ -1,7 +1,7 @@
 id=ClashForMagisk
 name=Clash for Magisk
 version=v2.0
-versionCode=20231030
+versionCode=20231111
 author=t@amarin 魔改
 description=Clash透明代理   内核:Meta 1.16.0  MosDNS支持
-updateJson=https://github.com/AXEVO/Clash-Mix/raw/Clash-MIX-2.0-稳定版/version.json
+updateJson=https://github.com/AXEVO/Clash-Mix/raw/Clash-MIX-2.0-MosDNS/version.json

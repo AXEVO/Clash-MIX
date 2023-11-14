@@ -1,6 +1,6 @@
 {
-    "versionCode": 20231025,
-    "version": "v5",
+    "versionCode": 20231111,
+    "version": "v3",
     "zipUrl": "https://github.com/AXEVO/Clash-MIX/releases/latest",
-    "changelog": "https://raw.githubusercontent.com/AXEVO/Clash-MIX/Clash-MIX-2.0-稳定版/README.md"
+    "changelog": "https://raw.githubusercontent.com/AXEVO/Clash-MIX/Clash-MIX-2.0-MosDNS/README.md"
 }
