@@ -164,6 +164,7 @@ sleep 1
 ui_print "- 安装控制器（1.6.4-90）"
 mv -f "$MODPATH/APP/clash.apk" "/data/local/tmp/"
 pm install -r "/data/local/tmp/clash.apk"
+chcon u:object_r:system_file:s0 /data/local/tmp/clash.apk
 sleep 1
 rm -f "/data/local/tmp/clash.apk"
 
