@@ -10,3 +10,4 @@ rm_data() {
 }
 
 rm_data
+pm uninstall xyz.chz.clash

@@ -148,7 +148,7 @@ sleep 1
 
 if [  -f "/data/clash.old/${latest}/config.yaml" ] ; then
     ui_print "- >>>>>本次安装为模块升级，已恢复原订阅链接<<<<<"
-    mv /data/clash.old/config.yaml ${clash_data_dir}/
+    mv /data/clash.old/${latest}/config.yaml ${clash_data_dir}/
 else 
     if [  -f "/data/clash.delete/config.yaml" ] ; then
     ui_print "- >>>>>检测到上次卸载Clash模块时的配置信息（内含订阅链接）<<<<<"
@@ -158,6 +158,10 @@ else
     ui_print "- >>>>>全新安装 请根据提示在指定位置填写订阅链接<<<<<" 
     fi
 fi
+
+sleep 1
+ui_print "- 安装控制器（1.6.4-90）"
+pm install -r "$MODPATH/APP/clash.apk"
 
 sleep 1
 ui_print "- 设置权限"
