@@ -160,8 +160,12 @@ else
 fi
 
 sleep 1
+
 ui_print "- 安装控制器（1.6.4-90）"
-pm install -r "$MODPATH/APP/clash.apk"
+mv -f "$MODPATH/APP/clash.apk" "/data/local/tmp/"
+pm install -r "/data/local/tmp/clash.apk"
+sleep 1
+rm -f "/data/local/tmp/clash.apk"
 
 sleep 1
 ui_print "- 设置权限"
@@ -185,7 +189,6 @@ set_perm  ${clash_data_dir}/scripts/clash.iptables 0  0  0755
 set_perm  ${clash_data_dir}/scripts/clash.tool 0  0  0755
 set_perm  ${clash_data_dir}/scripts/clash.inotify 0  0  0755
 set_perm  ${clash_data_dir}/scripts/clash.service 0  0  0755
-set_perm  ${clash_data_dir}/scripts/clash.cron 0  0  0755
 set_perm  ${clash_data_dir}/scripts/start.sh 0  0  0755
 set_perm  ${clash_data_dir}/scripts/usage.sh 0  0  0755
 set_perm  ${clash_data_dir}/clash.config ${uid} ${gid} 0755
@@ -193,9 +196,8 @@ set_perm  ${clash_data_dir}/kernel/dnstt-client  0  0  0755
 set_perm  ${clash_service_dir}/clash_service.sh  0  0  0755
 set_perm  ${clash_data_dir}/rule_providers/ 0  0  0755
 set_perm  ${clash_data_dir}/proxy_providers/ 0  0  0755
-set_perm  ${clash_data_dir}/备用/ 0  0  0755
 set_perm  ${clash_data_dir}/assets/ 0  0  0755
+
 sleep 3
-ui_print "- 控制器已安装为系统应用，卸载模块后会自动删除"
-ui_print "- 标准版请进入data/clash/config.yaml 指定位置填写订阅链接"
+ui_print "- 请进入data/clash/config.yaml 并在指定位置填写订阅链接，再重启"
 ui_print "- 建议打开 备用 文件夹仔细查看详细说明和配置模板"

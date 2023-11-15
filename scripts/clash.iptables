@@ -434,11 +434,11 @@ if [ "${mode}" != "core" ] ; then
         log "[info] Clash 已连接。"
         ;;
       k)
-        log "[warning] 清理 iptables 透明代理规则。"
+        log "[warning] 清除iptables 透明代理规则。"
         time stop_tproxy
         time stop_redirect
         time forward -D
-        log "[warning] 清理 iptables 透明代理规则完成。"
+        log "[warning] 清除完成。"
         ;;
       ?)
         echo ""
@@ -460,7 +460,7 @@ else
         stop_tproxy >> /dev/null 2>&1
         stop_redirect >> /dev/null 2>&1
         time forward -D
-        log "[warning] 清理代理规则。"
+        log "[warning] 清除代理规则。"
         ;;
       *)
         echo "$0:  资源占用：$0 {enable|disable}"

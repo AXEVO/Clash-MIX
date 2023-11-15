@@ -38,7 +38,6 @@ proxy-providers:
       enable: true
       url: http://www.gstatic.com/generate_204
       interval: 900    
-
   备用:
     type: http
     url: "订阅链接"
@@ -54,7 +53,7 @@ proxy-providers:
 #使用p核时，如果无法正常更新订阅，请打开proxy provider 里面的机场yaml配置文件查看
 #如果是乱码，需要自己在订阅链接结尾加上 &flag=clash  强制订阅服务器下发clash的配置文件
 # 魔戒 可乐云 赔钱机场为机场名，可以更换，要换必须全换，建议使用编辑器的查找功能避免遗漏
-
+#-------------------------------------------------------------------
 proxy-groups:
   - name: 机场
     type: select

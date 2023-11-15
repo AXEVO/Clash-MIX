@@ -241,8 +241,8 @@ stop_clash() {
     rm -rf ${Clash_pid_file}
     sleep 0.75
     [ $(pidof clash) ] \
-    && log "[warning] Clash服务仍在运行" || log "[warning] Clash已关闭。"
-    [ ! $(pidof clash) ] && log "[warning] Clash已断开。"
+    && log "[warning] Clash内核关闭失败" || log "[warning] Clash内核已关闭。"
+    [ ! $(pidof clash) ] && log "[warning] Clash模块已停止运行"
   else
     log "[error] 停止Clash失败"
   fi
