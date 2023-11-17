@@ -1,11 +1,11 @@
-socks-port: 7891
+#socks-port: 7891
+#redir-port: 9797
 mixed-port: 7890
-redir-port: 9797
 tproxy-port: 9898
 mode: rule
 allow-lan: true
-unified-delay: true
-tcp-concurrent: false
+unified-delay: false
+tcp-concurrent: true
 find-process-mode: strict
 bind-address: '*'
 log-level: warning
@@ -26,9 +26,7 @@ geox-url:
 profile:
   store-selected: true
   store-fake-ip: true
-auto-redir: 
-  - enable: false
-  - auto-route: false
+
 
 sniffer:
   enable: false
@@ -42,7 +40,8 @@ sniffer:
 tun:
   enable: false
   device: utun
-  stack: system        #可切换# gvisor / lwip / system
+  stack: system
+  #可切换# gvisor / lwip / system
   dns-hijack:
     - any:53
   auto-route: true
@@ -65,12 +64,19 @@ dns:
     - '+.lan'
 
   nameserver-policy:
-    "geosite:geolocation-cn,private": 
+    'rule-set:userDirect':
       - https://223.5.5.5/dns-query
       - https://120.53.53.53/dns-query
-    "geosite:!geolocation-cn":
+    'rule-set:userProxy': 
       - https://8.8.4.4/dns-query#机场
       - https://1.0.0.1/dns-query#机场
+    'geosite:geolocation-cn,private': 
+      - https://223.5.5.5/dns-query
+      - https://120.53.53.53/dns-query
+    'geosite:!geolocation-cn':
+      - https://8.8.4.4/dns-query#机场
+      - https://1.0.0.1/dns-query#机场
+      
   proxy-server-nameserver:
     - https://223.5.5.5/dns-query
     - https://120.53.53.53/dns-query

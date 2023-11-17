@@ -201,4 +201,4 @@ set_perm  ${clash_data_dir}/assets/ 0  0  0755
 
 sleep 3
 ui_print "- 请进入data/clash/config.yaml 并在指定位置填写订阅链接，再重启"
-ui_print "- 建议打开 备用 文件夹仔细查看详细说明和配置模板"
+ui_print "- 建议打开 data/clash/备用 文件夹仔细查看详细说明和配置模板"
