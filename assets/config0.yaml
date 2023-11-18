@@ -15,10 +15,13 @@ proxy-groups:
       - 机场
     
 rule:
-  - IP-CIDR,127.0.0.1/32,REJECT,no-resolve
-  - GEOSITE,geolocation-cn,DIRECT
-  - GEOSITE,geolocation-!cn,节点选择
+  - GEOIP,private,DIRECT
+  - GEOSITE,private,DIRECT
+
+  - GEOSITE,CN,DIRECT
   - GEOIP,CN,DIRECT
+
+  - GEOSITE,!CN,节点选择
   - GEOIP,!CN,节点选择
+  
   - MATCH,节点选择
-    

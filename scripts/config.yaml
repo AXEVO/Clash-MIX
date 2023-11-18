@@ -2,46 +2,46 @@ proxies:
 #自己单独的节点/自建节点/免流方案可以往这里写一下，参见教程里面的格式
 proxy-providers:
   
-  可乐云:
+  机场1:
     type: http
     url: "订阅链接"
-    path: ./proxy_providers/可乐云.yaml
+    path: ./proxy_providers/机场1.yaml
     interval: 10800
     health-check:
       enable: true
       url: http://www.gstatic.com/generate_204
       interval: 900
-  魔戒:
+  机场2:
     type: http
     url: "订阅链接"
-    path: ./proxy_providers/魔戒.yaml
+    path: ./proxy_providers/机场2.yaml
     interval: 10800
     health-check:
       enable: true
       url: http://www.gstatic.com/generate_204
       interval: 900
-  赔钱机场:
+  机场3:
     type: http
     url: "订阅链接"
-    path: ./proxy_providers/赔钱机场.yaml
+    path: ./proxy_providers/机场3.yaml
     interval: 10800
     health-check:
       enable: true
       url: http://www.gstatic.com/generate_204
       interval: 900
-  养鸡场:
+  机场4:
     type: http
     url: "订阅链接"
-    path: ./proxy_providers/养鸡场.yaml
+    path: ./proxy_providers/机场4.yaml
     interval: 10800
     health-check:
       enable: true
       url: http://www.gstatic.com/generate_204
       interval: 900    
-  备用:
+  机场5:
     type: http
     url: "订阅链接"
-    path: ./proxy_providers/备用.yaml
+    path: ./proxy_providers/机场5.yaml
     interval: 10800
     health-check:
       enable: true
@@ -52,62 +52,63 @@ proxy-providers:
 #data/clash/proxy-provider里面有白嫖节点可以使用，也欢迎提交更多白嫖节点
 #使用p核时，如果无法正常更新订阅，请打开proxy provider 里面的机场yaml配置文件查看
 #如果是乱码，需要自己在订阅链接结尾加上 &flag=clash  强制订阅服务器下发clash的配置文件
-# 魔戒 可乐云 赔钱机场为机场名，可以更换，要换必须全换，建议使用编辑器的查找功能避免遗漏
+# 机场2 机场1 机场3为机场名，可以更换，要换必须全换，建议使用编辑器的查找替换功能避免遗漏
 #-------------------------------------------------------------------
 proxy-groups:
   - name: 机场
     type: select
     proxies:
-      - 可乐云
-      - 魔戒
-      - 赔钱机场
-      - 养鸡场
-      - 备用
+      - 机场1
+      - 机场2
+      - 机场3
+      - 机场4
+      - 机场5
       - 美国节点
       - 负载均衡-大带宽
       - 负载均衡-优IP
 
-  - name: 可乐云
+  - name: 机场1
     type: select
     use:
-      - 可乐云
+      - 机场1
 
-  - name: 魔戒
+  - name: 机场2
     type: select
     use:
-      - 魔戒
+      - 机场2
 
-  - name: 赔钱机场
+  - name: 机场3
     type: select
     use:
-      - 赔钱机场
+      - 机场3
       
-  - name: 养鸡场
+  - name: 机场4
     type: select
     use:
-      - 养鸡场
+      - 机场4
 
-  - name: 备用
+  - name: 机场5
     type: select
     use:
-      - 备用
+      - 机场5
 
 
   - name: 美国节点
     type: select
     use:
-      - 可乐云
-      - 魔戒
-      - 赔钱机场
-      - 养鸡场
-      - 备用
+      - 机场1
+      - 机场2
+      - 机场3
+      - 机场4
+      - 机场5
     filter: '美国|USA|美國|us|US'
 #meta的特性，如果你经常使用某个地区节点可以使用过滤器便于选择 美国节点 可以改为其他
 #但是要改就得全改，建议使用编辑器的替换功能防止遗漏。过滤器内容用 | 分割，支持通配符
+
   - name: 负载均衡-大带宽
     type: load-balance
     use:
-      - 可乐云
+      - 机场1
     url: 'http://www.gstatic.com/generate_204'
     interval: 900
     filter: '美国|USA|美國'
@@ -117,7 +118,7 @@ proxy-groups:
   - name: 负载均衡-优IP
     type: load-balance
     use:
-      - 养鸡场
+      - 机场4
     url: 'http://www.gstatic.com/generate_204'
     interval: 900
     filter: '美国|USA|美國'
@@ -144,7 +145,7 @@ proxy-groups:
       - 机场
       - 墙内网址
 #用户自定义规则，文件在data/clash/rule-provider/
-#需要的自己写入，格式参照备用里面的clash官方文档
+#需要的自己写入，格式参照机 备用 文件夹里面的clash官方文档
 #有一些规则已经预装但是未使用 比如fcm相关规则
 
 rule-providers:
@@ -162,13 +163,15 @@ rule-providers:
 rules:
   - RULE-SET,userProxy,机场
   - RULE-SET,userDirect,墙内网址
-
-  - GEOSITE,category-ads-all,广告屏蔽
-  - GEOSITE,geolocation-cn,墙内网址
-  - GEOSITE,!geolocation-cn,机场
-
+  
   - GEOIP,private,DIRECT
-  - GEOIP,CN,墙内网址
-  - GEOIP,!CN,机场
+  - GEOSITE,private,DIRECT
+  - GEOSITE,category-ads-all,广告屏蔽
 
+  - GEOSITE,cn,墙内网址
+  - GEOIP,CN,墙内网址
+
+  - GEOSITE,!cn,机场
+  - GEOIP,!CN,机场
+  
   - MATCH,其他

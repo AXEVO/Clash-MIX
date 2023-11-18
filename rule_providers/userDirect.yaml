@@ -4,12 +4,6 @@ payload:
   -
   -
 #----------------------------------------
-  - DOMAIN-SUFFIX,cdn.jsdelivr.net
-  - DOMAIN-SUFFIX,syncthing.net
-  - PROCESS-NAME,libsyncthingnative.so
-  - DOMAIN-SUFFIX,push.apple.com          #苹果推送，热点机可以启用
-  - DOMAIN-SUFFIX,msftconnecttest.com     #win系统的连通性检测地址，不走直连可能会导致系统报网络未连接
-  - DOMAIN-SUFFIX,msftncsi.com            #win系统的连通性检测地址（旧版系统）
+  - DOMAIN-SUFFIX,cdn.jsdelivr.net        #这个反代工具本来就可以直连，善用可以节省很多流量
   - DOMAIN-KEYWORD,windowsupdate.com      #win系统更新不走代理以免浪费流量
-#- DOMAIN-SUFFIX,www.gstatic.com  #检测连接的地址，不出问题不需调整
 #rule-provider里面不能使用and not or等逻辑判断类规则
