@@ -168,10 +168,10 @@ rules:
   - GEOSITE,private,DIRECT
   - GEOSITE,category-ads-all,广告屏蔽
 
-  - GEOSITE,cn,墙内网址
+  - GEOSITE,CN,墙内网址
   - GEOIP,CN,墙内网址
 
-  - GEOSITE,!cn,机场
+  - GEOSITE,!CN,机场
   - GEOIP,!CN,机场
   
   - MATCH,其他
