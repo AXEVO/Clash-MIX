@@ -112,7 +112,7 @@ if [ ! -f "${dns_path}/resolv.conf" ] ; then
     echo nameserver 120.53.53.53 >> ${MODPATH}${dns_path}/resolv.conf
 fi
 
-ui_print "- 创建黑白名单"
+ui_print "- 创建黑白名单--默认为黑名单，建议使用控制器选择应用"
 if [ ! -f "${clash_data_dir}/scripts/packages.list" ] ; then
     touch ${clash_data_dir}/packages.list
 fi
@@ -122,7 +122,7 @@ unzip -j -o "${ZIPFILE}" 'uninstall.sh' -d ${MODPATH} >&2
 unzip -j -o "${ZIPFILE}" 'clash_service.sh' -d ${clash_service_dir} >&2
 
 ui_print "- 安装二进制文件-$ARCH "
-tar -xjf ${MODPATH}/binary/${ARCH}.tar.bz2 -C ${clash_data_dir_kernel}/&& echo "- 提取内核成功" || echo "- 提取内核失败"
+tar -xjf ${MODPATH}/binary/${ARCH}.tar.bz2 -C ${clash_data_dir_kernel}/&& echo "- 安装内核成功" || echo "- 安装内核失败"
 mv ${clash_data_dir_kernel}/setcap ${MODPATH}${bin_path}/
 mv ${clash_data_dir_kernel}/getpcaps ${MODPATH}${bin_path}/
 mv ${clash_data_dir_kernel}/getcap ${MODPATH}${bin_path}/
@@ -146,30 +146,33 @@ rm -rf ${clash_data_dir_kernel}/curl
 
 sleep 1
 
+ui_print "- 安装控制器（1.6.4-90）"
+chcon u:object_r:system_file:s0 $MODPATH/APP/clash.apk
+pm install -r "$MODPATH/APP/clash.apk"
+
+sleep 1
+
 if [  -f "/data/clash.old/${latest}/config.yaml" ] ; then
+    ui_print "- >>>>>\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<<<<<"
     ui_print "- >>>>>本次安装为模块升级，已恢复原订阅链接<<<<<"
+    ui_print "- >>>>>\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<<<<<"
     mv /data/clash.old/${latest}/config.yaml ${clash_data_dir}/
 else 
     if [  -f "/data/clash.delete/config.yaml" ] ; then
+    ui_print "- >>>>>\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<<<<<"
     ui_print "- >>>>>检测到上次卸载Clash模块时的配置信息（内含订阅链接）<<<<<"
     ui_print "- >>>>>已移动到Clash文件夹/config.old 如需要，请自行复制订阅链接<<<<<"
+    ui_print "- >>>>>\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<<<<<"
     mv /data/clash.delete/config.yaml ${clash_data_dir}/config.old
     else
+    ui_print "- >>>>>\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<<<<<"
     ui_print "- >>>>>全新安装 请根据提示在指定位置填写订阅链接<<<<<" 
+    ui_print "- >>>>>\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<<<<<"
     fi
 fi
 
 sleep 1
-
-ui_print "- 安装控制器（1.6.4-90）"
-mv -f "$MODPATH/APP/clash.apk" "/data/local/tmp/"
-pm install -r "/data/local/tmp/clash.apk"
-chcon u:object_r:system_file:s0 /data/local/tmp/clash.apk
-sleep 1
-rm -f "/data/local/tmp/clash.apk"
-
-sleep 1
-ui_print "- 设置权限"
+ui_print "- 设置文件权限"
 set_perm_recursive ${MODPATH} 0 0 0755 0644
 set_perm_recursive ${clash_service_dir} 0 0 0755 0755
 set_perm_recursive ${clash_data_dir} ${uid} ${gid} 0755 0644
@@ -200,5 +203,6 @@ set_perm  ${clash_data_dir}/proxy_providers/ 0  0  0755
 set_perm  ${clash_data_dir}/assets/ 0  0  0755
 
 sleep 3
-ui_print "- 请进入data/clash/config.yaml 并在指定位置填写订阅链接，再重启"
-ui_print "- 建议打开 data/clash/备用 文件夹仔细查看详细说明和配置模板"
+ui_print "- --------控制器已自动安装，请在桌面查找Clash控制器-------------"
+ui_print "- 请先进入data/clash/config.yaml 并在指定位置填写订阅链接，再重启"
+ui_print "- 建议打开 data/clash/备用 文件夹仔细查看详细说明和配置模板，祝您使用愉快"

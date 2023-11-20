@@ -107,7 +107,7 @@ port_detection() {
     exit 0
   fi
 
-  logs "[info] 已检测到端口: "
+  logs "[info] 检测到端口: "
   for sub_port in ${clash_port[*]} ; do
     sleep 0.5
     echo -n "${sub_port} " >> ${CFM_logs_file}

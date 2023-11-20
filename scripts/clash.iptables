@@ -53,7 +53,7 @@ start_redirect() {
     if [ "$(cat ${filter_packages_file[*]})" = "" ] ; then
       # 路由所有流量
       ${iptables_wait} -t nat -A BOX_LOCAL -p tcp -j REDIRECT --to-ports ${Clash_redir_port}
-      log "[info] 对全部应用启用透明代理."
+      log "[info] 黑白名单无条目 全部应用启用透明代理"
     else
       # 绕过应用
       for appid in $(cat ${appuid_file[*]}) ; do
@@ -237,7 +237,7 @@ start_tproxy() {
         ${ip6tables_wait} -t mangle -A BOX_LOCAL -p tcp -j MARK --set-mark ${mark_id}
         ${ip6tables_wait} -t mangle -A BOX_LOCAL -p udp -j MARK --set-mark ${mark_id}
       fi
-      log "[info] 对全部应用启用透明代理"
+      log "[info] 黑白名单无条目 全部应用启用透明代理"
     else
       # 绕过应用
       for appid in $(cat ${appuid_file[*]}) ; do
@@ -422,23 +422,23 @@ if [ "${mode}" != "core" ] ; then
         sleep 0.75
         detected_port
         if [ "${network_mode}" = "UDP" ] ; then
-          log "[info] 使用 TPROXY：TCP+UDP。"
-          log "[info] 创建 iptables 透明代理规则。"
-          time start_tproxy && log "[info] 创建 iptables 透明代理规则完成。" || log "[error] 创建 iptables 透明代理规则失败。"
+          log "[info] 已启用TPROXY模式 代理TCP+UDP"
+          log "[info] 正在创建 iptables 转发规则"
+          time start_tproxy && log "[info] 创建 iptables 转发规则完成" || log "[error] 创建 iptables转发规则失败，本模块可能与您的手机不兼容"
         else
-          [ "${network_mode}" = "TCP" ] && log "[info] 使用 REDIRECT：TCP。" || log "[info] 使用混合模式：TCP+TUN。"
-          log "[info] 创建 iptables 透明代理规则。"
-          time start_redirect && log "[info] 创建 iptables 透明代理规则完成。" || log "[error] 创建 iptables 透明代理规则失败。"
+          [ "${network_mode}" = "TCP" ] && log "[info] 启动REDIRECT代理TCP，请确保您的redir-port填写正确，否则将无法联网" || log "[info] 使用混合模式：TCP+TUN 切换模式后如果手机无法联网，请重启"
+          log "[info] 正在创建 iptables 转发规则"
+          time start_redirect && log "[info] 创建 iptables 转发规则完成" || log "[error] 创建 iptables 转发规则失败"
           time forward -I
         fi
         log "[info] Clash 已连接。"
         ;;
       k)
-        log "[warning] 清除iptables 透明代理规则。"
+        log "[warning] 清除iptables转发规则"
         time stop_tproxy
         time stop_redirect
         time forward -D
-        log "[warning] 清除完成。"
+        log "[warning] 清除完成"
         ;;
       ?)
         echo ""
@@ -454,13 +454,13 @@ else
         forward -D >> /dev/null 2>&1
         time forward -I
         log "[info] 模式：${mode}，禁用透明代理。"
-        log "[info] Clash 已连接。"
+        log "[info] Clash 已连接"
         ;;
       k)
         stop_tproxy >> /dev/null 2>&1
         stop_redirect >> /dev/null 2>&1
         time forward -D
-        log "[warning] 清除代理规则。"
+        log "[warning] 清除代理规则"
         ;;
       *)
         echo "$0:  资源占用：$0 {enable|disable}"

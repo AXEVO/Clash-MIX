@@ -1,4 +1,4 @@
-#！！！极简版！！！ 先关闭mosdns再用 具体操作查看备用-mosdns相关
+#！！！极简版！！！ 
 proxies:
 proxy-providers:
  
@@ -6,13 +6,25 @@ proxy-providers:
     type: http
     url: "订阅链接地址，填写在双引号以内"
     path: ./proxy_providers/机场.yaml
-    interval: 10800
+    interval: 86400
     
 proxy-groups:
   - name: 节点选择
     type: select
     use:
       - 机场
+
+rule-providers:
+
+  userDirect:
+    type: file
+    behavior: classical
+    path: ./rule_providers/userDirect.yaml
+
+  userProxy:
+    type: file
+    behavior: classical
+    path: ./rule_providers/userProxy.yaml
     
 rule:
   - GEOIP,private,DIRECT

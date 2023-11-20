@@ -6,8 +6,6 @@ rm_data() {
     rm -rf ${Clash_data_dir}
     rm -rf /data/clash.old
     rm -rf /data/adb/service.d/clash_service.sh
-    #rm -rf /data/data/xyz.chz.clash/
-    #rm -rf /data/app/xyz.chz.clash/
 }
 
 rm_data
