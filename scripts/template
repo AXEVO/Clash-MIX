@@ -1,18 +1,18 @@
-redir-port: 9797
 mixed-port: 7890
+redir-port: 9797
 tproxy-port: 9898
 mode: rule
 allow-lan: true
 unified-delay: false
 tcp-concurrent: true
+enable-process: true
 find-process-mode: strict
 bind-address: '*'
 log-level: info
 ipv6: false
 geodata-mode: true
 external-controller: 0.0.0.0:9090
-external-ui: dashboard/metacubexd
-secret: ""
+external-ui: ./dashboard/metacubexd
 external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
 #面板可选，打开dashboard文件夹自行查看和修改
 #interface-name: tun0   #出口网卡名称 可用来桥接VPN类软件
@@ -21,11 +21,9 @@ geox-url:
   geosite: "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat"
   mmdb: "https://raw.githubusercontent.com/Loyalsoldier/geoip/release/Country.mmdb"
 
-
 profile:
   store-selected: true
   store-fake-ip: true
-
 
 sniffer:
   enable: false
@@ -35,12 +33,12 @@ sniffer:
     HTTP:
       ports: [80, 8080-8880]
       override-destination: true
-      
+
 tun:
   enable: false
   device: utun
+  mtu: 9000
   stack: system
-  #可切换# gvisor / lwip / system
   dns-hijack:
     - any:53
   auto-route: true
@@ -50,8 +48,9 @@ tun:
 dns:
   enable: true
   ipv6: false
-  use-hosts: true
+  prefer-h3: false
   listen: 0.0.0.0:1053
+  use-hosts: true
   enhanced-mode: redir-host
   # redir-host / fake-ip
   fake-ip-range: 198.18.0.1/16
@@ -79,6 +78,3 @@ dns:
   proxy-server-nameserver:
     - https://223.5.5.5/dns-query
     - https://120.53.53.53/dns-query
-
-
-hosts:

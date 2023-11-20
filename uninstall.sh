@@ -10,4 +10,5 @@ rm_data() {
 
 rm_data
 
-su -c "pm uninstall $APP_PACKAGE_NAME"
+su -c "pm uninstall xyz.chz.clash"
+rm -rf /data/data/xyz.chz.clash/
