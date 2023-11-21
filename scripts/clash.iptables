@@ -431,7 +431,7 @@ if [ "${mode}" != "core" ] ; then
           time start_redirect && log "[info] 创建 iptables 转发规则完成" || log "[error] 创建 iptables 转发规则失败"
           time forward -I
         fi
-        log "[info] Clash 已连接。"
+        log "[info] Clash 已连接"
         ;;
       k)
         log "[warning] 清除iptables转发规则"

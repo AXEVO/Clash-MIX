@@ -99,10 +99,10 @@ temporary_config_file() {
   fi
 
   mv ${temporary_config_file}.temp ${temporary_config_file} \
-  && log "[info] 合并文件 ${Clash_config_file} & 模板成功" || log "[error] 合并文件 ${Clash_config_file} & 模板失败 !!!"
+  && log "[info] 合并 ${Clash_config_file} &模板成功" || log "[error] 合并 ${Clash_config_file} & 模板失败"
 
   if [ ! -f "${temporary_config_file}" ] ; then
-     log "[error] ${temporary_config_file} 文件丢失 !!!" && exit 1
+     log "[error] 找不到 ${temporary_config_file} 无法启动" && exit 1
   fi
 }
 
@@ -110,16 +110,16 @@ temporary_config_file() {
 crontab_sec() {
   if [ ! "${schedule_update_core}" = "false" ] ; then
     echo "${schedule_update_core} ${scripts_dir}/clash.tool -k" >> ${Clash_run_path}/root
-    log "[info] 定时更新内核 (${schedule_update_core})"
-    log "[info] 更新内核已启用 ☑。"
+    log "[info] 更新内核 [${schedule_update_core}]"
+    log "[info] 自动更新内核已启用 ☑。"
   fi
   if [ ! "${update_interval}" = "false" ] ; then
     echo "${update_interval} ${scripts_dir}/clash.tool -s" >> ${Clash_run_path}/root
-    log "[info] 定时更新Geo数据和订阅 (${update_interval})."
-    log "[info] clash geox ☐ (${auto_updateGeoX})."
-    log "[info] clash subscription ☐ (${auto_updateSubcript})."
+    log "[info] 更新Geo数据和订阅时间 [${update_interval}]"
+    log "[info] 定时更新Geo数据库：[${auto_updateGeoX}]"
+    log "[info] 定时更新订阅[${auto_updateSubcript}]"
   else
-    log "[info] 定时更新地理位置和订阅已禁用 ☒"
+    log "[info] 定时更新Geo数据库和订阅已禁用 ☒"
   fi
 }
 
@@ -134,7 +134,7 @@ log_suc() {
 
 # 提取失败日志的函数
 log_failed() {
-  log "[error] ${Clash_config_file} 失败"
+  log "[error] ${Clash_config_file} 错误 请检查报错并修改"
   sed -i s/.*msg=// ${Clash_run_path}/error.log
   sed -i 's/fatal msg=*//' ${Clash_run_path}/error.log
   sed -i 's/configuration file*//' ${Clash_run_path}/error.log
@@ -155,7 +155,7 @@ run_clash() {
     log_failed
     [ "${use_config}" = "false" ] \
     && (mv ${temporary_config_file} ${Clash_data_dir}/config.yaml) || (mv ${temporary_config_file} ${Clash_data_dir}/${use_config})
-    log "[error] 请检查 ${Clash_config_file} 配置" && exit 1
+    log "[error] 启动失败，请检查 ${Clash_config_file} 配置" && exit 1
   fi
   rm -rf ${Clash_run_path}/error.log
 }
@@ -183,14 +183,14 @@ start_clash() {
     echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
     echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6
     echo 1 > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6
-    log "[info] Ipv6: ☒ 禁用"
+    log "[info] IPv6: ☒ 禁用"
   else
     echo 1 > /proc/sys/net/ipv6/conf/all/accept_ra
     echo 1 > /proc/sys/net/ipv6/conf/wlan0/accept_ra
     echo 0 > /proc/sys/net/ipv6/conf/all/disable_ipv6
     echo 0 > /proc/sys/net/ipv6/conf/default/disable_ipv6
     echo 0 > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6
-    log "[info] Ipv6: ☑ 启用"
+    log "[info] IPv6: ☑ 启用"
   fi
   use_clash
   ceks_clash
@@ -205,7 +205,7 @@ start_clash() {
     chmod 0600 ${Clash_run_path}/root
     crontab_sec
   else
-    log "[error] Clash内核文件 ${Clash_bin_path} 丢失 !!!." && exit 1
+    log "[error] Clash内核文件 ${Clash_bin_path} 丢失" && exit 1
   fi
 
   if [ -f ${temporary_config_file} ] ; then
@@ -241,7 +241,7 @@ stop_clash() {
     rm -rf ${Clash_pid_file}
     sleep 0.75
     [ $(pidof clash) ] \
-    && log "[warning] Clash内核关闭失败" || log "[warning] Clash内核已关闭。"
+    && log "[warning] Clash内核关闭失败" || log "[warning] Clash内核已关闭"
     [ ! $(pidof clash) ] && log "[warning] Clash模块已停止运行"
   else
     log "[error] 停止Clash失败"

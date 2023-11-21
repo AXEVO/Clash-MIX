@@ -148,32 +148,38 @@ sleep 1
 
 ui_print "- 安装控制器（1.6.4-90）"
 chcon u:object_r:system_file:s0 $MODPATH/APP/clash.apk
-pm install -r "$MODPATH/APP/clash.apk"
-install_status=$?
-if [ $install_status -eq 0 ]; then
-  ui_print "- 安装成功"
+output=$(pm install -r -f "$MODPATH/APP/clash.apk" 2>&1)
+
+if [ "$output" == "Success" ]; then
+    echo "- 控制器安装成功"
+    rm -rf "$MODPATH/APP/clash.apk"
 else
-  ui_print "- 安装失败，报错: $install_status  请解压安装包手动安装/APP文件夹中的控制器"
+    apkPathSdcard="/sdcard/Clash控制器.apk"
+    cp -f "$MODPATH/APP/clash.apk" "$apkPathSdcard"
+    echo "******************************"
+    echo "  控制器安装失败, 原因: [$output]"
+    echo "  请手动安装 [ $apkPathSdcard ]"
+    echo "********************************"
 fi
 
 sleep 1
 
 if [  -f "/data/clash.old/${latest}/config.yaml" ] ; then
-    ui_print "- >>>>>----------------------------------<<<<<"
-    ui_print "- >>>>>本次安装为模块升级，已恢复原订阅链接<<<<<"
-    ui_print "- >>>>>----------------------------------<<<<<"
+    ui_print "- >>-------------------------------------------------<<"
+    ui_print "- >>本次安装为模块升级，已恢复原订阅链接<<"
+    ui_print "- >>-------------------------------------------------<<"
     mv /data/clash.old/${latest}/config.yaml ${clash_data_dir}/
 else 
     if [  -f "/data/clash.delete/config.yaml" ] ; then
-    ui_print "- >>>>>------------------------------------------------------<<<<<"
-    ui_print "- >>>>>检测到上次卸载Clash模块时自动备份的配置信息(内含订阅链接)<<<<<"
-    ui_print "- >>>>>已移动到Clash文件夹/config.old 如需要，请自行复制订阅链接<<<<<"
-    ui_print "- >>>>>------------------------------------------------------<<<<<"
+    ui_print "- >>-----------------------------------------------------------------------------<<"
+    ui_print "- >>检测到上次卸载Clash模块时自动备份的配置信息(内含订阅链接)<<"
+    ui_print "- >>已移动到Clash文件夹/config.old 如需要，请自行复制订阅链接<<"
+    ui_print "- >>-----------------------------------------------------------------------------<<"
     mv /data/clash.delete/config.yaml ${clash_data_dir}/config.old
     else
-    ui_print "- >>>>>--------------------------------------<<<<<"
-    ui_print "- >>>>>全新安装 请根据提示在指定位置填写订阅链接<<<<<" 
-    ui_print "- >>>>>--------------------------------------<<<<<"
+    ui_print "- >>----------------------------------------------------------------------------<<"
+    ui_print "- >>全新安装 请根据提示在指定位置填写订阅链接<<" 
+    ui_print "- >>----------------------------------------------------------------------------<<"
     fi
 fi
 
@@ -209,9 +215,9 @@ set_perm  ${clash_data_dir}/proxy_providers/ 0  0  0755
 set_perm  ${clash_data_dir}/assets/ 0  0  0755
 
 sleep 3
-ui_print "- ------------------------------------------------------------"
+ui_print "- ----------------------------------------------------------------------------"
 ui_print "- 控制器已自动安装，请在桌面查找Clash控制器"
 ui_print "- 安装完成后请先进入data/clash/config.yaml "
 ui_print "- 在配置文件的指定位置填写订阅链接，再重启手机"
 ui_print "- 建议打开 data/clash/备用 文件夹仔细查看详细说明和配置模板"
-ui_print "- ------------------------------------------------------------"
+ui_print "- ----------------------------------------------------------------------------"
