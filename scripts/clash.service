@@ -106,7 +106,7 @@ temporary_config_file() {
   fi
 }
 
-# 设置定时任务的秒数
+# 设置定时任务
 crontab_sec() {
   if [ ! "${schedule_update_core}" = "false" ] ; then
     echo "${schedule_update_core} ${scripts_dir}/clash.tool -k" >> ${Clash_run_path}/root
@@ -199,11 +199,10 @@ start_clash() {
   if [ -f "${Clash_bin_path}" ] ; then
     chown 0:3005 ${Clash_bin_path} && chown 0:3005 ${temporary_config_file}
     chmod 0700 ${Clash_bin_path} && chmod 0700 ${temporary_config_file}
-    nohup ${busybox_path} crond -c ${Clash_run_path} > /dev/null 2>&1 &
-    ${busybox_path} crontab -c ${Clash_run_path} -r
     touch ${Clash_run_path}/root
     chmod 0600 ${Clash_run_path}/root
     crontab_sec
+    nohup ${busybox_path} crond -c ${Clash_run_path}/root > /dev/null 2>&1 & 
   else
     log "[error] Clash内核文件 ${Clash_bin_path} 丢失" && exit 1
   fi
