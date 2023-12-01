@@ -106,6 +106,22 @@ temporary_config_file() {
   fi
 }
 
+# 设置定时任务的秒数
+crontab_sec() {
+  if [ ! "${schedule_update_core}" = "false" ] ; then
+    echo "${schedule_update_core} ${scripts_dir}/clash.tool -k" >> ${Clash_run_path}/root
+    log "[info] 定时更新内核 (${schedule_update_core})"
+    log "[info] 更新内核已启用 ☑。"
+  fi
+  if [ ! "${update_interval}" = "false" ] ; then
+    echo "${update_interval} ${scripts_dir}/clash.tool -s" >> ${Clash_run_path}/root
+    log "[info] 定时更新Geo数据和订阅 (${update_interval})."
+    log "[info] clash geox ☐ (${auto_updateGeoX})."
+    log "[info] clash subscription ☐ (${auto_updateSubcript})."
+  else
+    log "[info] 定时更新地理位置和订阅已禁用 ☒"
+  fi
+}
 
 # 提取成功日志的函数
 log_suc() {
@@ -180,21 +196,16 @@ start_clash() {
   ceks_clash
   tun_tproxy
   temporary_config_file
+
   if [ -f "${Clash_bin_path}" ] ; then
     chown 0:3005 ${Clash_bin_path} && chown 0:3005 ${temporary_config_file}
     chmod 0700 ${Clash_bin_path} && chmod 0700 ${temporary_config_file}
-    nohup ${busybox_path} crond -c "${Clash_run_path}" > /dev/null 2>&1 &
-    ${busybox_path} crontab -c "${Clash_run_path}" -r
-    touch "${Clash_run_path}/root"
-    chmod 0755 "${Clash_run_path}/root"
-
-    if [ ! "${update_interval}" = "false" ] ; then
-    log Debug "启用定时任务"
-    echo "${update_interval} ${scripts_dir}/clash.tool -s" >> ${Clash_run_path}/root"
-    log Debug "间隔定时任务 geox 和 subs: [${update_interval}]"
-    log Info "geox 更新: [${auto_updateGeoX}]"
+    crond -c ${Clash_run_path}
+    touch ${Clash_run_path}/root
+    chmod 777 ${Clash_run_path}/root
+    crontab_sec
   else
-    log "[error] Clash内核文件 ${Clash_bin_path} 丢失 !!!." && exit 1
+    log "[error] Clash内核文件 ${Clash_bin_path} 丢失" && exit 1
   fi
 
   if [ -f ${temporary_config_file} ] ; then
