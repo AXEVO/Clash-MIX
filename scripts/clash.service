@@ -200,9 +200,10 @@ start_clash() {
   if [ -f "${Clash_bin_path}" ] ; then
     chown 0:3005 ${Clash_bin_path} && chown 0:3005 ${temporary_config_file}
     chmod 0700 ${Clash_bin_path} && chmod 0700 ${temporary_config_file}
+    nohup ${busybox_path} crond -L ${Clash_run_path}/crond.log -c ${Clash_run_path} > /dev/null 2>&1 &
+    ${busybox_path} crontab -c ${Clash_run_path} -r
     touch ${Clash_run_path}/root
-    chmod 777 ${Clash_run_path}/root
-    ${busybox_path} crond -c ${Clash_run_path}
+    chmod 0600 ${Clash_run_path}/root
     crontab_sec
   else
     log "[error] Clash内核文件 ${Clash_bin_path} 丢失" && exit 1
