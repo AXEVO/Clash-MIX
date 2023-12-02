@@ -57,6 +57,7 @@ update_geo() {
   if [ "${auto_updateGeoX}" == "true" ] ; then
      update_file ${Clash_GeoIP_file} ${GeoIP_dat_url}
      update_file ${Clash_GeoSite_file} ${GeoSite_url}
+     log "[info] $(date) 更新Geo数据库"
      if [ "$?" = "0" ] ; then
        flag=false
      fi
