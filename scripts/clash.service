@@ -109,17 +109,17 @@ temporary_config_file() {
 # 设置定时任务的秒数
 crontab_sec() {
   if [ ! "${schedule_update_core}" = "false" ] ; then
-    echo "${schedule_update_core} ${scripts_dir}/clash.tool -k" >> ${Clash_run_path}/root
+    echo "${schedule_update_core} ${scripts_dir}/clash.tool -k > /data/clash/run/update.log 2>&1" >> ${Clash_run_path}/root
     log "[info] 定时更新内核 (${schedule_update_core})"
     log "[info] 更新内核已启用 ☑。"
   fi
   if [ ! "${update_interval}" = "false" ] ; then
-    echo "${update_interval} ${scripts_dir}/clash.tool -s" >> ${Clash_run_path}/root
+    echo "${update_interval} ${scripts_dir}/clash.tool -s > /data/clash/run/update.log 2>&1" >> ${Clash_run_path}/root
     log "[info] 定时更新Geo数据和订阅 (${update_interval})."
-    log "[info] clash geox ☐ (${auto_updateGeoX})."
-    log "[info] clash subscription ☐ (${auto_updateSubcript})."
+    log "[info] Geo数据更新时间 ： (${auto_updateGeoX})."
+    log "[info] 订阅更新时间： (${auto_updateSubcript})."
   else
-    log "[info] 定时更新地理位置和订阅已禁用 ☒"
+    log "[info] 定时更新Geo数据库和订阅已禁用 ☒"
   fi
 }
 
@@ -200,8 +200,7 @@ start_clash() {
   if [ -f "${Clash_bin_path}" ] ; then
     chown 0:3005 ${Clash_bin_path} && chown 0:3005 ${temporary_config_file}
     chmod 0700 ${Clash_bin_path} && chmod 0700 ${temporary_config_file}
-    #nohup ${busybox_path} crond -L ${Clash_run_path}/crond.log -c ${Clash_run_path} > /dev/null 2>&1 &
-    nohup ${busybox_path} crond -L ${Clash_run_path}/crond.log -c ${Clash_run_path} | tee ${Clash_run_path}/crond.log &
+    nohup ${busybox_path} crond -L ${Clash_run_path}/crond.log -c ${Clash_run_path} > /dev/null 2>&1 &
     ${busybox_path} crontab -c ${Clash_run_path} -r
     touch ${Clash_run_path}/root
     chmod 0600 ${Clash_run_path}/root
@@ -226,13 +225,13 @@ start_clash() {
 
 # 终止Clash的函数
 kill_tool() {
-  cronkill=$(ps -ef | grep root | grep "crond -c /data/clash/" | ${busybox_path} awk '{ print $2 }' | sort -u)
+  cronkill=$(ps -ef | grep root | grep "crond -L /data/clash/run/crond.log" | ${busybox_path} awk '{ print $2 }' | sort -u)
   for cron in ${cronkill[*]} ; do
      kill -9 ${cron}
   done
   if (kill -9 $(cat ${Clash_run_path}/dnstt.pid)) ; then
     rm -rf ${Clash_run_path}/dnstt.pid
-    log "[warning] ${dnstt_bin_name} 已停用"
+    log "[warning] ${dnstt_bin_name} 已关闭"
   fi
 }
 
