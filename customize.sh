@@ -82,7 +82,7 @@ esac
 
 unzip -o "${ZIPFILE}" -x 'META-INF/*' -d $MODPATH >&2
 
-ui_print "- 安装网页控制面板"
+ui_print "- 安装Web面板"
 unzip -o ${MODPATH}/dashboard.zip -d ${clash_data_dir}/dashboard/ >&2
 
 ui_print "- 安装脚本"
@@ -112,7 +112,7 @@ if [ ! -f "${dns_path}/resolv.conf" ] ; then
     echo nameserver 120.53.53.53 >> ${MODPATH}${dns_path}/resolv.conf
 fi
 
-ui_print "- 创建黑白名单--默认为黑名单，建议使用控制器选择应用"
+ui_print "- 创建黑白名单--默认为黑名单，请使用控制器选择应用"
 if [ ! -f "${clash_data_dir}/scripts/packages.list" ] ; then
     touch ${clash_data_dir}/packages.list
 fi
@@ -143,6 +143,7 @@ rm -rf ${MODPATH}/binary
 rm -rf ${MODPATH}/clash_service.sh
 rm -rf ${clash_data_dir}/scripts/dnstt
 rm -rf ${clash_data_dir_kernel}/curl
+rm -rf ${MODPATH}/verson.json
 
 sleep 1
 
@@ -152,10 +153,11 @@ output=$(pm install -r -f "$MODPATH/APP/clash.apk" 2>&1)
 
 if [ "$output" == "Success" ]; then
     echo "- 控制器安装成功"
-    rm -rf "$MODPATH/APP/clash.apk"
+    rm -rf "$MODPATH/APP"
 else
     apkPathSdcard="/sdcard/Clash控制器.apk"
-    cp -f "$MODPATH/APP/clash.apk" "$apkPathSdcard"
+    mv -f "$MODPATH/APP/clash.apk" "$apkPathSdcard"
+    rm -rf ${MODPATH}/APP
     echo "******************************"
     echo "  控制器安装失败, 原因: [$output]"
     echo "  请手动安装 [ $apkPathSdcard ]"
@@ -168,7 +170,7 @@ if [  -f "/data/clash.old/${latest}/config.yaml" ] ; then
     ui_print "- >>-------------------------------------------------<<"
     ui_print "- >>本次安装为模块升级，已恢复原订阅链接<<"
     ui_print "- >>-------------------------------------------------<<"
-    mv /data/clash.old/${latest}/config.yaml ${clash_data_dir}/
+    cp /data/clash.old/${latest}/config.yaml ${clash_data_dir}/
 else 
     if [  -f "/data/clash.delete/config.yaml" ] ; then
     ui_print "- >>-----------------------------------------------------------------------------<<"
@@ -176,6 +178,7 @@ else
     ui_print "- >>已移动到Clash文件夹/config.old 如需要，请自行复制订阅链接<<"
     ui_print "- >>-----------------------------------------------------------------------------<<"
     mv /data/clash.delete/config.yaml ${clash_data_dir}/config.old
+    rm -rf /data/clash.delete
     else
     ui_print "- >>----------------------------------------------------------------------------<<"
     ui_print "- >>全新安装 请根据提示在指定位置填写订阅链接<<" 
@@ -219,5 +222,5 @@ ui_print "- --------------------------------------------------------------------
 ui_print "- 控制器已自动安装，请在桌面查找Clash控制器"
 ui_print "- 安装完成后请先进入data/clash/config.yaml "
 ui_print "- 在配置文件的指定位置填写订阅链接，再重启手机"
-ui_print "- 建议打开 data/clash/备用 文件夹仔细查看详细说明和配置模板"
+ui_print "- 建议打开 data/clash/备用 仔细查看详细说明和配置模板"
 ui_print "- ----------------------------------------------------------------------------"

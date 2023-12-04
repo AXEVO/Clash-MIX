@@ -40,7 +40,6 @@ tun:
   enable: false
   device: utun
   stack: system
-  #可切换# gvisor / lwip / system
   dns-hijack:
     - any:53
   auto-route: true
@@ -76,7 +75,8 @@ dns:
     'geosite:!cn':
       - https://8.8.4.4/dns-query#机场
       - https://1.0.0.1/dns-query#机场
-      
+#如果修改了config.yaml并删除了userDirect，userProxy
+#请把对应的nameserver-policy也删除，否则内核将无法启动
   proxy-server-nameserver:
     - https://223.5.5.5/dns-query
     - https://120.53.53.53/dns-query

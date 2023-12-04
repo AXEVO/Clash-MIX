@@ -14,7 +14,7 @@ dow_config() {
       # 使用clash.tool工具下载配置文件
       if ! (${scripts_dir}/clash.tool -o) ; then
         log "[error] 下载配置文件失败"
-        log "[error] 确保您已连接至互联网" && exit 1
+        log "[error] 确保网络连接正常" && exit 1
       fi
     fi
   fi
@@ -38,7 +38,11 @@ replace_kernel() {
 use_clash() {
   # 根据配置使用Clash Premium或Clash Meta，并输出相应信息
   [ "${use_premium}" = "true" ] \
-  && log "[info] ☑ 启用 Clash Premium内核" || log "[info] ☑ 启用 Clash Meta内核"
+  && log "[info] ☑ 启用 Clash Premium内核" \
+  && log "[warning] 使用Premium内核前请先手动删除" \
+  && log "[warning] template文件中未适配P核的配置项目" \
+  && log "[warning] 否则P内核将无法正常启动" \
+  || log "[info] ☑ 启用 Clash Meta内核"
   if [ ! -f "${Clash_bin_path}" ] ; then
     log "[error] 找不到内核 ${Clash_bin_path}"
     exit 1
@@ -110,14 +114,14 @@ temporary_config_file() {
 crontab_sec() {
   if [ ! "${schedule_update_core}" = "false" ] ; then
     echo "${schedule_update_core} ${scripts_dir}/clash.tool -k > /data/clash/run/update.log 2>&1" >> ${Clash_run_path}/root
-    log "[info] 定时更新内核 (${schedule_update_core})"
+    log "[info] 定时更新内核 [${schedule_update_core}]"
     log "[info] 更新内核已启用 ☑。"
   fi
   if [ ! "${update_interval}" = "false" ] ; then
     echo "${update_interval} ${scripts_dir}/clash.tool -s > /data/clash/run/update.log 2>&1" >> ${Clash_run_path}/root
-    log "[info] 定时更新Geo数据和订阅 (${update_interval})."
-    log "[info] Geo数据更新时间 ： (${auto_updateGeoX})."
-    log "[info] 订阅更新时间： (${auto_updateSubcript})."
+    log "[info] 定时更新Geo数据和订阅时间 [${update_interval}]"
+    log "[info] 自动更新Geo数据 ： [${auto_updateGeoX}]"
+    log "[info] 自动更新订阅 ：[${auto_updateSubcript}]"
   else
     log "[info] 定时更新Geo数据库和订阅已禁用 ☒"
   fi
@@ -200,6 +204,7 @@ start_clash() {
   if [ -f "${Clash_bin_path}" ] ; then
     chown 0:3005 ${Clash_bin_path} && chown 0:3005 ${temporary_config_file}
     chmod 0700 ${Clash_bin_path} && chmod 0700 ${temporary_config_file}
+    rm -rf ${Clash_run_path}/crond.log
     nohup ${busybox_path} crond -L ${Clash_run_path}/crond.log -c ${Clash_run_path} > /dev/null 2>&1 &
     ${busybox_path} crontab -c ${Clash_run_path} -r
     touch ${Clash_run_path}/root
@@ -211,7 +216,9 @@ start_clash() {
 
   if [ -f ${temporary_config_file} ] ; then
     if (${Clash_bin_path} -v > /dev/null 2>&1) ; then
+      echo "━━━━━━━━━━━━━━━━━━━━━━━━━" >> ${CFM_logs_file}
       run_clash
+      echo "━━━━━━━━━━━━━━━━━━━━━━━━━" >> ${CFM_logs_file}
       cgroup_limit
       [ "$run_usage" = "true" ] \
       && (nohup ${scripts_dir}/usage.sh > /dev/null 2>&1 &) || log "[info] 显示使用情况 RES:/CPU: 已禁用"

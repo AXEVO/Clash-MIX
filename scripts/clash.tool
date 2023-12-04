@@ -54,23 +54,25 @@ update_file() {
 
 # 更新地理位置和订阅的函数
 update_geo() {
+  local restart_required=false
+  
   if [ "${auto_updateGeoX}" == "true" ] ; then
-     update_file ${Clash_GeoIP_file} ${GeoIP_dat_url}
-     update_file ${Clash_GeoSite_file} ${GeoSite_url}
-     log "[info] 更新Geo数据库"
-     if [ "$?" = "0" ] ; then
-       flag=false
-     fi
+    update_file ${Clash_GeoIP_file} ${GeoIP_dat_url}
+    update_file ${Clash_GeoSite_file} ${GeoSite_url}
+    log "[info] 更新Geo数据库"
+    if [ "$?" = "0" ] ; then
+      restart_required=true
+    fi
   fi
 
   if [ ${auto_updateSubcript} == "true" ] ; then
-     update_file ${Clash_config_file} ${Subcript_url}
-     if [ "$?" = "0" ] ; then
-       flag=true
-     fi
+    update_file ${Clash_config_file} ${Subcript_url}
+    if [ "$?" = "0" ] ; then
+      restart_required=true
+    fi
   fi
 
-  if [ -f "${Clash_pid_file}" ] && [ ${flag} == true ] ; then
+  if [ -f "${Clash_pid_file}" ] && [ ${restart_required} == true ] ; then
     restart_clash
   fi
 }
@@ -104,7 +106,7 @@ port_detection() {
   then
     clash_port=$(ss -antup | grep "clash" | ${busybox_path} awk '$7~/'pid="${clash_pid}"*'/{print $5}' | ${busybox_path} awk -F ':' '{print $2}' | sort -u)
   else
-    logs "[info] 跳过端口检测"
+    logs "[info] 关闭端口检测"
     exit 0
   fi
 
@@ -205,13 +207,13 @@ cgroup_limit() {
 
 # 更新仪表板的函数
 update_dashboard () {
-  url_dashboard="https://github.com/taamarin/yacd/archive/refs/heads/gh-pages.zip"
+  url_dashboard="https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
   file_dasboard="${Clash_data_dir}/dashboard.zip"
-  rm -rf ${Clash_data_dir}/dashboard/dist
+  rm -rf ${Clash_data_dir}/dashboard/metacubexd
 
   /data/adb/magisk/busybox wget --no-check-certificate ${url_dashboard} -o ${file_dasboard} 2>&1
-  unzip -o  "${file_dasboard}" "yacd-gh-pages/*" -d ${Clash_data_dir}/dashboard >&2
-  mv -f ${Clash_data_dir}/dashboard/yacd-gh-pages ${Clash_data_dir}/dashboard/dist 
+  unzip -o  "${file_dasboard}" "metacubexd-gh-pages/*" -d ${Clash_data_dir}/dashboard >&2
+  mv -f ${Clash_data_dir}/dashboard/yacd-gh-pages ${Clash_data_dir}/dashboard/metacubexd
   rm -rf ${file_dasboard}
 }
 
