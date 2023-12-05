@@ -129,22 +129,33 @@ crontab_sec() {
 
 # 提取成功日志的函数
 log_suc() {
+  echo "━━━━━━━━内核日志━━━━━━━━━" >> ${CFM_logs_file}
   sed -i s/.*msg=// ${Clash_run_path}/error.log
   sed -i 's/configuration file*//' ${Clash_run_path}/error.log
+  sed -i 's/\[\([0-9]*m\)\{0,1\}INFO\[\([0-9]*m\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/error.log
+  sed -i 's/\[\([0-9]*m\)\{0,1\}WARN\[\([0-9]*m\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/error.log
+  sed -i 's/\[\([0-9]*m\)\{0,1\}ERRO\[\([0-9]*m\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/error.log
   while read p ; do
     log "[info]" "$p"
   done <${Clash_run_path}/error.log
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━" >> ${CFM_logs_file}
 }
 
 # 提取失败日志的函数
 log_failed() {
-  log "[error] ${Clash_config_file} 错误 请检查报错并修改"
+  log "[error] 启动失败，请检查内核报错并修改配置"
+  log "[error] 当前配置：${Clash_config_file}"
+  echo "━━━━━━━━内核日志━━━━━━━━━" >> ${CFM_logs_file}
   sed -i s/.*msg=// ${Clash_run_path}/error.log
   sed -i 's/fatal msg=*//' ${Clash_run_path}/error.log
   sed -i 's/configuration file*//' ${Clash_run_path}/error.log
+  sed -i 's/\[\([0-9]*m\)\{0,1\}INFO\[\([0-9]*m\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/error.log
+  sed -i 's/\[\([0-9]*m\)\{0,1\}WARN\[\([0-9]*m\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/error.log
+  sed -i 's/\[\([0-9]*m\)\{0,1\}ERRO\[\([0-9]*m\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/error.log
   while read p ; do
     log "[error]" "$p"
   done <${Clash_run_path}/error.log
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━" >> ${CFM_logs_file}
 }
 
 # 启动Clash的函数
@@ -159,7 +170,7 @@ run_clash() {
     log_failed
     [ "${use_config}" = "false" ] \
     && (mv ${temporary_config_file} ${Clash_data_dir}/config.yaml) || (mv ${temporary_config_file} ${Clash_data_dir}/${use_config})
-    log "[error] 启动失败，请检查 ${Clash_config_file} 配置" && exit 1
+    exit 1
   fi
   rm -rf ${Clash_run_path}/error.log
 }
@@ -216,9 +227,7 @@ start_clash() {
 
   if [ -f ${temporary_config_file} ] ; then
     if (${Clash_bin_path} -v > /dev/null 2>&1) ; then
-      echo "━━━━━━━━━━━━━━━━━━━━━━━━━" >> ${CFM_logs_file}
       run_clash
-      echo "━━━━━━━━━━━━━━━━━━━━━━━━━" >> ${CFM_logs_file}
       cgroup_limit
       [ "$run_usage" = "true" ] \
       && (nohup ${scripts_dir}/usage.sh > /dev/null 2>&1 &) || log "[info] 显示使用情况 RES:/CPU: 已禁用"
