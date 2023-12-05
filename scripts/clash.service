@@ -132,9 +132,8 @@ log_suc() {
   echo "━━━━━━━━━━内核日志━━━━━━━━━━━" >> ${CFM_logs_file}
   sed -i s/.*msg=// ${Clash_run_path}/start.log
   sed -i 's/configuration file*//' ${Clash_run_path}/start.log
-  sed -i 's/\[\([0-9;]*[mK]\)\{0,1\}INFO\[\([0-9;]*[mK]\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/start.log
-  sed -i 's/\[\([0-9;]*[mK]\)\{0,1\}WARN\[\([0-9;]*[mK]\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/start.log
-  sed -i 's/\[\([0-9;]*[mK]\)\{0,1\}ERRO\[\([0-9;]*[mK]\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/start.log
+  sed -i 's/\[\([0-9;]*[mK]\)\{0,1\}[a-zA-Z]\(\[\([0-9\-:TZ.]\+\)[a-zA-Z]*\]\)\{0,1\}//;s/^[ \t]*//' ${Clash_run_path}/start.log
+  #sed -i -E 's/\[[0-9;]*[a-zA-Z]\]([[]([0-9\-:TZ.]+)[a-zA-Z]*[]])?//;s/^[ \t]*//' ${Clash_run_path}/start.log
   while read p ; do
     log "[info]" "$p"
   done <${Clash_run_path}/start.log
@@ -149,9 +148,7 @@ log_failed() {
   sed -i s/.*msg=// ${Clash_run_path}/start.log
   sed -i 's/fatal msg=*//' ${Clash_run_path}/start.log
   sed -i 's/configuration file*//' ${Clash_run_path}/start.log
-sed -i 's/\[\([0-9;]*[mK]\)\{0,1\}INFO\[\([0-9;]*[mK]\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/start.log
-sed -i 's/\[\([0-9;]*[mK]\)\{0,1\}WARN\[\([0-9;]*[mK]\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/start.log
-sed -i 's/\[\([0-9;]*[mK]\)\{0,1\}ERRO\[\([0-9;]*[mK]\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/start.log
+  sed -i 's/\[\([0-9;]*[mK]\)\{0,1\}[a-zA-Z]\(\[\([0-9\-:TZ.]\+\)[a-zA-Z]*\]\)\{0,1\}//;s/^[ \t]*//' ${Clash_run_path}/start.log
   while read p ; do
     log "[error]" "$p"
   done <${Clash_run_path}/start.log
