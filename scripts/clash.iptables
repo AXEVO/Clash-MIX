@@ -40,7 +40,8 @@ start_redirect() {
   for ap in ${ap_list[*]} ; do
     ${iptables_wait} -t nat -A BOX_EXTERNAL -p tcp -i ${ap} -j REDIRECT --to-ports ${Clash_redir_port}
   done
-  log "[info] ${ap_list[*]} 网卡透明代理."
+  log "[info] ${ap_list[*]}"
+  log "[info] 以上网卡已启用透明代理"
 
   ${iptables_wait} -t nat -I PREROUTING -j BOX_EXTERNAL
 
@@ -164,7 +165,8 @@ start_tproxy() {
     ${iptables_wait} -t mangle -A BOX_EXTERNAL -p tcp -i ${ap} -j TPROXY --on-port ${Clash_tproxy_port} --tproxy-mark ${mark_id}
     ${iptables_wait} -t mangle -A BOX_EXTERNAL -p udp -i ${ap} -j TPROXY --on-port ${Clash_tproxy_port} --tproxy-mark ${mark_id}
   done
-  log "[info] 网卡${ap_list[*]} 已启用透明代理。"
+  log "[info] ${ap_list[*]} "
+  log "[info] 以上网卡已启用透明代理"
   if [ "${ipv6}" = "true" ] ; then
     for ap6 in ${ap_list[*]} ; do
       ${ip6tables_wait} -t mangle -A BOX_EXTERNAL -p tcp -i ${ap6} -j TPROXY --on-port ${Clash_tproxy_port} --tproxy-mark ${mark_id}

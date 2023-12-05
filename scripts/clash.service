@@ -129,15 +129,15 @@ crontab_sec() {
 
 # 提取成功日志的函数
 log_suc() {
-  echo "━━━━━━━━内核日志━━━━━━━━━" >> ${CFM_logs_file}
-  sed -i s/.*msg=// ${Clash_run_path}/error.log
-  sed -i 's/configuration file*//' ${Clash_run_path}/error.log
-  sed -i 's/\[\([0-9]*m\)\{0,1\}INFO\[\([0-9]*m\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/error.log
-  sed -i 's/\[\([0-9]*m\)\{0,1\}WARN\[\([0-9]*m\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/error.log
-  sed -i 's/\[\([0-9]*m\)\{0,1\}ERRO\[\([0-9]*m\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/error.log
+  echo "━━━━━━━━━━内核日志━━━━━━━━━━━" >> ${CFM_logs_file}
+  sed -i s/.*msg=// ${Clash_run_path}/start.log
+  sed -i 's/configuration file*//' ${Clash_run_path}/start.log
+  sed -i 's/\[\([0-9;]*[mK]\)\{0,1\}INFO\[\([0-9;]*[mK]\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/start.log
+  sed -i 's/\[\([0-9;]*[mK]\)\{0,1\}INFO\[\([0-9;]*[mK]\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/start.log
+  sed -i 's/\[\([0-9;]*[mK]\)\{0,1\}INFO\[\([0-9;]*[mK]\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/start.log
   while read p ; do
     log "[info]" "$p"
-  done <${Clash_run_path}/error.log
+  done <${Clash_run_path}/start.log
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━" >> ${CFM_logs_file}
 }
 
@@ -145,22 +145,22 @@ log_suc() {
 log_failed() {
   log "[error] 启动失败，请检查内核报错并修改配置"
   log "[error] 当前配置：${Clash_config_file}"
-  echo "━━━━━━━━内核日志━━━━━━━━━" >> ${CFM_logs_file}
-  sed -i s/.*msg=// ${Clash_run_path}/error.log
-  sed -i 's/fatal msg=*//' ${Clash_run_path}/error.log
-  sed -i 's/configuration file*//' ${Clash_run_path}/error.log
-  sed -i 's/\[\([0-9]*m\)\{0,1\}INFO\[\([0-9]*m\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/error.log
-  sed -i 's/\[\([0-9]*m\)\{0,1\}WARN\[\([0-9]*m\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/error.log
-  sed -i 's/\[\([0-9]*m\)\{0,1\}ERRO\[\([0-9]*m\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/error.log
+  echo "━━━━━━━━━━内核日志━━━━━━━━━━━" >> ${CFM_logs_file}
+  sed -i s/.*msg=// ${Clash_run_path}/start.log
+  sed -i 's/fatal msg=*//' ${Clash_run_path}/start.log
+  sed -i 's/configuration file*//' ${Clash_run_path}/start.log
+sed -i 's/\[\([0-9;]*[mK]\)\{0,1\}INFO\[\([0-9;]*[mK]\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/start.log
+sed -i 's/\[\([0-9;]*[mK]\)\{0,1\}INFO\[\([0-9;]*[mK]\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/start.log
+sed -i 's/\[\([0-9;]*[mK]\)\{0,1\}INFO\[\([0-9;]*[mK]\)\{0,1\}\[\(.*Z\)\{0,1\}\]//' ${Clash_run_path}/start.log
   while read p ; do
     log "[error]" "$p"
-  done <${Clash_run_path}/error.log
+  done <${Clash_run_path}/start.log
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━" >> ${CFM_logs_file}
 }
 
 # 启动Clash的函数
 run_clash() {
-  ${Clash_bin_path} -t -d ${Clash_data_dir} -f ${temporary_config_file} > ${Clash_run_path}/error.log
+  ${Clash_bin_path} -t -d ${Clash_data_dir} -f ${temporary_config_file} > ${Clash_run_path}/start.log
   if [ "$?" = "0" ] ; then
     ulimit -SHn 1000000
     nohup ${busybox_path} setuidgid 0:3005 ${Clash_bin_path} -d ${Clash_data_dir} -f ${temporary_config_file} > ${Clash_run_path}/output-clash.log 2>&1 &
@@ -172,7 +172,7 @@ run_clash() {
     && (mv ${temporary_config_file} ${Clash_data_dir}/config.yaml) || (mv ${temporary_config_file} ${Clash_data_dir}/${use_config})
     exit 1
   fi
-  rm -rf ${Clash_run_path}/error.log
+  #rm -rf ${Clash_run_path}/start.log
 }
 
 # 设置cgroup限制的函数
