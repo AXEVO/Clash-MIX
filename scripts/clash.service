@@ -132,7 +132,7 @@ log_suc() {
   echo "━━━━━━━━━━内核日志━━━━━━━━━━━" >> ${CFM_logs_file}
   sed -i s/.*msg=// ${Clash_run_path}/start.log
   sed -i 's/configuration file*//' ${Clash_run_path}/start.log
-  sed -i 's/.*00] //g' ${Clash_run_path}/start.log
+  sed 's/.*Z] //g' -i ${Clash_run_path}/start.log
   while read p ; do
     log "[info]" "$p"
   done <${Clash_run_path}/start.log
@@ -147,7 +147,7 @@ log_failed() {
   sed -i s/.*msg=// ${Clash_run_path}/start.log
   sed -i 's/fatal msg=*//' ${Clash_run_path}/start.log
   sed -i 's/configuration file*//' ${Clash_run_path}/start.log
-  sed -i 's/.*00] //g' ${Clash_run_path}/start.log
+  sed 's/.*Z] //g' -i ${Clash_run_path}/start.log
   while read p ; do
     log "[error]" "$p"
   done <${Clash_run_path}/start.log
