@@ -168,7 +168,6 @@ run_clash() {
     && (mv ${temporary_config_file} ${Clash_data_dir}/config.yaml) || (mv ${temporary_config_file} ${Clash_data_dir}/${use_config})
     exit 1
   fi
-  #rm -rf ${Clash_run_path}/start.log
 }
 
 # 设置cgroup限制的函数
