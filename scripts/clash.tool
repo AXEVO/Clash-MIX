@@ -26,9 +26,9 @@ restart_clash() {
   sleep 0.5
   ${scripts_dir}/clash.service -s && ${scripts_dir}/clash.iptables -s
   if [ "$?" == "0" ] ; then
-    log "[info] $(date), Clash核心已重启"
+    log "[info] Clash内核已重启"
   else
-    log "[error] $(date), Clash核心重启失败"
+    log "[error] Clash内核重启失败"
   fi
 }
 
@@ -59,9 +59,11 @@ update_geo() {
   if [ "${auto_updateGeoX}" == "true" ] ; then
     update_file ${Clash_GeoIP_file} ${GeoIP_dat_url}
     update_file ${Clash_GeoSite_file} ${GeoSite_url}
-    log "[info] 更新Geo数据库"
     if [ "$?" = "0" ] ; then
       restart_required=true
+      log "[info] 更新Geo数据库"
+    else 
+      log "[warning] 更新Geo数据库失败"
     fi
   fi
 
@@ -69,6 +71,9 @@ update_geo() {
     update_file ${Clash_config_file} ${Subcript_url}
     if [ "$?" = "0" ] ; then
       restart_required=true
+      log "[info] 更新Geo数据库"
+    else 
+      log "[warning] 更新订阅失败"
     fi
   fi
 
