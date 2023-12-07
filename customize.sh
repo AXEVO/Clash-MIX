@@ -11,7 +11,6 @@ bin_path="/system/bin/"
 dns_path="/system/etc"
 clash_adb_dir="/data/adb"
 clash_service_dir="/data/adb/service.d"
-busybox_data_dir="/data/adb/magisk/busybox"
 ca_path="${dns_path}/security/cacerts"
 clash_data_dir_kernel="${clash_data_dir}/kernel"
 clash_data_sc="${clash_data_dir}/scripts"
@@ -29,7 +28,11 @@ else
 fi
 
 # 检查Magisk版本
-ui_print "- Magisk版本: $MAGISK_VER ($MAGISK_VER_CODE)"
+if [ $KSU ]; then
+    ui_print "- KernelSU版本: $KSU_VER ($KSU_VER_CODE)"
+else
+    ui_print "- Magisk版本: $MAGISK_VER ($MAGISK_VER_CODE)"
+fi
 
 # 检查Android版本
 if [ "$API" -lt 19 ]; then
@@ -99,7 +102,7 @@ mv ${clash_data_dir}/scripts/cacert.pem ${MODPATH}${ca_path}
 mv ${MODPATH}/GeoX/* ${clash_data_dir}/
 
 if [ ! -d /data/adb/service.d ] ; then
-    ui_print "- 创建magisk配置"
+    ui_print "- 创建自启动配置"
     mkdir -p /data/adb/service.d
 fi
 
@@ -128,6 +131,14 @@ mv ${clash_data_dir_kernel}/getpcaps ${MODPATH}${bin_path}/
 mv ${clash_data_dir_kernel}/getcap ${MODPATH}${bin_path}/
 mv ${clash_data_dir}/scripts/clash.config ${clash_data_dir}/
 mv ${clash_data_dir}/scripts/dnstt/dnstt-client ${clash_data_dir_kernel}/
+
+if [ $KSU ]; then
+    ui_print "- 使用Ksu的busybox"
+    sed -in 's/PATH_TO_BUSYBOX/\/data\/adb\/ksu\/bin\/busybox/' ${clash_data_dir}/clash.config
+else
+    ui_print "- 使用Magisk的busybox"
+    sed -in 's/PATH_TO_BUSYBOX/\/data\/adb\/magisk\/busybox/' ${clash_data_dir}/clash.config
+fi
 
 if [ ! -f "${bin_path}/ss" ] ; then
     mv ${clash_data_dir_kernel}/ss ${MODPATH}${bin_path}/

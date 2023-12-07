@@ -4,3 +4,4 @@ payload:
   -
   -
 #-------------------------------------
+  - DOMAIN-SUFFIX,googleapis.cn    #防止使用部分香港节点时谷歌play异常

@@ -40,8 +40,8 @@ update_file() {
     if [ -f ${file} ] ; then
       mv -f ${file} ${file_bak}
     fi
-    echo "/data/adb/magisk/busybox wget --no-check-certificate ${update_url} -o ${file}"
-    /data/adb/magisk/busybox wget --no-check-certificate ${update_url} -O ${file} 2>&1
+    echo "${busybox_path} wget --no-check-certificate ${update_url} -o ${file}"
+    ${busybox_path} wget --no-check-certificate ${update_url} -O ${file} 2>&1
     sleep 0.5
     if [ -f "${file}" ] ; then
       echo ""
@@ -211,7 +211,7 @@ update_dashboard () {
   file_dasboard="${Clash_data_dir}/dashboard.zip"
   rm -rf ${Clash_data_dir}/dashboard/metacubexd
 
-  /data/adb/magisk/busybox wget --no-check-certificate ${url_dashboard} -o ${file_dasboard} 2>&1
+  ${busybox_path} wget --no-check-certificate ${url_dashboard} -o ${file_dasboard} 2>&1
   unzip -o  "${file_dasboard}" "metacubexd-gh-pages/*" -d ${Clash_data_dir}/dashboard >&2
   mv -f ${Clash_data_dir}/dashboard/yacd-gh-pages ${Clash_data_dir}/dashboard/metacubexd
   rm -rf ${file_dasboard}

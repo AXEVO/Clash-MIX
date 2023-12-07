@@ -1,10 +1,9 @@
 ----------------------------------------------
 对于热点机用户，备用 文件夹中附带了一个xposed模块，用于固定热点机的IP地址
 这样可以在连接的终端上方便的远程访问dashboard进行节点切换等操作
-该软件更新地址   https://github.com/XhyEax/SoftApHelper/releases/tag/v1.010
+该软件更新地址   https://github.com/XhyEax/SoftApHelper
 ----------------------------------------------
 通配符说明 适用于过滤器
-[转发自频道 Kattesnive (kattesnive)]
 (A).*(B)             节点名既有 A 也有 B 
 (A)|(B)              节点名有 A 或者 B   
 ^(?!.*A)             节点名不含有 A 
@@ -23,39 +22,32 @@ https://github.com/v2fly/domain-list-community/tree/master/data
 检测是否连接成功网址
 https://ip.skk.moe/
 
-小知识
-脚本中写入
-PATH=$PATH:/data/data/com.termux/files/usr/bin/
-即可在任意终端使用系统没有而 Termux 有的命令.
-
 meta内核实时更新的配置文件教程地址：
 https://github.com/MetaCubeX/Clash.Meta/blob/Alpha/docs/config.yaml
 
-------------------------------------------以下为部分可自行替换配置，更多配置请看 教程与模板 文件夹内配置-----------------------------------------------
+------------------------------------------fcm相关-----------------------------------------------
+默认配置下fcm将会被走代理连接，你也可以自己修改fcm的行为
+这篇博客提供了一个hosts模块可以让fcm被重定向到台湾服务器，台湾服务器可以直连但是不稳定
+https://blog.minamigo.moe/archives/201
+由于dns配置已经启用use-host，这个模块直接安装即可不会冲突。
 
-可选规则 
+
+以下是一个提供fcm相关域名和ip的规则组，自己研究怎么用。
   GoogleFCM:
     type: http
     behavior: classical
     url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GoogleFCM/GoogleFCM.yaml
     path: ./rule_providers/GoogleFCM.yaml
     interval: 21600
+现已经淘汰，用处不是很大
 
-规则可用的关键字（机翻）
+geosite和geoip中也有googlefcm标签可以在规则中使用，最好使用这个
 
-DOMAIN:DOMAIN,www.google.com,policy只路由www.google.com到policy.
-DOMAIN-SUFFIX:将任何以,或,DOMAIN-SUFFIX,youtube.com,policy结尾的 FQDN 路由到. 这类似于通配符。youtube.comwww.youtube.comfoo.bar.youtube.compolicy+
-DOMAIN-KEYWORD:DOMAIN-KEYWORD,google,policy将任何包含google,www.google.com或googleapis.com, 的 FQDN 路由到policy.
-GEOIP:GEOIP,CN,policy将任何到中国 IP 地址的请求路由到policy.
-IP-CIDR：IP-CIDR,127.0.0.0/8,DIRECT将任何数据包路由127.0.0.0/8到DIRECT策略。
-IP-CIDR6:IP-CIDR6,2620:0:2d0:200::7/32,policy将任何数据包路由2620:0:2d0:200::7/32到policy.
-SRC-IP-CIDR：将SRC-IP-CIDR,192.168.1.201/32,DIRECT任何数据包路由到 策略。192.168.1.201/32DIRECT
-SRC-PORT:将任何数据包从端口 80SRC-PORT,80,policy路由到.policy
-DST-PORT:将DST-PORT,80,policy任何数据包路由到端口 80 到policy.
-PROCESS-NAME:PROCESS-NAME,nc,DIRECT将进程路由nc到DIRECT. (支持macOS、Linux、FreeBSD和Windows)
-MATCH:MATCH,policy将其余数据包路由到policy. 这条规则是必需的。
-还有两个额外的特殊政策：
+以下规则复制进userproxy有助于微信fcm能正常运行，同时也需要其他配套模块，如fcmfix 
+请注意，如果对微信开启黑名单，这些规则将不会生效
 
-DIRECT：直接连接到目标，不涉及任何代理
-REJECT：数据包的黑洞。Clash 不会处理此策略的任何 I/O。
-策略可以是DIRECT、REJECT、代理组或代理服务器。
+#--让微信注册fcm----------------------
+  - DOMAIN,short.weixin.qq.com
+  - DOMAIN,extshort.weixin.qq.com
+  - DOMAIN,dns.weixin.qq.com
+#-------------------------------------

@@ -428,7 +428,11 @@ if [ "${mode}" != "core" ] ; then
           log "[info] 正在创建 iptables 转发规则"
           time start_tproxy && log "[info] 创建 iptables 转发规则完成" || log "[error] 创建 iptables规则失败，模块可能与系统不兼容"
         else
-          [ "${network_mode}" = "TCP" ] && log "[info] 启动REDIRECT代理TCP，请确保您的redir-port填写正确，否则将无法联网" || log "[info] 使用混合模式：TCP+TUN 切换模式后如果手机无法联网，请重启"
+          [ "${network_mode}" = "TCP" ] && \
+          log "[info] 启动REDIRECT代理TCP" && \
+          log "[info] 请确保redir-port填写正确，否则将无法联网" || \
+          log "[info] 使用混合模式：Redirect（TCP）+TUN（UDP） " && \
+          log "[info] 切换其他模式后如果手机无法联网，请重启"
           log "[info] 正在创建 iptables 转发规则"
           time start_redirect && log "[info] 创建 iptables 转发规则完成" || log "[error] 创建 iptables 转发规则失败"
           time forward -I

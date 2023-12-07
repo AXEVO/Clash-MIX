@@ -2,7 +2,7 @@
 
 getmemory(){
   local clash_pid=$(cat /data/clash/run/clash.pid)
-  clash_alive=$(grep VmRSS /proc/${clash_pid}/status | /data/adb/magisk/busybox awk -F':' '{print $2}' | /data/adb/magisk/busybox awk '{print $1}')
+  clash_alive=$(grep VmRSS /proc/${clash_pid}/status | ${busybox_path} awk -F':' '{print $2}' | ${busybox_path} awk '{print $1}')
   if [ ${clash_alive} -ge 1024 ] ; then
     clash_res="$(expr ${clash_alive} / 1024)Mb"
   else

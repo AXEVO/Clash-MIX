@@ -141,7 +141,7 @@ log_suc() {
 
 # 提取失败日志的函数
 log_failed() {
-  log "[error] 启动失败，请检查内核报错并修改配置"
+  log "[error] 启动失败；请检查内核报错并修改配置"
   log "[error] 当前配置：${Clash_config_file}"
   echo "━━━━━━━━━━内核日志━━━━━━━━━━━" >> ${CFM_logs_file}
   sed -i s/.*msg=// ${Clash_run_path}/start.log
@@ -206,7 +206,6 @@ start_clash() {
   ceks_clash
   tun_tproxy
   temporary_config_file
-
   if [ -f "${Clash_bin_path}" ] ; then
     chown 0:3005 ${Clash_bin_path} && chown 0:3005 ${temporary_config_file}
     chmod 0700 ${Clash_bin_path} && chmod 0700 ${temporary_config_file}

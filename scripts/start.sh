@@ -7,7 +7,6 @@ then
 fi
 
 scripts_dir="/data/clash/scripts"
-busybox_path="/data/adb/magisk/busybox"
 Clash_run_path="/data/clash/run"
 Clash_pid_file="${Clash_run_path}/clash.pid"
 
