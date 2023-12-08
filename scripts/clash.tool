@@ -71,7 +71,7 @@ update_geo() {
     update_file ${Clash_config_file} ${Subcript_url}
     if [ "$?" = "0" ] ; then
       restart_required=true
-      log "[info] 更新Geo数据库"
+      log "[info] 更新订阅"
     else 
       log "[warning] 更新订阅失败"
     fi
