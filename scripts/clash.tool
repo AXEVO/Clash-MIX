@@ -34,15 +34,16 @@ restart_clash() {
 
 # 更新文件的函数
 update_file() {
+    current_time=$(date "+%Y-%m-%d %H:%M:%S")
     file="$1"
     file_bak="${file}.bak"
     update_url="$2"
     if [ -f ${file} ] ; then
       mv -f ${file} ${file_bak}
     fi
-    echo "${busybox_path} wget --no-check-certificate ${update_url} -o ${file}"
+    echo "${current_time} - ${busybox_path} wget --no-check-certificate ${update_url} -O ${file}" >> update.log
     ${busybox_path} wget --no-check-certificate ${update_url} -O ${file} 2>&1
-    sleep 0.5
+    sleep 5
     if [ -f "${file}" ] ; then
       echo ""
     else
@@ -76,7 +77,7 @@ update_geo() {
       log "[warning] 更新订阅失败"
     fi
   fi
-
+  sleep 5
   if [ -f "${Clash_pid_file}" ] && [ ${restart_required} == true ] ; then
     restart_clash
   fi

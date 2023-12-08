@@ -27,7 +27,7 @@ else
   abort "*********************************************************"
 fi
 
-# 检查Magisk版本
+# 检查版本
 if [ $KSU ]; then
     ui_print "- KernelSU版本: $KSU_VER ($KSU_VER_CODE)"
 else
@@ -52,7 +52,7 @@ fi
 ui_print "- 开始安装"
 
 if [ -d "${clash_data_dir}" ] ; then
-    ui_print "- 旧的clash文件已移动到clash.old"
+    ui_print "- 旧版本clash文件已移动到clash.old"
     mkdir -p /data/clash.old/${latest}
     mv ${clash_data_dir}/* /data/clash.old/${latest}
     rm -rf ${clash_data_dir}
@@ -158,7 +158,7 @@ rm -rf ${MODPATH}/verson.json
 
 sleep 1
 
-ui_print "- 安装控制器（1.6.4-90）"
+ui_print "- 安装控制器(1.6.4-90)"
 chcon u:object_r:system_file:s0 $MODPATH/APP/clash.apk
 output=$(pm install -r -f "$MODPATH/APP/clash.apk" 2>&1)
 
@@ -169,10 +169,10 @@ else
     apkPathSdcard="/sdcard/Clash控制器.apk"
     mv -f "$MODPATH/APP/clash.apk" "$apkPathSdcard"
     rm -rf ${MODPATH}/APP
-    echo "******************************"
+    echo "*****************************************"
     echo "  控制器安装失败, 原因: [$output]"
     echo "  请手动安装 [ $apkPathSdcard ]"
-    echo "********************************"
+    echo "*****************************************"
 fi
 
 sleep 1
@@ -185,8 +185,8 @@ if [  -f "/data/clash.old/${latest}/config.yaml" ] ; then
 else 
     if [  -f "/data/clash.delete/config.yaml" ] ; then
     ui_print "- >>-----------------------------------------------------------------------------<<"
-    ui_print "- >>检测到上次卸载Clash模块时自动备份的配置信息(内含订阅链接)<<"
-    ui_print "- >>已移动到Clash文件夹/config.old 如需要，请自行复制订阅链接<<"
+    ui_print "- >>检测到上次卸载Clash模块时自动备份的配置文件(内含订阅链接)<<"
+    ui_print "- >>已移动到/data/Clash/config.old 如需要，请自行复制订阅链接<<"
     ui_print "- >>-----------------------------------------------------------------------------<<"
     mv /data/clash.delete/config.yaml ${clash_data_dir}/config.old
     rm -rf /data/clash.delete
@@ -231,7 +231,7 @@ set_perm  ${clash_data_dir}/assets/ 0  0  0755
 sleep 3
 ui_print "- ----------------------------------------------------------------------------"
 ui_print "- 控制器已自动安装，请在桌面查找Clash控制器"
-ui_print "- 安装完成后请先进入data/clash/config.yaml "
+ui_print "- 第一次安装请先进入data/clash/config.yaml "
 ui_print "- 在配置文件的指定位置填写订阅链接，再重启手机"
-ui_print "- 建议打开 data/clash/备用 仔细查看详细说明和配置模板"
+ui_print "- 建议打开 /data/clash/备用 仔细查看详细说明和配置模板"
 ui_print "- ----------------------------------------------------------------------------"

@@ -84,7 +84,7 @@ tun_tproxy() {
     sed -i 's/auto-route:.*/auto-route: false/' ${Clash_template}
     sed -i 's/tproxy-port:.*/tproxy-port: 9898/' ${Clash_template}
     sed -i 's/network_mode=.*/network_mode="UDP"/' /data/clash/clash.config
-    log "[info] 启用 TProxy 模式."
+    log "[info] 启用 TProxy 模式"
   fi
 }
 
@@ -103,7 +103,7 @@ temporary_config_file() {
   fi
 
   mv ${temporary_config_file}.temp ${temporary_config_file} \
-  && log "[info] 合并 ${Clash_config_file} &模板成功" || log "[error] 合并 ${Clash_config_file} & 模板失败"
+  && log "[info] 合并 ${Clash_config_file} +模板成功" || log "[error] 合并 ${Clash_config_file} +模板失败"
 
   if [ ! -f "${temporary_config_file}" ] ; then
      log "[error] 找不到 ${temporary_config_file} 无法启动" && exit 1
@@ -246,16 +246,24 @@ kill_tool() {
 }
 
 # 停止Clash的函数
+
 stop_clash() {
   kill_tool
   if (kill -9 $(pidof clash) || killall -9 clash) ; then
     rm -rf ${Clash_pid_file}
     sleep 0.75
-    [ $(pidof clash) ] \
-    && log "[warning] Clash内核关闭失败" || log "[warning] Clash内核已关闭"
-    [ ! $(pidof clash) ] && log "[warning] Clash模块已停止运行"
+    if [ $(pidof clash) ]; then
+      log "[error] Clash内核关闭失败"
+    else
+      log "[warning] Clash内核已关闭"
+      log "[warning] 模块已停止运行"
+    fi
   else
-    log "[error] 停止Clash失败"
+    if [ $(pidof clash) ]; then
+      log "[error] Clash内核关闭失败"
+    else
+      log "[warning] 模块未运行"
+    fi
   fi
 }
 

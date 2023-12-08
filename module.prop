@@ -1,7 +1,7 @@
 id=ClashForMagisk
 name=Clash for Magisk
 version=v3.0
-versionCode=20231205
+versionCode=20231210
 author=t@amarin 魔改
 description=Clash 透明代理    内核: Meta 1.17.0
-updateJson=https://github.com/AXEVO/Clash-Mix/raw/Clash-MIX-3.0/version.json
+updateJson=https://raw.githubusercontent.com/AXEVO/Clash-MIX/Clash-MIX-3.0/verson.json

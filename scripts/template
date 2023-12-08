@@ -1,3 +1,7 @@
+#如果修改了config.yaml并删除了userDirect，userProxy
+#请把下面对应的nameserver-policy也删除，否则内核将无法启动
+#不建议切换为p核心，如果想要切换，请自行修改以下配置以适配p核
+#否则将无法启动
 redir-port: 9797
 mixed-port: 7890
 tproxy-port: 9898
@@ -75,8 +79,7 @@ dns:
     'geosite:!cn':
       - https://8.8.4.4/dns-query#机场
       - https://1.0.0.1/dns-query#机场
-#如果修改了config.yaml并删除了userDirect，userProxy
-#请把对应的nameserver-policy也删除，否则内核将无法启动
+
   proxy-server-nameserver:
     - https://223.5.5.5/dns-query
     - https://120.53.53.53/dns-query
