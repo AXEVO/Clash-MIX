@@ -103,7 +103,7 @@ temporary_config_file() {
   fi
 
   mv ${temporary_config_file}.temp ${temporary_config_file} \
-  && log "[info] 合并 ${Clash_config_file} +模板成功" || log "[error] 合并 ${Clash_config_file} +模板失败"
+  && log "[info] 合并 ${Clash_config_file} + 模板成功" || log "[error] 合并 ${Clash_config_file} + 模板失败"
 
   if [ ! -f "${temporary_config_file}" ] ; then
      log "[error] 找不到 ${temporary_config_file} 无法启动" && exit 1
@@ -201,6 +201,8 @@ start_clash() {
     echo 0 > /proc/sys/net/ipv6/conf/default/disable_ipv6
     echo 0 > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6
     log "[info] IPv6: ☑ 启用"
+    log "[warning] IPv6可能导致回环/CPU占用高等问题"
+    log "[warning] 如果出现异常，请关闭IPv6"    
   fi
   use_clash
   ceks_clash

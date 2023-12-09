@@ -408,7 +408,7 @@ detected_port() {
       return 0
     fi
   else
-    log "[info] 已关闭端口检测"
+    log "[info] 端口检测已关闭"
   fi
 }
 
@@ -429,7 +429,7 @@ if [ "${mode}" != "core" ] ; then
           time start_tproxy && log "[info] 创建 iptables 转发规则完成" || log "[error] 创建 iptables规则失败，模块可能与系统不兼容"
         else
           [ "${network_mode}" = "TCP" ] && \
-          log "[info] 启动REDIRECT代理TCP" && log "[info] 请确保redir-port填写正确，否则将无法联网" || log "[info] 使用混合模式：Redirect（TCP）+TUN（UDP） " && log "[warning] 如果切换为其他模式后断网,请重启系统"
+          log "[info] 启动REDIRECT代理TCP" && log "[info] 请确保redir-port填写正确 否则将无法联网" || log "[info] 使用混合模式：Redirect+TUN" && log "[warning] 如果切换其他模式后断网,请重启"
           log "[info] 正在创建 iptables 转发规则"
           time start_redirect && log "[info] 创建 iptables 转发规则完成" || log "[error] 创建 iptables规则失败，模块可能与系统不兼容"
           time forward -I
@@ -438,16 +438,9 @@ if [ "${mode}" != "core" ] ; then
         ;;
       k)
         time stop_tproxy
-        STATUS_STOP_TPROXY=$?
         time stop_redirect
-        STATUS_STOP_REDIRECT=$?
         time forward -D
-        STATUS_FORWARD=$?
-        if [ $STATUS_STOP_TPROXY -eq 0 ] && [ $STATUS_STOP_REDIRECT -eq 0 ] && [ $STATUS_FORWARD -eq 0 ]; then
-         log "[warning] iptables转发规则清除完成"
-        else
-         log "[error] 清除iptables转发规则失败"
-        fi
+        log "[warning] 清除iptables转发规则"
         ;;
       ?)
         echo ""

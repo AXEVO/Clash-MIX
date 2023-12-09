@@ -115,7 +115,7 @@ if [ ! -f "${dns_path}/resolv.conf" ] ; then
     echo nameserver 120.53.53.53 >> ${MODPATH}${dns_path}/resolv.conf
 fi
 
-ui_print "- 创建黑白名单--默认为黑名单，请使用控制器选择应用"
+ui_print "- 创建黑白名单--默认为黑名单，请使用控制器选择要加入名单的应用"
 if [ ! -f "${clash_data_dir}/scripts/packages.list" ] ; then
     touch ${clash_data_dir}/packages.list
 fi
