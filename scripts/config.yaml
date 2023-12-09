@@ -16,7 +16,7 @@ proxy-providers:
     interval: 10800
     health-check:
       enable: true
-      url: http://www.gstatic.com/generate_204
+      url: https://www.gstatic.com/generate_204
       interval: 900
   机场2:
     type: http
@@ -25,7 +25,7 @@ proxy-providers:
     interval: 10800
     health-check:
       enable: true
-      url: http://www.gstatic.com/generate_204
+      url: https://www.gstatic.com/generate_204
       interval: 900
   机场3:
     type: http
@@ -34,7 +34,7 @@ proxy-providers:
     interval: 10800
     health-check:
       enable: true
-      url: http://www.gstatic.com/generate_204
+      url: https://www.gstatic.com/generate_204
       interval: 900
   机场4:
     type: http
@@ -43,7 +43,7 @@ proxy-providers:
     interval: 10800
     health-check:
       enable: true
-      url: http://www.gstatic.com/generate_204
+      url: https://www.gstatic.com/generate_204
       interval: 900    
   机场5:
     type: http
@@ -52,7 +52,7 @@ proxy-providers:
     interval: 10800
     health-check:
       enable: true
-      url: http://www.gstatic.com/generate_204
+      url: https://www.gstatic.com/generate_204
       interval: 900   
 
 #-------------------------------------------------------------------
@@ -117,7 +117,7 @@ proxy-groups:
     type: load-balance
     use:
       - 机场1
-    url: 'http://www.gstatic.com/generate_204'
+    url: 'https://www.gstatic.com/generate_204'
     interval: 900
     filter: '美国|USA|美國|us|US'
     lazy: true
@@ -127,7 +127,7 @@ proxy-groups:
     type: load-balance
     use:
       - 机场4
-    url: 'http://www.gstatic.com/generate_204'
+    url: 'https://www.gstatic.com/generate_204'
     interval: 900
     filter: '美国|USA|美國|us|US'
     lazy: true
