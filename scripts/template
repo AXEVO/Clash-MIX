@@ -52,7 +52,6 @@ tun:
 
 dns:
   enable: true
-  ipv6: false
   use-hosts: true
   perfer-h3: false
   listen: 0.0.0.0:1053
