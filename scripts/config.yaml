@@ -3,7 +3,7 @@
 #如果你想手动添加代理或直连的地址，建议添加到userProxy和userDriect
 #如果你想删预置的userProxy和userDriect，务必要删除template文件
 #里面对应的nameserver-policy，否则内核将无法启动
-#注意：预置规则已经很完善，如果你使用自己的配置，出了问题请自己排查，不要问作者
+#注意：预置规则已经很完善，如果你使用自己的配置，出问题请自己排查，不要问作者
 #-----------------------------------------------------------------------
 proxies:
 #自己单独的节点/自建节点/免流方案可以往这里写一下，参见教程里面的格式
@@ -56,7 +56,7 @@ proxy-providers:
       interval: 900   
 
 #-------------------------------------------------------------------
-#data/clash/proxy-provider里面有白嫖节点可以使用，也欢迎提交更多白嫖节点
+#/data/clash/proxy-provider里面有白嫖节点可以使用，也欢迎提交更多白嫖节点
 #使用p核时，如果无法正常更新订阅，请打开proxy provider 里面的机场yaml配置文件查看
 #如果是乱码，需要自己在订阅链接结尾加上 &flag=clash  强制订阅服务器下发clash的配置文件
 # 机场2 机场1 机场3为机场名，可以更换，要换必须全换，建议使用编辑器的查找替换功能避免遗漏
@@ -109,7 +109,8 @@ proxy-groups:
       - 机场4
       - 机场5
     filter: '美国|USA|美國|us|US'
-#meta的特性，如果你经常使用某个地区节点可以使用过滤器便于选择 美国节点 可以改为其他
+    
+#meta的功能，如果经常使用某个地区节点可以使用过滤器便于选择 美国节点 可以改为其他
 #但是要改就得全改，建议使用编辑器的替换功能防止遗漏。过滤器内容用 | 分割，支持通配符
 
   - name: 负载均衡-大带宽
@@ -118,7 +119,7 @@ proxy-groups:
       - 机场1
     url: 'http://www.gstatic.com/generate_204'
     interval: 900
-    filter: '美国|USA|美國'
+    filter: '美国|USA|美國|us|US'
     lazy: true
     strategy: consistent-hashing
 
@@ -128,7 +129,7 @@ proxy-groups:
       - 机场4
     url: 'http://www.gstatic.com/generate_204'
     interval: 900
-    filter: '美国|USA|美國'
+    filter: '美国|USA|美國|us|US'
     lazy: true
     strategy: consistent-hashing
 
@@ -151,9 +152,9 @@ proxy-groups:
     proxies:
       - 机场
       - 墙内网址
-#用户自定义规则，文件在data/clash/rule-provider/
+
+#用户自定义规则，文件在/data/clash/rule-provider/
 #需要的自己写入，格式参照 备用 文件夹里面的clash官方文档
-#有一些规则已经预装但是未使用 比如fcm相关规则
 
 rule-providers:
 

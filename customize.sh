@@ -52,7 +52,7 @@ fi
 ui_print "- 开始安装"
 
 if [ -d "${clash_data_dir}" ] ; then
-    ui_print "- 旧版本clash文件已移动到clash.old"
+    ui_print "- 旧版clash模块文件已移动到clash.old"
     mkdir -p /data/clash.old/${latest}
     mv ${clash_data_dir}/* /data/clash.old/${latest}
     rm -rf ${clash_data_dir}
@@ -133,10 +133,10 @@ mv ${clash_data_dir}/scripts/clash.config ${clash_data_dir}/
 mv ${clash_data_dir}/scripts/dnstt/dnstt-client ${clash_data_dir_kernel}/
 
 if [ $KSU ]; then
-    ui_print "- 使用Ksu的busybox"
+    ui_print "- 使用Ksu的Busybox"
     sed -in 's/PATH_TO_BUSYBOX/\/data\/adb\/ksu\/bin\/busybox/' ${clash_data_dir}/clash.config
 else
-    ui_print "- 使用Magisk的busybox"
+    ui_print "- 使用Magisk的Busybox"
     sed -in 's/PATH_TO_BUSYBOX/\/data\/adb\/magisk\/busybox/' ${clash_data_dir}/clash.config
 fi
 
@@ -231,7 +231,7 @@ set_perm  ${clash_data_dir}/assets/ 0  0  0755
 sleep 3
 ui_print "- ----------------------------------------------------------------------------"
 ui_print "- 控制器已自动安装，请在桌面查找Clash控制器"
-ui_print "- 第一次安装请先进入data/clash/config.yaml "
+ui_print "- 第一次安装请先进入/data/clash/config.yaml "
 ui_print "- 在配置文件的指定位置填写订阅链接，再重启手机"
 ui_print "- 建议打开 /data/clash/备用 仔细查看详细说明和配置模板"
 ui_print "- ----------------------------------------------------------------------------"

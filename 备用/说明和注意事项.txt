@@ -29,7 +29,7 @@ https://github.com/MetaCubeX/Clash.Meta/blob/Alpha/docs/config.yaml
 默认配置下fcm将会被走代理连接，你也可以自己修改fcm的行为
 这篇博客提供了一个hosts模块可以让fcm被重定向到台湾服务器，台湾服务器可以直连但是不稳定
 https://blog.minamigo.moe/archives/201
-由于dns配置已经启用use-host，这个模块直接安装即可不会冲突。
+由于dns配置已经启用use-hosts，这个模块直接安装即可不会冲突。
 
 
 以下是一个提供fcm相关域名和ip的规则组，自己研究怎么用。
