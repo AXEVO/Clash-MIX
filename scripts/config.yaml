@@ -1,17 +1,19 @@
 #-----------------------------------------------------------------------
 #警告：如果你想要修改除了订阅链接的其他部分，务必对Meta内核的配置规则熟练掌握
-#如果你想手动添加代理或直连的地址，建议添加到userProxy和userDriect
+#如果你想手动添加走代理或直连的地址，建议添加到userProxy和userDriect
 #如果你想删预置的userProxy和userDriect，务必要删除template文件
 #里面对应的nameserver-policy，否则内核将无法启动
 #注意：预置规则已经很完善，如果你使用自己的配置，出问题请自己排查，不要问作者
+#可选两个广告拦截服务，默认秋风（精简，但可能会漏过），可以自己切换至geosite自带的广告拦截（可能有误杀）
+#version:20231221
 #-----------------------------------------------------------------------
 proxies:
-#自己单独的节点/自建节点/免流方案可以往这里写一下，参见教程里面的格式
+#自己单独的节点/自建节点/免流方案可以写在这里，参见教程里面的格式
 proxy-providers:
   
   机场1:
     type: http
-    url: "订阅链接"
+    url: "订阅链接填在引号内"
     path: ./proxy_providers/机场1.yaml
     interval: 10800
     health-check:
@@ -20,7 +22,7 @@ proxy-providers:
       interval: 900
   机场2:
     type: http
-    url: "订阅链接"
+    url: "订阅链接填在引号内"
     path: ./proxy_providers/机场2.yaml
     interval: 10800
     health-check:
@@ -29,7 +31,7 @@ proxy-providers:
       interval: 900
   机场3:
     type: http
-    url: "订阅链接"
+    url: "订阅链接填在引号内"
     path: ./proxy_providers/机场3.yaml
     interval: 10800
     health-check:
@@ -38,7 +40,7 @@ proxy-providers:
       interval: 900
   机场4:
     type: http
-    url: "订阅链接"
+    url: "订阅链接填在引号内"
     path: ./proxy_providers/机场4.yaml
     interval: 10800
     health-check:
@@ -47,7 +49,7 @@ proxy-providers:
       interval: 900    
   机场5:
     type: http
-    url: "订阅链接"
+    url: "订阅链接填在引号内"
     path: ./proxy_providers/机场5.yaml
     interval: 10800
     health-check:
@@ -62,7 +64,7 @@ proxy-providers:
 # 机场2 机场1 机场3为机场名，可以更换，要换必须全换，建议使用编辑器的查找替换功能避免遗漏
 #-------------------------------------------------------------------
 proxy-groups:
-  - name: 机场
+  - name: 代理
     type: select
     proxies:
       - 机场1
@@ -98,7 +100,11 @@ proxy-groups:
     type: select
     use:
       - 机场5
-
+#------------------------------------------------------------------------------
+#meta的功能，如果经常使用某个地区节点可以使用过滤器便于选择 美国节点 可以改为其他
+#但是要改就得全改，建议使用编辑器的替换功能防止遗漏。过滤器内容用 | 分割，支持通配符
+#推荐使用负载均衡，比自动选择和fallback好用
+#------------------------------------------------------------------------------
 
   - name: 美国节点
     type: select
@@ -109,9 +115,6 @@ proxy-groups:
       - 机场4
       - 机场5
     filter: '美国|USA|美國|us|US'
-    
-#meta的功能，如果经常使用某个地区节点可以使用过滤器便于选择 美国节点 可以改为其他
-#但是要改就得全改，建议使用编辑器的替换功能防止遗漏。过滤器内容用 | 分割，支持通配符
 
   - name: 负载均衡-大带宽
     type: load-balance
@@ -132,16 +135,15 @@ proxy-groups:
     filter: '美国|USA|美國|us|US'
     lazy: true
     strategy: consistent-hashing
-
-
-  - name: 墙内网址
+#-------------------------------------------------------------------
+  - name: 中国网站
     type: select
     proxies:
       - DIRECT
       - REJECT
-      - 机场
+      - 代理
 
-  - name: 广告屏蔽
+  - name: 广告
     type: select
     proxies:
       - REJECT
@@ -150,8 +152,8 @@ proxy-groups:
   - name: 其他
     type: select
     proxies:
-      - 机场
-      - 墙内网址
+      - 代理
+      - 中国网站
 
 #用户自定义规则，文件在/data/clash/rule-provider/
 #需要的自己写入，格式参照 备用 文件夹里面的clash官方文档
@@ -168,18 +170,28 @@ rule-providers:
     behavior: classical
     path: ./rule_providers/userProxy.yaml
 
+  秋风广告规则:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./rule_providers/AWAvenue-Ads-Rule-Clash.yaml
+    url: "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/AWAvenue-Ads-Rule-Clash.yaml"
+    interval: 86400
+
 rules:
-  - RULE-SET,userProxy,机场
-  - RULE-SET,userDirect,墙内网址
+  - RULE-SET,userProxy,代理
+  - RULE-SET,userDirect,中国网站
+
+  - RULE-SET,秋风广告规则,广告
+  #- GEOSITE,category-ads-all,广告      #geosite提供的广告规则，去掉注释#即可使用，误杀略严重且拖慢网速
   
   - GEOIP,private,DIRECT
   - GEOSITE,private,DIRECT
-  - GEOSITE,category-ads-all,广告屏蔽
+  
+  - GEOSITE,CN,中国网站
+  - GEOSITE,!CN,代理
 
-  - GEOSITE,CN,墙内网址
-  - GEOSITE,!CN,机场
-
-  - GEOIP,CN,墙内网址
-  - GEOIP,!CN,机场
+  - GEOIP,CN,中国网站
+  - GEOIP,!CN,代理
   
   - MATCH,其他

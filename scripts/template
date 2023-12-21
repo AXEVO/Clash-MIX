@@ -1,7 +1,7 @@
 #如果修改了config.yaml并删除了userDirect，userProxy
 #请把下面对应的nameserver-policy也删除，否则内核将无法启动
 #Premium内核已经停更不建议使用，如果想要切换至P核
-#请自行修改以下配置以适配p核，否则将无法启动
+#请自行根据p核文档修改下面的配置，否则将无法启动
 redir-port: 9797
 mixed-port: 7890
 tproxy-port: 9898
@@ -19,7 +19,7 @@ external-controller: 0.0.0.0:9090
 external-ui: dashboard/metacubexd
 secret: ""
 external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
-#面板可选metacubexd/yacd
+#面板可选metacubexd/yacd 有需要请自行修改
 #interface-name: tun0   #出口网卡名称 可用来桥接VPN类软件
 
 geox-url:
@@ -33,12 +33,13 @@ profile:
 
 sniffer:
   enable: false
+  parse-pure-ip: true
+  override-destination: false
   sniff:
     TLS:
       ports: [443, 8443]
     HTTP:
       ports: [80, 8080-8880]
-      override-destination: true
       
 tun:
   enable: false
@@ -56,13 +57,12 @@ dns:
   perfer-h3: false
   listen: 0.0.0.0:1053
   enhanced-mode: redir-host
-  # redir-host / fake-ip
+  # redir-host / fake-ip 可切换，建议使用redir-host避免dns污染，泄露
   fake-ip-range: 198.18.0.1/16
   fake-ip-filter:
-    - localhost.ptlogin2.qq.com
-    - '*.linksys.com'
-    - '*.ntp.*'
-    - '+.lan'
+    - "*"
+    - "+.lan"
+    - "+.local"
 
   nameserver-policy:
     'rule-set:userDirect':

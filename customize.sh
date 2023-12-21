@@ -134,10 +134,10 @@ mv ${clash_data_dir}/scripts/dnstt/dnstt-client ${clash_data_dir_kernel}/
 
 if [ $KSU ]; then
     ui_print "- 使用Ksu的Busybox"
-    sed -in 's/PATH_TO_BUSYBOX/\/data\/adb\/ksu\/bin\/busybox/' ${clash_data_dir}/clash.config
+    sed -i 's/PATH_TO_BUSYBOX/\/data\/adb\/ksu\/bin\/busybox/' ${clash_data_dir}/clash.config
 else
     ui_print "- 使用Magisk的Busybox"
-    sed -in 's/PATH_TO_BUSYBOX/\/data\/adb\/magisk\/busybox/' ${clash_data_dir}/clash.config
+    sed -i 's/PATH_TO_BUSYBOX/\/data\/adb\/magisk\/busybox/' ${clash_data_dir}/clash.config
 fi
 
 if [ ! -f "${bin_path}/ss" ] ; then
@@ -178,22 +178,32 @@ fi
 sleep 1
 
 if [  -f "/data/clash.old/${latest}/config.yaml" ] ; then
-    ui_print "- >>-------------------------------------------------<<"
-    ui_print "- >>本次安装为模块升级，已恢复原订阅链接<<"
-    ui_print "- >>-------------------------------------------------<<"
-    cp /data/clash.old/${latest}/config.yaml ${clash_data_dir}/
+    config_ver=$(grep -oP 'version: \K(\S+)' "/data/clash.old/${latest}")
+    if [ "$config_ver" != "20231221" ]; then
+     ui_print "- >>--------------------------------------------------------------------------<<"
+     ui_print "- >>本次模块更新 变更了config.yaml，请重新填写订阅链接<<"
+     ui_print "- >>旧的配置文件已被重命名为clash.old，订阅链接在里面<<"
+     ui_print "- >>--------------------------------------------------------------------------<<"
+     cp /data/clash.old/${latest}/config.yaml ${clash_data_dir}/config.old
+    else
+     ui_print "- >>-------------------------------------------------<<"
+     ui_print "- >>本次安装为模块升级，已恢复原订阅链接<<"
+     ui_print "- >>-------------------------------------------------<<"
+     cp /data/clash.old/${latest}/config.yaml ${clash_data_dir}/
+    fi
+    rm -rf /data/clash.delete
 else 
     if [  -f "/data/clash.delete/config.yaml" ] ; then
-    ui_print "- >>-----------------------------------------------------------------------------<<"
-    ui_print "- >>检测到上次卸载Clash模块时自动备份的配置文件(内含订阅链接)<<"
-    ui_print "- >>已移动到/data/Clash/config.old 如需要，请自行复制订阅链接<<"
-    ui_print "- >>-----------------------------------------------------------------------------<<"
-    mv /data/clash.delete/config.yaml ${clash_data_dir}/config.old
-    rm -rf /data/clash.delete
+     ui_print "- >>-----------------------------------------------------------------------------<<"
+     ui_print "- >>检测到上次卸载Clash模块时自动备份的配置文件(内含订阅链接)<<"
+     ui_print "- >>已移动到/data/Clash/config.old 如需要，请自行复制订阅链接<<"
+     ui_print "- >>-----------------------------------------------------------------------------<<"
+     mv /data/clash.delete/config.yaml ${clash_data_dir}/config.old
+     rm -rf /data/clash.delete
     else
-    ui_print "- >>----------------------------------------------------------------------------<<"
-    ui_print "- >>全新安装 请根据提示在指定位置填写订阅链接<<" 
-    ui_print "- >>----------------------------------------------------------------------------<<"
+     ui_print "- >>----------------------------------------------------------------------------<<"
+     ui_print "- >>全新安装 请根据提示在config.yaml指定位置填写订阅链接<<" 
+     ui_print "- >>----------------------------------------------------------------------------<<"
     fi
 fi
 
