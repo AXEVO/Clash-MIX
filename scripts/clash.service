@@ -103,7 +103,7 @@ temporary_config_file() {
   fi
 
   mv ${temporary_config_file}.temp ${temporary_config_file} \
-  && log "[info] 合并 ${Clash_config_file} + 模板成功" || log "[error] 合并 ${Clash_config_file} + 模板失败"
+  && log "[info] 合并 ${Clash_config_file} +模板成功" || log "[error] 合并 ${Clash_config_file} +模板失败"
 
   if [ ! -f "${temporary_config_file}" ] ; then
      log "[error] 找不到 ${temporary_config_file} 无法启动" && exit 1

@@ -429,7 +429,7 @@ if [ "${mode}" != "core" ] ; then
           time start_tproxy && log "[info] 创建 iptables 转发规则完成" || log "[error] 创建 iptables规则失败，模块可能与系统不兼容"
         else
           [ "${network_mode}" = "TCP" ] && \
-          log "[info] 启动REDIRECT代理TCP" && log "[info] 请确保redir-port填写正确 否则将无法联网" || log "[info] 使用混合模式：Redirect+TUN" && log "[warning] 如果切换其他模式后断网,请重启"
+          log "[info] 启动REDIRECT代理TCP" && log "[info] 请确保redir-port填写正确 否则将无法联网" || log "[info] 使用混合模式:Redirect+TUN" && log "[warning] 如果切换其他模式后断网,请重启"
           log "[info] 正在创建 iptables 转发规则"
           time start_redirect && log "[info] 创建 iptables 转发规则完成" || log "[error] 创建 iptables规则失败，模块可能与系统不兼容"
           time forward -I
