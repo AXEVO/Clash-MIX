@@ -178,32 +178,32 @@ fi
 sleep 1
 
 if [  -f "/data/clash.old/${latest}/config.yaml" ] ; then
-    config_ver=$(grep '#version:' /data/clash.old/${latest}/config.yaml | sed -n 's/^#version:\(.*\)/\1/p')
+    config_ver=$(grep 'version:' /data/clash.old/${latest}/config.yaml | sed -n 's/^.*version:\([[:digit:]]\+\).*/\1/p')
     if [ "$config_ver" != "20231221" ]; then
-     ui_print "- >>--------------------------------------------------<<"
-     ui_print "- >>本次模块更新 变更了config.yaml，请重新填写订阅链接"
-     ui_print "- >>旧的配置文件已被重命名为clash.old，订阅链接在里面"
-     ui_print "- >>--------------------------------------------------<<"
+     ui_print "->>-----------------------------------------------------<<"
+     ui_print "->>本次模块更新 变更了config.yaml，请重新填写订阅链接"
+     ui_print "->>旧的配置文件已被重命名为clash.old，订阅链接在里面"
+     ui_print "->>-----------------------------------------------------<<"
      cp /data/clash.old/${latest}/config.yaml ${clash_data_dir}/config.old
     else
-     ui_print "- >>-------------------------------------------------<<"
-     ui_print "- >> 本次安装为模块升级，已恢复原订阅链接"
-     ui_print "- >>-------------------------------------------------<<"
+     ui_print "->>-----------------------------------------------------<<"
+     ui_print "->> 本次安装为模块升级，已恢复原订阅链接"
+     ui_print "->>-----------------------------------------------------<<"
      cp /data/clash.old/${latest}/config.yaml ${clash_data_dir}/
     fi
     rm -rf /data/clash.delete
 else 
     if [  -f "/data/clash.delete/config.yaml" ] ; then
-     ui_print "- >>-------------------------------------------------------<<"
-     ui_print "- >>检测到上次卸载Clash模块时自动备份的配置文件(内含订阅链接)"
-     ui_print "- >>已移动到/data/Clash/config.old 如需要，请自行复制订阅链接"
-     ui_print "- >>-------------------------------------------------------<<"
+     ui_print "->>-------------------------------------------------------<<"
+     ui_print "->>检测到上次卸载Clash模块时自动备份的配置文件(内含订阅链接)"
+     ui_print "->>已移动到/data/Clash/config.old 如需要，请自行复制订阅链接"
+     ui_print "->>-------------------------------------------------------<<"
      mv /data/clash.delete/config.yaml ${clash_data_dir}/config.old
      rm -rf /data/clash.delete
     else
-     ui_print "- >>---------------------------------------------------<<"
-     ui_print "- >> 全新安装 请根据提示在config.yaml指定位置填写订阅链接" 
-     ui_print "- >>---------------------------------------------------<<"
+     ui_print "->>-------------------------------------------------------<<"
+     ui_print "->> 全新安装 请根据提示在config.yaml指定位置填写订阅链接" 
+     ui_print "->>-------------------------------------------------------<<"
     fi
 fi
 
@@ -239,9 +239,9 @@ set_perm  ${clash_data_dir}/proxy_providers/ 0  0  0755
 set_perm  ${clash_data_dir}/assets/ 0  0  0755
 
 sleep 3
-ui_print "- ----------------------------------------------------------------------------"
+ui_print "- -----------------------------------------------------"
 ui_print "-  控制器已自动安装，请在桌面查找Clash控制器"
 ui_print "-  第一次安装请先进入/data/clash/config.yaml "
 ui_print "-  在配置文件的指定位置填写订阅链接，再重启手机"
 ui_print "-  建议打开 /data/clash/备用 仔细查看详细说明"
-ui_print "- ----------------------------------------------------------------------------"
+ui_print "- -----------------------------------------------------"
