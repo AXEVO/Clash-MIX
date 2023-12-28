@@ -178,7 +178,7 @@ fi
 sleep 1
 
 if [  -f "/data/clash.old/${latest}/config.yaml" ] ; then
-    config_ver=$(grep 'version:' /data/clash.old/${latest}/config.yaml | sed -n 's/^.*version:\([[:digit:]]\+\).*/\1/p')
+    config_ver=$(grep -oE '#version:\K\d+' /data/clash.old/${latest}/config.yaml)
     if [ "$config_ver" != "20231221" ]; then
      ui_print "->>-----------------------------------------------------<<"
      ui_print "->>本次模块更新 变更了config.yaml，请重新填写订阅链接"
