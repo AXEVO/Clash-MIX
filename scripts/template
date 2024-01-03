@@ -1,7 +1,9 @@
-#如果修改了config.yaml并删除了userDirect，userProxy
-#请把下面对应的nameserver-policy也删除，否则内核将无法启动
-#Premium内核已经停更不建议使用，如果想要切换至P核
-#请自行根据p核文档修改下面的配置，否则将无法启动
+#如果修改了config.yaml并删除了userDirect，userProxy规则组，
+#或者修改了“中国网址”和“代理”策略组，
+#请把下面对应的nameserver-policy也删除，否则内核将无法启动。
+#Premium内核已经停更不建议使用，如果想要切换至P核，
+#请自行根据p核文档修改下面的配置，否则将无法启动。
+#----------------------------------------------
 redir-port: 9797
 mixed-port: 7890
 tproxy-port: 9898
@@ -15,17 +17,19 @@ bind-address: '*'
 log-level: info
 ipv6: false
 geodata-mode: true
+#interface-name: tun0   #出口网卡名称 可用来桥接VPN类软件
+#面板可选metacubexd/yacd 有需要请自行修改
 external-controller: 0.0.0.0:9090
 external-ui: dashboard/metacubexd
 secret: ""
 external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
-#面板可选metacubexd/yacd 有需要请自行修改
-#interface-name: tun0   #出口网卡名称 可用来桥接VPN类软件
 
 geox-url:
   geoip: "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat"
   geosite: "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat"
   mmdb: "https://raw.githubusercontent.com/Loyalsoldier/geoip/release/Country.mmdb"
+geo-auto-update: true
+geo-update-interval: 48
 
 profile:
   store-selected: true
@@ -65,19 +69,14 @@ dns:
     - "+.local"
 
   nameserver-policy:
-    'rule-set:userDirect':
+    'geosite:cn,private,rule-set:userDirect':
       - https://223.5.5.5/dns-query#中国网站
       - https://120.53.53.53/dns-query#中国网站
-    'rule-set:userProxy': 
-      - https://8.8.4.4/dns-query#代理
-      - https://1.0.0.1/dns-query#代理
-    'geosite:cn,private': 
-      - https://223.5.5.5/dns-query#中国网站
-      - https://120.53.53.53/dns-query#中国网站
-    'geosite:!cn':
-      - https://8.8.4.4/dns-query#代理
-      - https://1.0.0.1/dns-query#代理
 
+    'geosite:!cn,rule-set:userProxy': 
+      - https://8.8.4.4/dns-query#代理
+      - https://1.0.0.1/dns-query#代理
+      
   proxy-server-nameserver:
     - https://223.5.5.5/dns-query#中国网站
     - https://120.53.53.53/dns-query#中国网站

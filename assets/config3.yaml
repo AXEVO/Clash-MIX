@@ -1,4 +1,4 @@
-#-------------测试-------------
+#旧版本配置文件
 #-----------------------------------------------------------------------
 #警告：如果你想要修改除了订阅链接的其他部分，务必对Meta内核的配置规则熟练掌握。
 #如果想手动添加走代理或直连的规则，建议添加到userProxy和userDriect里面。
@@ -75,8 +75,8 @@ proxy-groups:
       - 机场4
       - 备用
       - 美国节点
-      - 自动切换
-      - 负载均衡
+      - 负载均衡-大带宽
+      - 负载均衡-固定IP
 
   - name: 机场1
     type: select
@@ -105,24 +105,30 @@ proxy-groups:
 #------------------------------------------------------------------------------
 #meta的功能，如果经常使用某个地区节点可以使用过滤器便于选择 美国节点 可以改为其他
 #但是要改就得全改，建议使用编辑器的替换功能防止遗漏。过滤器内容用 | 分割，支持通配符
-#推荐使用负载均衡，比自动切换和fallback好用
+#推荐使用负载均衡，比自动选择和fallback好用
 #------------------------------------------------------------------------------
 
   - name: 美国节点
     type: select
-    include-all-providers: true
+    use:
+      - 机场1
+      - 机场2
+      - 机场3
+      - 机场4
+      - 备用
     filter: '美国|USA|美國|us|US'
 
-  - name: 自动切换
-    type: fallback
+  - name: 负载均衡-大带宽
+    type: load-balance
     use:
       - 机场1
     url: 'https://www.gstatic.com/generate_204'
     interval: 900
     filter: '美国|USA|美國|us|US'
     lazy: true
+    strategy: consistent-hashing
 
-  - name: 负载均衡
+  - name: 负载均衡-固定IP
     type: load-balance
     use:
       - 机场4
@@ -171,12 +177,17 @@ rule-providers:
 rules:
   - RULE-SET,userProxy,代理
   - RULE-SET,userDirect,中国网站
-  - RULE-SET,秋风广告规则,广告
 
-  - GEOSITE,private,DIRECT
+  - RULE-SET,秋风广告规则,广告           #两个广告规则可以一起打开
+  #- GEOSITE,category-ads-all,广告      #geosite提供的广告规则，去掉注释#即可使用，误杀略严重且可能拖慢网速
+  
   - GEOIP,private,DIRECT
+  - GEOSITE,private,DIRECT
   
   - GEOSITE,CN,中国网站
-  - GEOIP,CN,中国网站
+  - GEOSITE,!CN,代理
 
-  - MATCH,代理
+  - GEOIP,CN,中国网站
+  - GEOIP,!CN,代理
+  
+  - MATCH,其他

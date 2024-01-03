@@ -128,7 +128,7 @@ port_detection() {
 update_kernel() {
   if [ "${use_premium}" == "false" ] ; then
     if [ "${meta_alpha}" == "false" ] ; then
-      tag_meta=$(/data/adb/magisk/busybox wget --no-check-certificate -qO- ${url_meta} | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+" | head -1)
+      tag_meta=$(${busybox_path} wget --no-check-certificate -qO- ${url_meta} | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+" | head -1)
       filename="${file_kernel}-${platform}-${arch}-${tag_meta}"
       update_file "${Clash_data_dir}/${file_kernel}.gz" "${url_meta}/download/${tag_meta}/${filename}.gz"
         if [ "$?" = "0" ]
@@ -136,7 +136,7 @@ update_kernel() {
           flag=false
         fi
     else
-      tag_meta=$(/data/adb/magisk/busybox wget --no-check-certificate -qO- ${url_meta}/expanded_assets/${tag} | grep -oE "${tag_name}" | head -1)
+      tag_meta=$(${busybox_path} wget --no-check-certificate -qO- ${url_meta}/expanded_assets/${tag} | grep -oE "${tag_name}" | head -1)
       filename="${file_kernel}-${platform}-${arch}-${tag_meta}"
       update_file "${Clash_data_dir}/${file_kernel}.gz" "${url_meta}/download/${tag}/${filename}.gz"
         if [ "$?" = "0" ]
@@ -145,7 +145,7 @@ update_kernel() {
         fi
     fi
   else
-    filename=$(/data/adb/magisk/busybox wget --no-check-certificate -qO- "${url_premium}/expanded_assets/premium" | grep -oE "clash-${platform}-${arch}-[0-9]+.[0-9]+.[0-9]+" | head -1)
+    filename=$(${busybox_path} wget --no-check-certificate -qO- "${url_premium}/expanded_assets/premium" | grep -oE "clash-${platform}-${arch}-[0-9]+.[0-9]+.[0-9]+" | head -1)
     update_file "${Clash_data_dir}/${file_kernel}.gz" "${url_premium}/download/premium/${filename}.gz"
     if [ "$?" = "0" ] ; then
       flag=false
