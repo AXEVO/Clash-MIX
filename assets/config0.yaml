@@ -32,8 +32,5 @@ rule:
 
   - GEOSITE,CN,DIRECT
   - GEOIP,CN,DIRECT
-
-  - GEOSITE,!CN,节点选择
-  - GEOIP,!CN,节点选择
   
   - MATCH,节点选择

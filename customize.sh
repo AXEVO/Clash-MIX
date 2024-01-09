@@ -21,10 +21,10 @@ latest=$(date +%Y%m%d%H%M)
 if $BOOTMODE; then
   ui_print "- 准备安装模块"
 else
-  ui_print "*********************************************************"
+  ui_print "**************************************************"
   ui_print "! 不支持从恢复模式安装"
   ui_print "! 请从Magisk应用安装"
-  abort "*********************************************************"
+  abort "*****************************************************"
 fi
 
 # 检查版本
@@ -179,7 +179,7 @@ sleep 1
 
 if [  -f "/data/clash.old/${latest}/config.yaml" ] ; then
     config_ver=$(grep '#version:' /data/clash.old/${latest}/config.yaml | sed -n 's/^#version:\(.*\)/\1/p')
-    if [ "$config_ver" != "20240103" ]; then
+    if [ "$config_ver" != "20240110" ]; then
      ui_print "->>-----------------------------------------------------<<"
      ui_print "->>本次模块更新 变更了config.yaml，请重新填写订阅链接"
      ui_print "->>旧的配置文件已被重命名为clash.old，订阅链接在里面"

@@ -9,11 +9,11 @@ mixed-port: 7890
 tproxy-port: 9898
 mode: rule
 allow-lan: true
+bind-address: '*'
 unified-delay: false
 tcp-concurrent: true
 enable-process: true
 find-process-mode: strict
-bind-address: '*'
 log-level: info
 ipv6: false
 geodata-mode: true
@@ -40,11 +40,16 @@ sniffer:
   parse-pure-ip: true
   override-destination: false
   sniff:
-    TLS:
-      ports: [443, 8443]
     HTTP:
       ports: [80, 8080-8880]
-      
+      override-destination: true
+    TLS:
+      ports: [443, 8443]
+    QUIC:
+      ports: [443, 8443]
+  skip-domain:
+    - "Mijia Cloud"
+
 tun:
   enable: false
   device: utun
@@ -59,6 +64,7 @@ dns:
   enable: true
   use-hosts: true
   perfer-h3: false
+  ipv6-timeout: 300
   listen: 0.0.0.0:1053
   enhanced-mode: redir-host
   # redir-host / fake-ip 可切换，建议使用redir-host避免dns污染，泄露
@@ -67,16 +73,25 @@ dns:
     - "*"
     - "+.lan"
     - "+.local"
+    - "localhost.ptlogin2.qq.com"
 
   nameserver-policy:
-    'geosite:cn,private,rule-set:userDirect':
-      - https://223.5.5.5/dns-query#中国网站
-      - https://120.53.53.53/dns-query#中国网站
+    'rule-set:userDirect':
+      - "https://223.5.5.5/dns-query#中国网站"
+      - "https://120.53.53.53/dns-query#中国网站"
 
-    'geosite:!cn,rule-set:userProxy': 
-      - https://8.8.4.4/dns-query#代理
-      - https://1.0.0.1/dns-query#代理
-      
+    'rule-set:userProxy': 
+      - "https://8.8.4.4/dns-query#代理"
+      - "https://1.0.0.1/dns-query#代理"
+
+    'geosite:cn,private':
+      - "https://223.5.5.5/dns-query#中国网站"
+      - "https://120.53.53.53/dns-query#中国网站"
+  
+  nameserver:
+    - "https://8.8.4.4/dns-query#代理"
+    - "https://1.0.0.1/dns-query#代理"
+
   proxy-server-nameserver:
-    - https://223.5.5.5/dns-query#中国网站
-    - https://120.53.53.53/dns-query#中国网站
+    - "https://223.5.5.5/dns-query#中国网站"
+    - "https://120.53.53.53/dns-query#中国网站"

@@ -1,0 +1,198 @@
+#-----------------------------------------------------------------------
+#警告：如果你想要修改除了订阅链接的其他部分，务必对Meta内核的配置规则熟练掌握。
+#如果想手动添加走代理或直连的规则，建议添加到userProxy和userDriect里面。
+#如果想删掉预置的userProxy和userDriect，或者要修改下面的“代理”和“中国网站”策略组，
+#请在务必要删除template文件里面对应的nameserver-policy配置，否则内核将无法启动或无法上网。
+#注意：预置规则已经很完善，如果你使用自己的配置，出问题请自己排查，不要问作者！
+#可选两个广告拦截服务，默认秋风（精简，但可能会漏过），可以自己切换至geosite自带的广告拦截（可能有误杀）
+#配置文件版本如下，删除后会导致更新模块时无法判断是否保留配置文件，只能覆盖。
+#version:20240101
+#-----------------------------------------------------------------------
+proxies:
+#自己单独的节点/自建节点/免流方案可以写在这里，参见教程里面的格式
+proxy-providers:
+  
+  机场1:
+    type: http
+    url: "订阅链接填在引号内"
+    path: ./proxy_providers/机场1.yaml
+    interval: 10800
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 900
+  机场2:
+    type: http
+    url: "订阅链接填在引号内"
+    path: ./proxy_providers/机场2.yaml
+    interval: 10800
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 900
+  机场3:
+    type: http
+    url: "订阅链接填在引号内"
+    path: ./proxy_providers/机场3.yaml
+    interval: 10800
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 900
+  机场4:
+    type: http
+    url: "订阅链接填在引号内"
+    path: ./proxy_providers/机场4.yaml
+    interval: 10800
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 900    
+  机场5:
+    type: http
+    url: "订阅链接填在引号内"
+    path: ./proxy_providers/机场5.yaml
+    interval: 10800
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 900   
+
+#-------------------------------------------------------------------
+#/data/clash/proxy-provider里面有白嫖节点可以使用，也欢迎提交更多白嫖节点
+#使用p核时，如果无法正常更新订阅，请打开proxy provider 里面的机场yaml配置文件查看
+#如果是乱码，需要自己在订阅链接结尾加上 &flag=clash  强制订阅服务器下发clash的配置文件
+# 机场2 机场1 机场3为机场名，可以更换，要换必须全换，建议使用编辑器的查找替换功能避免遗漏
+#-------------------------------------------------------------------
+proxy-groups:
+  - name: 代理
+    type: select
+    proxies:
+      - 机场1
+      - 机场2
+      - 机场3
+      - 机场4
+      - 机场5
+      - 美国节点
+      - 负载均衡-大带宽
+      - 负载均衡-优IP
+
+  - name: 机场1
+    type: select
+    use:
+      - 机场1
+
+  - name: 机场2
+    type: select
+    use:
+      - 机场2
+
+  - name: 机场3
+    type: select
+    use:
+      - 机场3
+      
+  - name: 机场4
+    type: select
+    use:
+      - 机场4
+
+  - name: 机场5
+    type: select
+    use:
+      - 机场5
+#------------------------------------------------------------------------------
+#meta的功能，如果经常使用某个地区节点可以使用过滤器便于选择 美国节点 可以改为其他
+#但是要改就得全改，建议使用编辑器的替换功能防止遗漏。过滤器内容用 | 分割，支持通配符
+#推荐使用负载均衡，比自动选择和fallback好用
+#------------------------------------------------------------------------------
+
+  - name: 美国节点
+    type: select
+    use:
+      - 机场1
+      - 机场2
+      - 机场3
+      - 机场4
+      - 机场5
+    filter: '美国|USA|美國|us|US'
+
+  - name: 负载均衡-大带宽
+    type: load-balance
+    use:
+      - 机场1
+    url: 'https://www.gstatic.com/generate_204'
+    interval: 900
+    filter: '美国|USA|美國|us|US'
+    lazy: true
+    strategy: consistent-hashing
+
+  - name: 负载均衡-优IP
+    type: load-balance
+    use:
+      - 机场4
+    url: 'https://www.gstatic.com/generate_204'
+    interval: 900
+    filter: '美国|USA|美國|us|US'
+    lazy: true
+    strategy: consistent-hashing
+#-------------------------------------------------------------------
+  - name: 中国网站
+    type: select
+    proxies:
+      - DIRECT
+      - REJECT
+      - 代理
+
+  - name: 广告
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+
+  - name: 其他
+    type: select
+    proxies:
+      - 代理
+      - 中国网站
+
+#用户自定义规则，文件在/data/clash/rule-provider/
+#需要的自己写入，格式参照 备用 文件夹里面的clash官方文档
+
+rule-providers:
+
+  userDirect:
+    type: file
+    behavior: classical
+    path: ./rule_providers/userDirect.yaml
+
+  userProxy:
+    type: file
+    behavior: classical
+    path: ./rule_providers/userProxy.yaml
+
+  秋风广告规则:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./rule_providers/AWAvenue-Ads-Rule-Clash.yaml
+    url: "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-Clash.yaml"
+    interval: 86400
+
+rules:
+  - RULE-SET,userProxy,代理
+  - RULE-SET,userDirect,中国网站
+
+  - RULE-SET,秋风广告规则,广告           #两个广告规则可以一起打开
+  #- GEOSITE,category-ads-all,广告      #geosite提供的广告规则，去掉注释#即可使用，误杀略严重且可能拖慢网速
+  
+  - GEOIP,private,DIRECT
+  - GEOSITE,private,DIRECT
+  
+  - GEOSITE,CN,中国网站
+  - GEOSITE,!CN,代理
+
+  - GEOIP,CN,中国网站
+  - GEOIP,!CN,代理
+  
+  - MATCH,其他

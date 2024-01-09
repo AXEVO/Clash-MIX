@@ -16,14 +16,14 @@ clash -t -f /data/clash/run/config.yaml
 由于rule-provider效率较低，目前已经转为使用geo规则，使用的geo文件地址如下
 https://github.com/Loyalsoldier/v2ray-rules-dat
 
-善用geo文件，所有可用的标签列表：
+善用geo文件，所有可用的标签列表，可自己写规则：
 https://github.com/v2fly/domain-list-community/tree/master/data
 
 检测是否连接成功网址
 https://ip.skk.moe/
 
 meta内核实时更新的配置文件教程地址：
-https://github.com/MetaCubeX/Clash.Meta/blob/Alpha/docs/config.yaml
+https://github.com/MetaCubeX/mihomo/blob/Meta/docs/config.yaml
 
 ------------------------------------------fcm相关-----------------------------------------------
 默认配置下fcm将会被走代理连接，你也可以自己修改fcm的行为

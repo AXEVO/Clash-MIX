@@ -6,7 +6,7 @@
 #注意：预置规则已经很完善，如果你使用自己的配置，出问题请自己排查，不要问作者！
 #可选两个广告拦截服务，默认秋风（精简，但可能会漏过），可以自己切换至geosite自带的广告拦截（可能有误杀）
 #配置文件版本如下，删除后会导致更新模块时无法判断是否保留配置文件，只能覆盖。
-#version:20240103
+#version:20240110
 #-----------------------------------------------------------------------
 proxies:
 #自己单独的节点/自建节点/免流方案可以写在这里，参见教程里面的格式
@@ -48,10 +48,10 @@ proxy-providers:
       enable: true
       url: https://www.gstatic.com/generate_204
       interval: 900    
-  机场5:
+  备用:
     type: http
     url: "订阅链接填在引号内"
-    path: ./proxy_providers/机场5.yaml
+    path: ./proxy_providers/备用.yaml
     interval: 10800
     health-check:
       enable: true
@@ -73,7 +73,7 @@ proxy-groups:
       - 机场2
       - 机场3
       - 机场4
-      - 机场5
+      - 备用
       - 美国节点
       - 负载均衡
       - 自动选择
@@ -98,10 +98,10 @@ proxy-groups:
     use:
       - 机场4
 
-  - name: 机场5
+  - name: 备用
     type: select
     use:
-      - 机场5
+      - 备用
 
 #------------------------------------------------------------------------------
 #meta的功能，如果经常使用某个地区节点可以使用过滤器便于选择 美国节点 可以改为其他
@@ -122,8 +122,8 @@ proxy-groups:
     url: 'https://www.gstatic.com/generate_204'
     interval: 900
     filter: '美国|USA|美國|us|US|United States'
+    exclude-filter: 'Emby'
     lazy: true
-    strategy: consistent-hashing
 
   - name: 负载均衡
     type: load-balance
