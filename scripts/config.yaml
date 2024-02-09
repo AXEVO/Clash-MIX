@@ -48,15 +48,6 @@ proxy-providers:
       enable: true
       url: https://www.gstatic.com/generate_204
       interval: 900    
-  备用:
-    type: http
-    url: "订阅链接填在引号内"
-    path: ./proxy_providers/备用.yaml
-    interval: 10800
-    health-check:
-      enable: true
-      url: https://www.gstatic.com/generate_204
-      interval: 900
 
 #-------------------------------------------------------------------
 #/data/clash/proxy-provider里面有白嫖节点可以使用，也欢迎提交更多白嫖节点
@@ -73,10 +64,8 @@ proxy-groups:
       - 机场2
       - 机场3
       - 机场4
-      - 备用
       - 美国节点
       - 负载均衡
-      - 自动选择
 
   - name: 机场1
     type: select
@@ -98,11 +87,6 @@ proxy-groups:
     use:
       - 机场4
 
-  - name: 备用
-    type: select
-    use:
-      - 备用
-
 #------------------------------------------------------------------------------
 #meta的功能，如果经常使用某个地区节点可以使用过滤器便于选择 美国节点 可以改为其他
 #但是要改就得全改，建议使用编辑器的替换功能防止遗漏。过滤器内容用 | 分割，支持通配符
@@ -113,17 +97,6 @@ proxy-groups:
     type: select
     include-all: true
     filter: '美国|USA|美國|us|US|United States'
-
-  
-  - name: 自动选择
-    type: url-test
-    use:
-      - 机场1
-    url: 'https://www.gstatic.com/generate_204'
-    interval: 900
-    filter: '美国|USA|美國|us|US|United States'
-    exclude-filter: 'Emby'
-    lazy: true
 
   - name: 负载均衡
     type: load-balance

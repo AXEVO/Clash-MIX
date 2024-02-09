@@ -132,13 +132,21 @@ mv ${clash_data_dir_kernel}/getcap ${MODPATH}${bin_path}/
 mv ${clash_data_dir}/scripts/clash.config ${clash_data_dir}/
 mv ${clash_data_dir}/scripts/dnstt/dnstt-client ${clash_data_dir_kernel}/
 
+
 if [ $KSU ]; then
     ui_print "- 使用Ksu的Busybox"
     sed -i 's/PATH_TO_BUSYBOX/\/data\/adb\/ksu\/bin\/busybox/' ${clash_data_dir}/clash.config
-else
+elif [ -f "/data/adb/magisk/busybox" ]; then
     ui_print "- 使用Magisk的Busybox"
     sed -i 's/PATH_TO_BUSYBOX/\/data\/adb\/magisk\/busybox/' ${clash_data_dir}/clash.config
+elif [ -f "/data/adb/ap/bin/busybox" ]; then
+    ui_print "- 使用Apatch的busybox"
+    sed -i 's/PATH_TO_BUSYBOX/\/data\/adb\/ap\/bin\/busybox/' ${clash_data_dir}/clash.config
+else
+    ui_print "- Busybox错误"
 fi
+
+
 
 if [ ! -f "${bin_path}/ss" ] ; then
     mv ${clash_data_dir_kernel}/ss ${MODPATH}${bin_path}/

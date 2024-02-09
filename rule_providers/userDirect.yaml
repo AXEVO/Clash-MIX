@@ -4,6 +4,5 @@ payload:
   -
   -
 #----------------------------------------
-  - DOMAIN-SUFFIX,cdn.jsdelivr.net        #这个反代工具本来就可以直连，善用可以节省很多流量
   - DOMAIN-SUFFIX,windowsupdate.com       #win系统更新不走代理以免浪费流量
 #rule-provider里面不能使用and not or等逻辑判断类规则
