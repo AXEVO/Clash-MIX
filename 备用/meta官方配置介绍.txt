@@ -283,7 +283,6 @@ dns:
     # "rule-set:global,dns": 8.8.8.8
 
 proxies: # socks5
-省略，需要看本文档的也不需要自己写规则，都是机场用户
 
 proxy-groups:
   # 代理链，目前relay可以支持udp的只有vmess/vless/trojan/ss/ssr/tuic
@@ -306,6 +305,7 @@ proxy-groups:
       - vmess1
     # tolerance: 150
     # lazy: true
+    # expected-status: 204 # 当健康检查返回状态码与期望值不符时，认为节点不可用
     url: "https://cp.cloudflare.com/generate_204"
     interval: 300
 
@@ -369,6 +369,7 @@ proxy-providers:
       interval: 600
       # lazy: true
       url: https://cp.cloudflare.com/generate_204
+      # expected-status: 204 # 当健康检查返回状态码与期望值不符时，认为节点不可用
     override: # 覆写节点加载时的一些配置项
       skip-cert-verify: true
       udp: true
