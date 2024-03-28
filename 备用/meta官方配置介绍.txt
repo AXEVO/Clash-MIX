@@ -284,6 +284,7 @@ dns:
 
 proxies: # socks5
 
+
 proxy-groups:
   # 代理链，目前relay可以支持udp的只有vmess/vless/trojan/ss/ssr/tuic
   # wireguard目前不支持在relay中使用，请使用proxy中的dialer-proxy配置项
@@ -379,6 +380,8 @@ proxy-providers:
       # interface-name: tailscale0
       # routing-mark: 233
       # ip-version: ipv4-prefer
+      # additional-prefix: "[provider1]"
+      # additional-suffix: "test"
   test:
     type: file
     path: /test.yaml
@@ -400,6 +403,8 @@ rule-providers:
     type: file
 rules:
   - RULE-SET,rule1,REJECT
+  - IP-ASN,1,PROXY
+  - DOMAIN-REGEX,^abc,DIRECT
   - DOMAIN-SUFFIX,baidu.com,DIRECT
   - DOMAIN-KEYWORD,google,ss1
   - IP-CIDR,1.1.1.1/32,ss1
