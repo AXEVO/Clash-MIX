@@ -58,10 +58,20 @@ external-controller: 0.0.0.0:9093 # RESTful API 监听地址
 external-controller-tls: 0.0.0.0:9443 # RESTful API HTTPS 监听地址，需要配置 tls 部分配置文件
 # secret: "123456" # `Authorization:Bearer ${secret}`
 
+# RESTful API CORS标头配置
+external-controller-cors:
+  allow-origins:
+    - *
+  allow-private-network: true
+
 # RESTful API Unix socket 监听地址（ windows版本大于17063也可以使用，即大于等于1803/RS4版本即可使用 ）
 # ！！！注意： 从Unix socket访问api接口不会验证secret， 如果开启请自行保证安全问题 ！！！
 # 测试方法： curl -v --unix-socket "mihomo.sock" http://localhost/
 external-controller-unix: mihomo.sock
+
+# RESTful API Windows namedpipe 监听地址
+# ！！！注意： 从Windows namedpipe访问api接口不会验证secret， 如果开启请自行保证安全问题 ！！！
+external-controller-pipe: \\.\pipe\mihomo
 
 # tcp-concurrent: true # TCP 并发连接所有 IP, 将使用最快握手的 TCP
 
@@ -429,6 +439,13 @@ proxy-providers:
       # ip-version: ipv4-prefer
       # additional-prefix: "[provider1]"
       # additional-suffix: "test"
+      # # 名字替换，支持正则表达式
+      # proxy-name:
+      #   - pattern: "test"
+      #     target: "TEST"
+      #   - pattern: "IPLC-(.*?)倍"
+      #     target: "iplc x $1"
+
   test:
     type: file
     path: /test.yaml
@@ -455,12 +472,12 @@ rule-providers:
     # 对于behavior=domain:
     #  - format=yaml 可以通过“mihomo convert-ruleset domain yaml XXX.yaml XXX.mrs”转换到mrs格式
     #  - format=text 可以通过“mihomo convert-ruleset domain text XXX.text XXX.mrs”转换到mrs格式
-    #  - XXX.mrs 可以通过"mihomo convert-ruleset domain mrs XXX.mrs XXX.text"转换回text格式（暂不支持转换回ymal格式）
+    #  - XXX.mrs 可以通过"mihomo convert-ruleset domain mrs XXX.mrs XXX.text"转换回text格式（暂不支持转换回yaml格式）
     #
     # 对于behavior=ipcidr:
     #  - format=yaml 可以通过“mihomo convert-ruleset ipcidr yaml XXX.yaml XXX.mrs”转换到mrs格式
     #  - format=text 可以通过“mihomo convert-ruleset ipcidr text XXX.text XXX.mrs”转换到mrs格式
-    #  - XXX.mrs 可以通过"mihomo convert-ruleset ipcidr mrs XXX.mrs XXX.text"转换回text格式（暂不支持转换回ymal格式）
+    #  - XXX.mrs 可以通过"mihomo convert-ruleset ipcidr mrs XXX.mrs XXX.text"转换回text格式（暂不支持转换回yaml格式）
     #
     type: http
     url: "url"

@@ -12,7 +12,6 @@ allow-lan: true
 bind-address: '*'
 unified-delay: false
 tcp-concurrent: true
-enable-process: true
 find-process-mode: strict
 log-level: info
 ipv6: false
@@ -28,6 +27,7 @@ geox-url:
   geoip: "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat"
   geosite: "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat"
   mmdb: "https://raw.githubusercontent.com/Loyalsoldier/geoip/release/Country.mmdb"
+  asn: "https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb"
 geo-auto-update: true
 geo-update-interval: 48
 
