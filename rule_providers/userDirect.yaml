@@ -1,9 +1,0 @@
-payload:
-#----自定义规则 格式请参考教程------------
-  - 
-  -
-  -
-#----------------------------------------
-  - DOMAIN-SUFFIX,windowsupdate.com       #win系统更新不走代理以免浪费流量
-#classical形式的rule-provider支持路由规则的全部类型 (rule-set/sub-rule 除外)
-#可用规则格式如下：https://wiki.metacubex.one/config/rules/
