@@ -1,0 +1,9 @@
+payload:
+#自定义规则 格式请参考教程--------------
+  - 
+  -
+  -
+#-------------------------------------
+  - DOMAIN-SUFFIX,googleapis.cn    #防止使用部分香港节点时play商店无法下载软件
+#classical形式的rule-provider支持路由规则的全部类型 (rule-set/sub-rule 除外)
+#可用规则格式如下：https://wiki.metacubex.one/config/rules/

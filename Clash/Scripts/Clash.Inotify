@@ -1,0 +1,16 @@
+#!/system/bin/sh
+
+# 获取 inotifyd 传递的事件和文件路径
+events=$1
+monitor_file=$3
+
+# 检查文件是否是 "disable"
+if [ "$monitor_file" = "disable" ]; then
+    if [ "$events" = "d" ]; then
+        # 删除 "disable" 文件时启动服务
+        /data/adb/modules/Clash/Script/Clash.Service start
+    elif [ "$events" = "a" ]; then
+        # 创建 "disable" 文件时停止服务
+        /data/adb/modules/Clash/Script/Clash.Service stop
+    fi
+fi
