@@ -13,4 +13,4 @@ rm -rf ${Module_dir} && mkdir -p ${Module_dir}
 mv ${MODPATH}/Clash/* ${Module_dir}/
 
 # 设置安装目录的权限
-chmod 777 -Rf ${Module_dir}
+chmod 755 -Rf ${Module_dir}

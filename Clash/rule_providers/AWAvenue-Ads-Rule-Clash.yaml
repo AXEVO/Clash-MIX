@@ -1,7 +1,7 @@
 #Title: AWAvenue Ads Rule
 #--------------------------------------
-#Total lines: 730
-#Version: 1.5.5-release
+#Total lines: 751
+#Version: 1.5.6-release
 
 #Homepage: https://github.com/TG-Twilight/AWAvenue-Ads-Rule
 #License: https://github.com/TG-Twilight/AWAvenue-Ads-Rule/blob/main/LICENSE
@@ -55,6 +55,7 @@ payload:
   - DOMAIN,adclick.g.doubleclick.net
   - DOMAIN,adclick.tencentmusic.com
   - DOMAIN,adcolony.com
+  - DOMAIN,addata.jd.com
   - DOMAIN,adexpo.tencentmusic.com
   - DOMAIN,adfilter.imtt.qq.com
   - DOMAIN,adfstat.yandex.ru
@@ -152,6 +153,7 @@ payload:
   - DOMAIN,aiseet.aa.atianqi.com
   - DOMAIN,ali-ad.a.yximgs.com
   - DOMAIN,alog.umeng.com
+  - DOMAIN,alogus.umeng.com
   - DOMAIN,als.baidu.com
   - DOMAIN,amdcopen.m.taobao.com
   - DOMAIN,amdcopen.m.umeng.com
@@ -193,14 +195,17 @@ payload:
   - DOMAIN,api.jietuhb.com
   - DOMAIN,api.kingdata.ksyun.com
   - DOMAIN,api.statsig.com
+  - DOMAIN,api.touch-moblie.com
   - DOMAIN,api5-normal-quic-lf.ixigua.com
   - DOMAIN,apiyd.my91app.com
   - DOMAIN,apks.webxiaobai.top
   - DOMAIN,app-measurement.com
+  - DOMAIN,appcfg.v.qq.com
   - DOMAIN,appcloud2.in.zhihu.com
   - DOMAIN,applog.lc.quark.cn
   - DOMAIN,applog.uc.cn
   - DOMAIN,applog.zijieapi.com
+  - DOMAIN,aspect-upush.umeng.com
   - DOMAIN,ata-sdk-uuid-report.dreport.meituan.net
   - DOMAIN,auction.unityads.unity3d.com
   - DOMAIN,audid-api.taobao.com
@@ -237,6 +242,7 @@ payload:
   - DOMAIN,canvas-cdn.gdt.qq.com
   - DOMAIN,catalog.fjwhcbsh.com
   - DOMAIN,cbjs.baidu.com
+  - DOMAIN,ccc-x.jd.com
   - DOMAIN,ccs.umeng.com
   - DOMAIN,cctv.adsunion.com
   - DOMAIN,cdn-ad.wtzw.com
@@ -295,8 +301,13 @@ payload:
   - DOMAIN,events-drcn.op.dbankcloud.cn
   - DOMAIN,events.reddit.com
   - DOMAIN,events.redditmedia.com
+  - DOMAIN,fclog.baidu.com
+  - DOMAIN,feed-image.baidu.com
+  - DOMAIN,file.daihuo.qq.com
   - DOMAIN,firebaselogging-pa.googleapis.com
   - DOMAIN,flurry.com
+  - DOMAIN,frontend-perf-service.e.kuaishou.com
+  - DOMAIN,fxgate.baidu.com
   - DOMAIN,g-adnet.hiaiabc.com
   - DOMAIN,g-staic.ganjingworld.com
   - DOMAIN,g2.ganjing.world
@@ -357,6 +368,7 @@ payload:
   - DOMAIN,images.outbrainimg.com
   - DOMAIN,images.pinduoduo.com
   - DOMAIN,img-c.heytapimage.com
+  - DOMAIN,img-x.jd.com
   - DOMAIN,img.adnyg.com
   - DOMAIN,img.adnyg.com.w.kunlungr.com
   - DOMAIN,imtmp.net
@@ -373,8 +385,10 @@ payload:
   - DOMAIN,jpush.html5.qq.com
   - DOMAIN,jpush.io
   - DOMAIN,jswebcollects.kugou.com
+  - DOMAIN,kde.qq.com
   - DOMAIN,kepler.jd.com
   - DOMAIN,kl.67it.com
+  - DOMAIN,klink.volceapplog.com
   - DOMAIN,knicks.jd.com
   - DOMAIN,ks.pull.yximgs.com
   - DOMAIN,launcher.smart-tv.cn
@@ -394,8 +408,11 @@ payload:
   - DOMAIN,log-api.pangolin-sdk-toutiao.com
   - DOMAIN,log-report.com
   - DOMAIN,log-sdk.gifshow.com
+  - DOMAIN,log-sdk.ksapisrv.com
   - DOMAIN,log-upload-os.hoyoverse.com
   - DOMAIN,log-upload.mihoyo.com
+  - DOMAIN,log-verify.dutils.com
+  - DOMAIN,log-verify.hiaiabc.com
   - DOMAIN,log.ad.xiaomi.com
   - DOMAIN,log.aispeech.com
   - DOMAIN,log.amemv.com
@@ -420,6 +437,7 @@ payload:
   - DOMAIN,logservice1.hicloud.com
   - DOMAIN,logtj.kugou.com
   - DOMAIN,logupdate.avlyun.sec.miui.com
+  - DOMAIN,luimg.baidu.com
   - DOMAIN,m-adnet.hiaiabc.com
   - DOMAIN,m.ad.zhangyue.com
   - DOMAIN,m.atm.youku.com
@@ -457,6 +475,7 @@ payload:
   - DOMAIN,mssdk.volces.com
   - DOMAIN,mssdk.zijieapi.com
   - DOMAIN,mtj.baidu.com
+  - DOMAIN,nadvideo2.baidu.com
   - DOMAIN,newvoice.chiq5.smart-tv.cn
   - DOMAIN,nmetrics.samsung.com
   - DOMAIN,notes-analytics-events.apple.com
@@ -468,8 +487,8 @@ payload:
   - DOMAIN,open.e.kuaishou.cn
   - DOMAIN,open.e.kuaishou.com
   - DOMAIN,open.kuaishouzt.com
-  - DOMAIN,open.kwaishouzt.com
   - DOMAIN,open.kwaizt.com
+  - DOMAIN,open.snssdk.com
   - DOMAIN,optimus-ads.amap.com
   - DOMAIN,orbit.jd.com
   - DOMAIN,oth.eve.mdt.qq.com
@@ -645,6 +664,7 @@ payload:
   - DOMAIN,update.avlyun.sec.miui.com
   - DOMAIN,update.lejiao.tv
   - DOMAIN,upgrade-update.hismarttv.com
+  - DOMAIN,uranus.jd.com
   - DOMAIN,us.l.qq.com
   - DOMAIN,v.adintl.cn
   - DOMAIN,v.adx.hubcloud.com.cn
@@ -691,6 +711,7 @@ payload:
   - DOMAIN,w1.zskwai.com
   - DOMAIN,watson.microsoft.com
   - DOMAIN,watson.telemetry.microsoft.com
+  - DOMAIN,wcp.taobao.com
   - DOMAIN,weather-analytics-events.apple.com
   - DOMAIN,weather-community-drcn.weather.dbankcloud.cn
   - DOMAIN,webstat.qiumibao.com
@@ -698,6 +719,7 @@ payload:
   - DOMAIN,widgets.outbrain.com
   - DOMAIN,widgets.pinterest.com
   - DOMAIN,win.gdt.qq.com
+  - DOMAIN,wl.jd.com
   - DOMAIN,wn.x.jd.com
   - DOMAIN,ws-keyboard.shouji.sogou.com
   - DOMAIN,ws.sj.qq.com
@@ -706,6 +728,7 @@ payload:
   - DOMAIN,wximg.wxs.qq.com
   - DOMAIN,wxsmw.wxs.qq.com
   - DOMAIN,wxsnsad.tc.qq.com
+  - DOMAIN,wxsnsdy.tc.qq.com
   - DOMAIN,wxsnsdy.wxs.qq.com
   - DOMAIN,wxsnsdythumb.wxs.qq.com
   - DOMAIN,xc.gdt.qq.com
@@ -724,7 +747,6 @@ payload:
   - DOMAIN,zeus.ad.xiaomi.com
   - DOMAIN,zhihu-web-analytics.zhihu.com
   - DOMAIN-REGEX,^.*\.*\.shouji\.sogou\.com$
-  - DOMAIN-REGEX,^.*\.[a-zA-Z0-9.-]skwai\.com$
   - DOMAIN-REGEX,^.*\.a\.market\.xiaomi\.com$
   - DOMAIN-REGEX,^.*\.data\.hicloud\.com$
   - DOMAIN-REGEX,^.*\.log\.aliyuncs\.com$
@@ -733,7 +755,6 @@ payload:
   - DOMAIN-REGEX,^[a-zA-Z0-9.-]*-ad\.video\.yximgs\.com$
   - DOMAIN-REGEX,^[a-zA-Z0-9.-]*-ad\.wtzw\.com$
   - DOMAIN-REGEX,^[a-zA-Z0-9.-]*-be-pack-sign\.pglstatp-toutiao\.com$
-  - DOMAIN-REGEX,^[a-zA-Z0-9.-]*-lm\.adkwai\.com$
   - DOMAIN-REGEX,^[a-zA-Z0-9.-]*-normal-[a-zA-Z0-9.-]*\.zijieapi\.com$
   - DOMAIN-REGEX,^[a-zA-Z0-9.-]*-normal\.zijieapi\.com$
   - DOMAIN-REGEX,^cloudinject[a-zA-Z0-9.-]*-dev\.*\.[a-zA-Z0-9.-]*-[a-zA-Z0-9.-]*-[a-zA-Z0-9.-]*\.amazonaws\.com$

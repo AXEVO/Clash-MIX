@@ -3,4 +3,4 @@ name=Clash TUN
 version=V4.0-test
 versionCode=20241215
 author=GfwFucker
-description=Tun实现的Clash透明代理    内核:Meta 1.19.0
+description=Clash透明代理(Tun)     内核:Meta 1.19.0
