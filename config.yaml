@@ -24,28 +24,17 @@ profile:
   store-selected: true
   store-fake-ip: true
 
-sniffer:
-  enable: false
-  override-destination: false
-  sniff:
-    HTTP:
-      ports: [80, 443, 8080-8880]
-      override-destination: true
-    TLS:
-      ports: [443, 853, 8443]
-    QUIC:
-      ports: [443, 853, 8443]
-  skip-domain:
-    - "+.push.apple.com"
-    - "Mijia Cloud"
 
 tun:
   enable: true
   stack: system
+  device: Meta
   auto-route: true
   auto-detect-interface: true
-  dns-hijack: [any:53, tcp://any:53]
-  device: Meta
+  strict-route: false
+  dns-hijack: 
+    - any:53,
+    - tcp://any:53
 
 dns:
   enable: true
@@ -54,7 +43,7 @@ dns:
   ipv6-timeout: 300
   listen: 0.0.0.0:1053
   enhanced-mode: redir-host
-  # redir-host / fake-ip 可切换，建议使用redir-host避免dns污染，泄露
+  # redir-host / fake-ip 可切换，建议使用redir-host避免dns污染和泄露
   fake-ip-range: 198.18.0.1/16
   fake-ip-filter:
     - "*"
@@ -154,12 +143,12 @@ proxy-groups:
   - name: 代理
     type: select
     proxies:
+      - 美国节点
       - 机场1
       - 机场2
       - 机场3
       - 机场4
       - 机场5
-      - 美国节点
       - 机场1负载均衡
       - 机场2负载均衡
       - 机场3负载均衡
@@ -325,6 +314,9 @@ proxy-groups:
       - REJECT
       - PASS
 #-------------------------------------------------------------------
+#用户自定义规则，文件在模块目录/rule-provider/
+#如有需要请参考官方文档写入
+
 rule-providers:
 
   userDirect:
