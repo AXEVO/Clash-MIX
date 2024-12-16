@@ -24,6 +24,20 @@ profile:
   store-selected: true
   store-fake-ip: true
 
+sniffer:
+  enable: true
+  override-destination: false
+  sniff:
+    HTTP:
+      ports: [80, 443, 8080-8880]
+      override-destination: true
+    TLS:
+      ports: [443, 853, 8443]
+    QUIC:
+      ports: [443, 853, 8443]
+  skip-domain:
+    - "+.push.apple.com"
+    - "Mijia Cloud"
 
 tun:
   enable: true
@@ -33,7 +47,7 @@ tun:
   auto-detect-interface: true
   strict-route: false
   dns-hijack: 
-    - any:53,
+    - any:53
     - tcp://any:53
 
 dns:
