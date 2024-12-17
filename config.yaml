@@ -49,6 +49,10 @@ tun:
   dns-hijack: 
     - any:53
     - tcp://any:53
+  exclude-package:
+  - com.xiaomi.mirror
+  - com.xiaomi.mi_connect_service
+#此项作为白名单使用，默认添加MIUI镜像服务，否则屏幕流转不可使用
 
 dns:
   enable: true
@@ -59,11 +63,6 @@ dns:
   enhanced-mode: redir-host
   # redir-host / fake-ip 可切换，建议使用redir-host避免dns污染和泄露
   fake-ip-range: 198.18.0.1/16
-  fake-ip-filter:
-    - "*"
-    - "+.lan"
-    - "+.local"
-    - "localhost.ptlogin2.qq.com"
 
   nameserver-policy:
     'rule-set:userDirect':
