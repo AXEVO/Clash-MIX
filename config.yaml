@@ -50,12 +50,14 @@ tun:
     - any:53
     - tcp://any:53
   exclude-uid:
-    - 1000
-    - 1001
   exclude-uid-range:
   exclude-package:
     - com.xiaomi.mirror
     - com.xiaomi.mi_connect_service
+    - com.android.phone
+    - com.android.providers.telephony
+    - com.samsung.android.dsms
+    - com.sec.phone
     - com.samsung.android.messaging
     - com.samsung.android.app.telephonyui
     - com.samsung.android.dialer
