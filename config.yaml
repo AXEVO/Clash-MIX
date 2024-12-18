@@ -3,7 +3,7 @@ mode: rule
 allow-lan: true
 unified-delay: false
 tcp-concurrent: true
-find-process-mode: strict
+find-process-mode: always
 log-level: info
 ipv6: false
 external-controller: 0.0.0.0:9090
@@ -45,14 +45,24 @@ tun:
   device: Meta
   auto-route: true
   auto-detect-interface: true
-  strict-route: false
+  strict-route: true
   dns-hijack: 
     - any:53
     - tcp://any:53
   exclude-package:
   - com.xiaomi.mirror
   - com.xiaomi.mi_connect_service
-#此项作为白名单使用，默认添加MIUI镜像服务，否则屏幕流转不可使用
+  - com.samsung.android.messaging
+  - com.samsung.android.app.telephonyui
+  - com.samsung.android.dialer
+  - com.samsung.android.incallui
+  - com.samsung.android.smartcallprovider
+  - com.samsung.android.intellivoiceservice
+  - com.android.settings
+  - com.qti.qcc
+  - com.sec.epdg
+  - com.sec.imsservice
+#此项作为白名单使用，默认添加MIUI镜像服务以及三星电话服务，避免系统功能不可用
 
 dns:
   enable: true
