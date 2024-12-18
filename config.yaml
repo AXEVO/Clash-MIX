@@ -49,6 +49,10 @@ tun:
   dns-hijack: 
     - any:53
     - tcp://any:53
+  exclude-uid:
+    - 1000
+    - 1001
+  exclude-uid-range:
   exclude-package:
     - com.xiaomi.mirror
     - com.xiaomi.mi_connect_service
