@@ -5,7 +5,7 @@ unified-delay: false
 tcp-concurrent: true
 find-process-mode: always
 log-level: info
-ipv6: false
+ipv6: true
 external-controller: 0.0.0.0:9090
 external-ui: WebUI
 external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
@@ -41,23 +41,18 @@ sniffer:
 
 tun:
   enable: true
-  stack: system
+  stack: mixd
   device: Meta
   auto-route: true
   auto-detect-interface: true
-  strict-route: true
+  strict-route: false
   dns-hijack: 
     - any:53
     - tcp://any:53
   exclude-uid:
-  exclude-uid-range:
   exclude-package:
     - com.xiaomi.mirror
     - com.xiaomi.mi_connect_service
-    - com.android.phone
-    - com.android.providers.telephony
-    - com.samsung.android.dsms
-    - com.sec.phone
     - com.samsung.android.messaging
     - com.samsung.android.app.telephonyui
     - com.samsung.android.dialer
@@ -240,7 +235,6 @@ proxy-groups:
     max-failed-times: 5
     expected-status: 204
 
-#------------------------------------------------------------------------------
 
   - name: 美国节点
     type: select
@@ -329,7 +323,7 @@ proxy-groups:
     timeout: 2000
     max-failed-times: 5
     expected-status: 204
-#-------------------------------------------------------------------
+
   - name: 中国网站
     type: select
     proxies:
