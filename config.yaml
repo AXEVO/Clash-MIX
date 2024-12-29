@@ -369,7 +369,7 @@ rules:
   - GEOIP,private,DIRECT
 
   - RULE-SET,秋风广告规则,广告
-  - GEOSITE,category-ads-all,广告
+  #- GEOSITE,category-ads-all,广告
 
   - GEOSITE,CN,中国网站
   - GEOIP,CN,中国网站
