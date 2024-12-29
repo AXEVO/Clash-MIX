@@ -41,7 +41,7 @@ sniffer:
 
 tun:
   enable: true
-  stack: mixd
+  stack: mixed
   device: Meta
   auto-route: true
   auto-detect-interface: true
