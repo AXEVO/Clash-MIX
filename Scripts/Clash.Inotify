@@ -1,4 +1,4 @@
-#!/data/adb/magisk/busybox sh
+#!/system/bin/sh
 script_path=/data/adb/modules/Clash/Scripts
 
 events=$1
