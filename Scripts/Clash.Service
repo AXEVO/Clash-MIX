@@ -1,11 +1,11 @@
 #!/system/bin/sh
 Module_dir="/data/adb/modules/Clash"
-sdcard_dir="/data/media/0/Android"
+sdcard_dir="/mnt/user/0/emulated/0/Android/Clash"
 
 start() {
     
     if ! (ps -ef | grep -- 'Clash -d' | grep -vE 'inotifyd|grep') > /dev/null ; then
-        nohup $Module_dir/Proxy/Clash.Core -d $Module_dir > $sdcard_dir/内核日志.txt 2>&1 &
+        nohup $Module_dir/Proxy/Clash.Core -d $Module_dir/Proxy > $sdcard_dir/内核日志.txt 2>&1 &
 
         iptables -C FORWARD -i Meta -j ACCEPT 2>/dev/null || iptables -I FORWARD -i Meta -j ACCEPT
         iptables -C FORWARD -o Meta -j ACCEPT 2>/dev/null || iptables -I FORWARD -o Meta -j ACCEPT
@@ -38,7 +38,7 @@ case "$1" in
         stop
         ;;
     *)
-        echo "使用: $0 {start|stop}"
+        echo "只能使用start|stop两个参数控制内核启动或停止"
         exit 1
         ;;
 esac
