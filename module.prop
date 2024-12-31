@@ -1,6 +1,6 @@
 id=Clash
-name=Clash TUN
-version=V4.0-test
-versionCode=20241215
+name=Clash MIX
+version=V4.0
+versionCode=20250101
 author=GFW Fucker
 description=Clash透明代理(Tun)     内核:Meta 1.19.0
