@@ -1,3 +1,5 @@
+#开始编辑配置时，心中牢记缩进和冒号引号，任何不懂，查看官方wiki：https://wiki.metacubex.one
+#修改配置后如果内核不能启动，请查看日志，日志中会告诉你配置第几行写错
 mixed-port: 7890
 mode: rule
 allow-lan: true
@@ -6,6 +8,7 @@ tcp-concurrent: true
 find-process-mode: always
 log-level: info
 ipv6: true
+#关掉后可能在部分手机上出现dns泄露，volte不可用等问题
 external-controller: 0.0.0.0:9090
 external-ui: WebUI
 external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
@@ -24,6 +27,7 @@ profile:
   store-selected: true
   store-fake-ip: true
 
+#嗅探器关掉本机可能出现上网异常，连接本机热点的设备可能无法上网
 sniffer:
   enable: true
   override-destination: false
@@ -39,6 +43,8 @@ sniffer:
     - "+.push.apple.com"
     - "Mijia Cloud"
 
+#tun必须开启，否则将无法代理流量，如网页打开慢，电报卡连接中，
+#可以尝试将堆栈更换为gvisor，同一堆栈在不同设备上体验不同，自行尝试
 tun:
   enable: true
   stack: mixed
@@ -63,7 +69,10 @@ tun:
     - com.qti.qcc
     - com.sec.epdg
     - com.sec.imsservice
-#此项作为白名单使用，默认添加MIUI镜像服务以及三星电话服务，避免系统功能不可用
+#exclude-package内填写的包名，网络流量不经过tun，相当于黑名单
+#默认添加MIUI镜像服务以及三星电话服务，避免系统功能不可用
+#如果想仅代理指定应用，请将exclude-package改为include-package
+#然后填上想要走代理的包名，不要忘了英文冒号和缩进
 
 dns:
   enable: true
@@ -98,7 +107,8 @@ dns:
 #------------------------------------------------------------------------------
 proxies:
 proxy-providers:
-  
+#如果想要修改机场名，需要全改，建议使用编辑器的查找替换功能
+#如果想要删除几个机场，在下面的策略组也要删除，否则内核无法启动
   机场1:
     type: http
     url: "订阅链接"
@@ -369,7 +379,7 @@ rules:
   - GEOIP,private,DIRECT
 
   - RULE-SET,秋风广告规则,广告
-  #- GEOSITE,category-ads-all,广告
+  #- GEOSITE,category-ads-all,广告  #秋风规则足够日用，geodata提供的规则过于冗杂
 
   - GEOSITE,CN,中国网站
   - GEOIP,CN,中国网站
