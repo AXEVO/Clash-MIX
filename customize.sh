@@ -1,5 +1,5 @@
 SKIPUNZIP=1
-sdcard_dir="/mnt/user/0/emulated/0/Android"
+sdcard_dir="/sdcard/Android"
 
 unzip -o "$ZIPFILE" -x 'META-INF/*' -d $MODPATH >&2
 

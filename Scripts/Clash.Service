@@ -1,6 +1,6 @@
 #!/system/bin/sh
 Module_dir="/data/adb/modules/Clash"
-sdcard_dir="/mnt/user/0/emulated/0/Android/Clash"
+sdcard_dir="/sdcard/Android/Clash"
 
 start() {
     
@@ -24,7 +24,7 @@ stop() {
         iptables -D FORWARD -i Meta -j ACCEPT 2>/dev/null
         iptables -D FORWARD -o Meta -j ACCEPT 2>/dev/null
 
-        echo "Clash内核已关闭，并清理了 iptables 规则"
+        echo "Clash内核已关闭并清除iptables规则"
     else
         echo "Clash内核未在运行，不执行停止命令"
     fi
