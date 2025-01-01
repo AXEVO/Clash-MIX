@@ -4,7 +4,7 @@ sdcard_dir="/mnt/user/0/emulated/0/Android/Clash"
 
 start() {
     
-    if ! (ps -ef | grep -- 'Clash -d' | grep -vE 'inotifyd|grep') > /dev/null ; then
+    if ! (ps -ef | grep -- 'Clash.Core -d' | grep -vE 'inotifyd|grep') > /dev/null ; then
         nohup $Module_dir/Proxy/Clash.Core -d $Module_dir/Proxy > $sdcard_dir/内核日志.txt 2>&1 &
 
         iptables -C FORWARD -i Meta -j ACCEPT 2>/dev/null || iptables -I FORWARD -i Meta -j ACCEPT
