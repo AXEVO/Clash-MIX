@@ -2,7 +2,6 @@
 
 
 
-
 #开始编辑配置时，心中牢记缩进和冒号引号，任何不懂，查看官方wiki：https://wiki.metacubex.one
 #修改配置后如果内核不能启动，请查看日志，日志中会告诉你配置第几行写错
 mixed-port: 7890
@@ -13,7 +12,7 @@ tcp-concurrent: true
 find-process-mode: always
 log-level: info
 ipv6: true
-#关掉后可能在部分手机上出现dns泄露，volte不可用等问题
+#关掉后可能在部分手机上出现dns泄露，volte不可用等问题，目前IPv6可以正常使用，不建议关闭
 external-controller: 0.0.0.0:9090
 external-ui: WebUI
 external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
@@ -49,10 +48,11 @@ sniffer:
     - "Mijia Cloud"
 
 #tun必须开启，否则将无法代理流量，如网页打开慢，电报卡连接中，
-#可以尝试将堆栈更换为gvisor，同一堆栈在不同设备上体验不同，自行尝试
+#可以尝试更换堆栈，同一堆栈在不同设备上体验不同，自行尝试。
+#更换为非gvisor堆栈可能导致IPv6出现问题
 tun:
   enable: true
-  stack: mixed
+  stack: gvisor
   device: Meta
   auto-route: true
   auto-detect-interface: true
@@ -77,18 +77,19 @@ tun:
 #exclude-package内填写的包名，网络流量不经过tun，相当于黑名单
 #默认添加MIUI镜像服务以及三星电话服务，避免系统功能不可用
 #如果想仅代理指定应用，请将exclude-package改为include-package
-#然后填上想要走代理的包名，不要忘了英文冒号和缩进
+#然后填上想要走代理的包名，不要忘了英文冒号和缩进。
+#目前分流规则已足够完善，白名单可能存在问题，不建议使用
 
 dns:
   enable: true
-  use-hosts: true
   perfer-h3: false
+  ipv6: true
   ipv6-timeout: 300
-  listen: 0.0.0.0:1053
+  respect-rules: false
   enhanced-mode: redir-host
-  # redir-host / fake-ip 可切换，建议使用redir-host避免dns污染和泄露
+  # redir-host / fake-ip 可切换，建议使用redir-host避免出现莫名其妙的bug
   fake-ip-range: 198.18.0.1/16
-
+#如果删除了user策略组，需要在dns这里也删除，否则内核无法启动
   nameserver-policy:
     'rule-set:userDirect':
       - "https://223.5.5.5/dns-query#中国网站"
@@ -112,8 +113,8 @@ dns:
 #------------------------------------------------------------------------------
 proxies:
 proxy-providers:
-#如果想要修改机场名，需要全改，建议使用编辑器的查找替换功能
-#如果想要删除几个机场，在下面的策略组也要删除，否则内核无法启动
+#如果想要修改机场名（机场1等），需要全改，建议使用编辑器的查找替换功能
+#如果想要删除几个机场，在下面的策略组也要删除对应部分，否则内核无法启动
   机场1:
     type: http
     url: "订阅链接"
@@ -143,6 +144,7 @@ proxy-providers:
   机场3:
     type: http
     url: "订阅链接"
+    path: ./proxy_providers/机场3.yaml
     interval: 21600
     health-check:
       enable: true
@@ -354,6 +356,7 @@ proxy-groups:
 #-------------------------------------------------------------------
 #用户自定义规则，文件在模块目录/rule-provider/
 #如有需要请参考官方文档写入
+#如果想要删除两个自定义规则，需要把上面dns配置内对自定义规则的设置删除，否则内核将无法启动
 
 rule-providers:
 

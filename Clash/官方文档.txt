@@ -333,7 +333,8 @@ dns:
     # "rule-set:global,dns": 8.8.8.8
 
 proxies: # socks5
-  
+
+
 # dns 出站会将请求劫持到内部 dns 模块，所有请求均在内部处理
   - name: "dns-out"
     type: dns
@@ -451,6 +452,17 @@ proxy-providers:
       #   - pattern: "IPLC-(.*?)倍"
       #     target: "iplc x $1"
 
+  provider2:
+    type: inline
+    dialer-proxy: proxy
+    payload:
+      - name: "ss1"
+        type: ss
+        server: server
+        port: 443
+        cipher: chacha20-ietf-poly1305
+        password: "password"
+
   test:
     type: file
     path: /test.yaml
@@ -490,6 +502,14 @@ rule-providers:
     format: mrs
     behavior: domain
     path: /path/to/save/file.mrs
+  rule4:
+    type: inline
+    behavior: domain # classical / ipcidr
+    payload:
+      - '.blogger.com'
+      - '*.*.microsoft.com'
+      - 'books.itunes.apple.com'
+
 rules:
   - RULE-SET,rule1,REJECT
   - IP-ASN,1,PROXY
