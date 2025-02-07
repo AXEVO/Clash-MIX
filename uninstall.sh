@@ -1,4 +1,5 @@
 {
+  
   until [ "$(getprop sys.boot_completed)" = "1" ]; do
       sleep 2
   done
@@ -14,4 +15,5 @@
   fi
 
   rm -rf "$sdcard_dir/Android/Clash"
+  
 } &

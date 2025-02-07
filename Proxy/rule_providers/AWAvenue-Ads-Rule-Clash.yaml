@@ -1,6 +1,6 @@
 #Title: AWAvenue Ads Rule
 #--------------------------------------
-#Total lines: 751
+#Total lines: 756
 #Version: 1.5.6-release
 
 #Homepage: https://github.com/TG-Twilight/AWAvenue-Ads-Rule
@@ -13,8 +13,6 @@ payload:
   - IP-CIDR,182.254.116.116/32,no-resolve
   - IP-CIDR,203.205.137.89/32,no-resolve
   - DOMAIN,1010pic.com
-  - DOMAIN,16dd-advertise-1252317822.file.myqcloud.com
-  - DOMAIN,16dd-advertise-1252317822.image.myqcloud.com
   - DOMAIN,8le8le.com
   - DOMAIN,a0.app.xiaomi.com
   - DOMAIN,aaid.umeng.com
@@ -106,6 +104,7 @@ payload:
   - DOMAIN,adserver.unityads.unity3d.com
   - DOMAIN,adservice.google.cn
   - DOMAIN,adservice.google.com
+  - DOMAIN,adservice.sigmob.cn
   - DOMAIN,adserviceretry.kugou.com
   - DOMAIN,adsfile.bssdlbig.kugou.com
   - DOMAIN,adsfile.qq.com
@@ -161,7 +160,6 @@ payload:
   - DOMAIN,analysis.yozocloud.cn
   - DOMAIN,analytics-api.samsunghealthcn.com
   - DOMAIN,analytics.126.net
-  - DOMAIN,analytics.95516.com
   - DOMAIN,analytics.google.com
   - DOMAIN,analytics.pinterest.com
   - DOMAIN,analytics.pointdrive.linkedin.com
@@ -249,6 +247,7 @@ payload:
   - DOMAIN,cdn-ads.oss-cn-shanghai.aliyuncs.com
   - DOMAIN,cdn-plugin-sync-upgrade-juui.hismarttv.com
   - DOMAIN,cdn.ad.xiaomi.com
+  - DOMAIN,cdn.aiclk.com
   - DOMAIN,cdn.ynuf.aliapp.org
   - DOMAIN,cfg.imtt.qq.com
   - DOMAIN,chat1.jd.com
@@ -265,6 +264,7 @@ payload:
   - DOMAIN,commdata.v.qq.com
   - DOMAIN,config.chsmarttv.com
   - DOMAIN,config.unityads.unity3d.com
+  - DOMAIN,cpc-service-square.aiclk.com
   - DOMAIN,cpro.baidustatic.com
   - DOMAIN,crashlytics.com
   - DOMAIN,crashlyticsreports-pa.googleapis.com
@@ -275,6 +275,7 @@ payload:
   - DOMAIN,data.mistat.india.xiaomi.com
   - DOMAIN,data.mistat.rus.xiaomi.com
   - DOMAIN,data.mistat.xiaomi.com
+  - DOMAIN,dc.sigmob.cn
   - DOMAIN,diagnosis.ad.xiaomi.com
   - DOMAIN,dig.bdurl.net
   - DOMAIN,dl.zuimeitianqi.com
@@ -346,13 +347,11 @@ payload:
   - DOMAIN,hugelog.fcbox.com
   - DOMAIN,huichuan.sm.cn
   - DOMAIN,hw-ot-ad.a.yximgs.com
-  - DOMAIN,hw.zuimeitianqi.com
   - DOMAIN,hwpub-s01-drcn.cloud.dbankcloud.cn
   - DOMAIN,hya.comp.360os.com
   - DOMAIN,hybrid.miniapp.taobao.com
   - DOMAIN,hye.comp.360os.com
   - DOMAIN,hyt.comp.360os.com
-  - DOMAIN,i.snssdk.com
   - DOMAIN,iad.apple.com
   - DOMAIN,iadctest.qwapi.com
   - DOMAIN,iadsdk.apple.com
@@ -390,6 +389,7 @@ payload:
   - DOMAIN,kl.67it.com
   - DOMAIN,klink.volceapplog.com
   - DOMAIN,knicks.jd.com
+  - DOMAIN,ks.ferlytc.com
   - DOMAIN,ks.pull.yximgs.com
   - DOMAIN,launcher.smart-tv.cn
   - DOMAIN,launcherimg.smart-tv.cn
@@ -432,6 +432,7 @@ payload:
   - DOMAIN,log.zijieapi.com
   - DOMAIN,log1.cmpassport.com
   - DOMAIN,logbak.hicloud.com
+  - DOMAIN,logrcv.aiclk.com
   - DOMAIN,logs.amap.com
   - DOMAIN,logservice.hicloud.com
   - DOMAIN,logservice1.hicloud.com
@@ -459,6 +460,7 @@ payload:
   - DOMAIN,mine.baidu.com
   - DOMAIN,mission-pub.smart-tv.cn
   - DOMAIN,miui-fxcse.avlyun.com
+  - DOMAIN,mmgame.qpic.cn
   - DOMAIN,mnqlog.ldmnq.com
   - DOMAIN,mobads-logs.baidu.com
   - DOMAIN,mobads-pre-config.cdn.bcebos.com
@@ -491,6 +493,7 @@ payload:
   - DOMAIN,open.snssdk.com
   - DOMAIN,optimus-ads.amap.com
   - DOMAIN,orbit.jd.com
+  - DOMAIN,oss.cdn.aiclk.com
   - DOMAIN,oth.eve.mdt.qq.com
   - DOMAIN,oth.str.mdt.qq.com
   - DOMAIN,otheve.play.aiseet.atianqi.com
@@ -534,6 +537,7 @@ payload:
   - DOMAIN,res2.hubcloud.com.cn
   - DOMAIN,res3.hubcloud.com.cn
   - DOMAIN,resolve.umeng.com
+  - DOMAIN,rev.aiclk.com
   - DOMAIN,review.gdtimg.com
   - DOMAIN,rms-drcn.platform.dbankcloud.cn
   - DOMAIN,roi.soulapp.cn
@@ -547,7 +551,6 @@ payload:
   - DOMAIN,samsung-com.112.2o7.net
   - DOMAIN,samsungads.com
   - DOMAIN,sanme2.taisantech.com
-  - DOMAIN,saveu5-normal-lq.zijieapi.com
   - DOMAIN,scdown.qq.com
   - DOMAIN,scs.openspeech.cn
   - DOMAIN,sdk-ab-config.qquanquan.com
@@ -635,6 +638,7 @@ payload:
   - DOMAIN,tnc3-bjlgy.zijieapi.com
   - DOMAIN,toblog.ctobsnssdk.com
   - DOMAIN,trace.qq.com
+  - DOMAIN,tracelog-debug.aiclk.com
   - DOMAIN,tracelog-debug.qquanquan.com
   - DOMAIN,track.lc.quark.cn
   - DOMAIN,track.uc.cn
@@ -663,9 +667,11 @@ payload:
   - DOMAIN,union.baidu.com
   - DOMAIN,update.avlyun.sec.miui.com
   - DOMAIN,update.lejiao.tv
+  - DOMAIN,update0.aiclk.com
   - DOMAIN,upgrade-update.hismarttv.com
   - DOMAIN,uranus.jd.com
   - DOMAIN,us.l.qq.com
+  - DOMAIN,usr-api.aiclk.com
   - DOMAIN,v.adintl.cn
   - DOMAIN,v.adx.hubcloud.com.cn
   - DOMAIN,v1-ad.video.yximgs.com
@@ -719,12 +725,12 @@ payload:
   - DOMAIN,widgets.outbrain.com
   - DOMAIN,widgets.pinterest.com
   - DOMAIN,win.gdt.qq.com
-  - DOMAIN,wl.jd.com
   - DOMAIN,wn.x.jd.com
   - DOMAIN,ws-keyboard.shouji.sogou.com
   - DOMAIN,ws.sj.qq.com
   - DOMAIN,www42.zskwai.com
   - DOMAIN,wxa.wxs.qq.com
+  - DOMAIN,wxaintpcos.wxqcloud.qq.com.cn
   - DOMAIN,wximg.wxs.qq.com
   - DOMAIN,wxsmw.wxs.qq.com
   - DOMAIN,wxsnsad.tc.qq.com
@@ -733,7 +739,6 @@ payload:
   - DOMAIN,wxsnsdythumb.wxs.qq.com
   - DOMAIN,xc.gdt.qq.com
   - DOMAIN,xiaomi-dtv.m.cn.miaozhen.com
-  - DOMAIN,xiaoshuo.wtzw.com
   - DOMAIN,xlivrdr.com
   - DOMAIN,xlmzc.cnjp-exp.com
   - DOMAIN,xlog.jd.com
