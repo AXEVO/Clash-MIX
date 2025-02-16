@@ -1,7 +1,7 @@
 #Title: AWAvenue Ads Rule
 #--------------------------------------
-#Total lines: 756
-#Version: 1.5.6-release
+#Total lines: 747
+#Version: 1.5.8-乙巳蛇年🐍-release
 
 #Homepage: https://github.com/TG-Twilight/AWAvenue-Ads-Rule
 #License: https://github.com/TG-Twilight/AWAvenue-Ads-Rule/blob/main/LICENSE
@@ -13,6 +13,7 @@ payload:
   - IP-CIDR,182.254.116.116/32,no-resolve
   - IP-CIDR,203.205.137.89/32,no-resolve
   - DOMAIN,1010pic.com
+  - DOMAIN,1500020991.vodplayer.wxamedia.com
   - DOMAIN,8le8le.com
   - DOMAIN,a0.app.xiaomi.com
   - DOMAIN,aaid.umeng.com
@@ -74,6 +75,7 @@ payload:
   - DOMAIN,ads-video-al.xhscdn.com
   - DOMAIN,ads-video-qc.xhscdn.com
   - DOMAIN,ads.95516.com
+  - DOMAIN,ads.flurry.com
   - DOMAIN,ads.google.cn
   - DOMAIN,ads.heytapmobi.com
   - DOMAIN,ads.huan.tv
@@ -83,6 +85,7 @@ payload:
   - DOMAIN,ads.music.126.net
   - DOMAIN,ads.oppomobile.com
   - DOMAIN,ads.pinterest.com
+  - DOMAIN,ads.pubmatic.com
   - DOMAIN,ads.servebom.com
   - DOMAIN,ads.service.kugou.com
   - DOMAIN,ads.tiktok.com
@@ -120,6 +123,8 @@ payload:
   - DOMAIN,adstats.tencentmusic.com
   - DOMAIN,adstore-1252524079.file.myqcloud.com
   - DOMAIN,adstore-index-1252524079.file.myqcloud.com
+  - DOMAIN,adstudio-assets.scdn.co
+  - DOMAIN,adstudio.spotify.com
   - DOMAIN,adtago.s3.amazonaws.com
   - DOMAIN,adtech.yahooinc.com
   - DOMAIN,adtrack.quark.cn
@@ -334,9 +339,12 @@ payload:
   - DOMAIN,grs.dbankcloud.com
   - DOMAIN,grs.hicloud.com
   - DOMAIN,grs.platform.dbankcloud.ru
+  - DOMAIN,gvideo.qpic.cn
   - DOMAIN,h-adashx.ut.taobao.com
   - DOMAIN,h.trace.qq.com
   - DOMAIN,hanlanad.com
+  - DOMAIN,heads-ak.spotify.com.edgesuite.net
+  - DOMAIN,heads-fa.spotify.com
   - DOMAIN,hexagon-analytics.com
   - DOMAIN,hm.baidu.com
   - DOMAIN,hmma.baidu.com
@@ -462,6 +470,7 @@ payload:
   - DOMAIN,miui-fxcse.avlyun.com
   - DOMAIN,mmgame.qpic.cn
   - DOMAIN,mnqlog.ldmnq.com
+  - DOMAIN,moatads.com
   - DOMAIN,mobads-logs.baidu.com
   - DOMAIN,mobads-pre-config.cdn.bcebos.com
   - DOMAIN,mobads.baidu.com
@@ -515,6 +524,8 @@ payload:
   - DOMAIN,pagead2.googlesyndication.com
   - DOMAIN,pangolin-sdk-toutiao-b.com
   - DOMAIN,pay.sboot.cn
+  - DOMAIN,pcm-img.zhls.qq.com
+  - DOMAIN,pgdt.gtimg.cn
   - DOMAIN,pgdt.ugdtimg.com
   - DOMAIN,pglstatp-toutiao.com
   - DOMAIN,pig.pupuapi.com
@@ -596,6 +607,7 @@ payload:
   - DOMAIN,stat.dongqiudi.com
   - DOMAIN,stat.y.qq.com
   - DOMAIN,static.ads-twitter.com
+  - DOMAIN,static.wxqcloud.qq.com.cn
   - DOMAIN,statics.woozooo.com
   - DOMAIN,stats.qiumibao.com
   - DOMAIN,stats.wp.com
@@ -650,6 +662,7 @@ payload:
   - DOMAIN,tvuser-ch.cedock.com
   - DOMAIN,tx-ad.a.yximgs.com
   - DOMAIN,tx-kmpaudio.pull.yximgs.com
+  - DOMAIN,tytx.m.cn.miaozhen.com
   - DOMAIN,tz.sec.xiaomi.com
   - DOMAIN,uapi.ads.heytapmobi.com
   - DOMAIN,udc.yahoo.com
@@ -690,31 +703,8 @@ payload:
   - DOMAIN,vungle.com
   - DOMAIN,w.l.qq.com
   - DOMAIN,w1.askwai.com
-  - DOMAIN,w1.bskwai.com
-  - DOMAIN,w1.cskwai.com
-  - DOMAIN,w1.dskwai.com
-  - DOMAIN,w1.eskwai.com
-  - DOMAIN,w1.fskwai.com
   - DOMAIN,w1.gskwai.com
-  - DOMAIN,w1.hskwai.com
-  - DOMAIN,w1.iskwai.com
-  - DOMAIN,w1.jskwai.com
   - DOMAIN,w1.kskwai.com
-  - DOMAIN,w1.lskwai.com
-  - DOMAIN,w1.mskwai.com
-  - DOMAIN,w1.nskwai.com
-  - DOMAIN,w1.oskwai.com
-  - DOMAIN,w1.pskwai.com
-  - DOMAIN,w1.qskwai.com
-  - DOMAIN,w1.rskwai.com
-  - DOMAIN,w1.sskwai.com
-  - DOMAIN,w1.tskwai.com
-  - DOMAIN,w1.uskwai.com
-  - DOMAIN,w1.vskwai.com
-  - DOMAIN,w1.wskwai.com
-  - DOMAIN,w1.xskwai.com
-  - DOMAIN,w1.yskwai.com
-  - DOMAIN,w1.zskwai.com
   - DOMAIN,watson.microsoft.com
   - DOMAIN,watson.telemetry.microsoft.com
   - DOMAIN,wcp.taobao.com
@@ -724,6 +714,7 @@ payload:
   - DOMAIN,webview.unityads.unity3d.com
   - DOMAIN,widgets.outbrain.com
   - DOMAIN,widgets.pinterest.com
+  - DOMAIN,wildcard.moatads.com.edgekey.net
   - DOMAIN,win.gdt.qq.com
   - DOMAIN,wn.x.jd.com
   - DOMAIN,ws-keyboard.shouji.sogou.com

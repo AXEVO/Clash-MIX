@@ -1,3 +1,7 @@
+#这是备份的默认配置，如果想要直接使用，可以删除原来的 Clash配置文件.yaml，在本文件中填好订阅链接后将本文件重命名为 Clash配置文件.yaml  然后重启内核
+
+
+
 #开始编辑配置时，心中牢记缩进和冒号引号，任何不懂，查看官方wiki：https://wiki.metacubex.one
 #修改配置后如果内核不能启动，请查看日志，日志中会告诉你配置第几行写错
 mixed-port: 7890
@@ -10,9 +14,8 @@ log-level: info
 ipv6: true
 #关掉后可能在部分手机上出现dns泄露，volte不可用等问题，目前IPv6可以正常使用，不建议关闭
 external-controller: 0.0.0.0:9090
-external-ui: WebUI/ZashBoard
-#两个面板可选：ZashBoard和MetacubeXD（https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip）
-external-ui-url: "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip"
+external-ui: WebUI
+external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
 
 
 geodata-mode: true
