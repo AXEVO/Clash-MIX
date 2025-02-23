@@ -4,6 +4,7 @@
 
 #开始编辑配置时，心中牢记缩进和冒号引号，任何不懂，查看官方wiki：https://wiki.metacubex.one
 #修改配置后如果内核不能启动，请查看日志，日志中会告诉你配置第几行写错
+#或者使用在线yaml检测器进行检测（https://www.bejson.com/validators/yaml_editor/）
 mixed-port: 7890
 mode: rule
 allow-lan: true
@@ -14,16 +15,15 @@ log-level: info
 ipv6: true
 #关掉后可能在部分手机上出现dns泄露，volte不可用等问题，目前IPv6可以正常使用，不建议关闭
 external-controller: 0.0.0.0:9090
-external-ui: WebUI
-external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
+external-ui: WebUI/ZashBoard
+#两个面板可选：ZashBoard和MetacubeXD（https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip）
+external-ui-url: "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip"
 
 
 geodata-mode: true
 geox-url:
   geoip: "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat"
   geosite: "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat"
-  mmdb: "https://raw.githubusercontent.com/Loyalsoldier/geoip/release/Country.mmdb"
-  asn: "https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb"
 geo-auto-update: true
 geo-update-interval: 48
 
@@ -31,7 +31,7 @@ profile:
   store-selected: true
   store-fake-ip: true
 
-#嗅探器关掉本机可能出现上网异常，连接本机热点的设备可能无法上网
+#嗅探器关掉后可能出现本机上网异常，连接本机热点的设备无法上网的问题
 sniffer:
   enable: true
   override-destination: false
@@ -50,6 +50,7 @@ sniffer:
 #tun必须开启，否则将无法代理流量，如网页打开慢，电报卡连接中，
 #可以尝试更换堆栈，同一堆栈在不同设备上体验不同，自行尝试。
 #更换为非gvisor堆栈可能导致IPv6出现问题
+
 tun:
   enable: true
   stack: gvisor
