@@ -70,7 +70,15 @@ tun:
     - com.android.settings
     - com.qti.qcc
     - com.sec.epdg
-    - com.sec.imsservice
+    - com.sec.imsservice   
+ route-exclude-address-set: 
+    - 0.0.0.0/8
+    - 127.0.0.0/8
+    - 192.168.0.0/16
+    - '::/128'
+    - '::1/128'
+    - fc70::/10
+    - fe80::/10
 #exclude-package内填写的包名，网络流量不经过tun，相当于黑名单
 #默认添加MIUI镜像服务以及三星电话服务，避免系统功能不可用
 #如果想仅代理指定应用，请将exclude-package改为include-package
