@@ -1,24 +1,22 @@
 #Title: AWAvenue Ads Rule
 #--------------------------------------
-#Total lines: 747
-#Version: 1.5.8-乙巳蛇年🐍-release
+#Total lines: 700
+#Version: 1.5.9-release
+#Update time: 2025-03-23 00:17:14 UTC+8
+#Update content: 添加读取原始规则的合法性 有效性校验以及修复之前的部分错误，对dns层拦截的插件添加ipv6屏蔽兼容
 
 #Homepage: https://github.com/TG-Twilight/AWAvenue-Ads-Rule
 #License: https://github.com/TG-Twilight/AWAvenue-Ads-Rule/blob/main/LICENSE
 
 
 payload:
-  - IP-CIDR,116.205.193.167/32,no-resolve
-  - IP-CIDR,123.56.23.22/32,no-resolve
-  - IP-CIDR,182.254.116.116/32,no-resolve
-  - IP-CIDR,203.205.137.89/32,no-resolve
   - DOMAIN,1010pic.com
   - DOMAIN,1500020991.vodplayer.wxamedia.com
+  - DOMAIN,1500026601.vodplayer.wxamedia.com
   - DOMAIN,8le8le.com
   - DOMAIN,a0.app.xiaomi.com
   - DOMAIN,aaid.umeng.com
   - DOMAIN,abtest-ch.snssdk.com
-  - DOMAIN,ad-cache.dopool.com
   - DOMAIN,ad-cdn.qingting.fm
   - DOMAIN,ad-cmp.hismarttv.com
   - DOMAIN,ad-download.hismarttv.com
@@ -33,6 +31,7 @@ payload:
   - DOMAIN,ad.cctv.com
   - DOMAIN,ad.cyapi.cn
   - DOMAIN,ad.doubleclick.net
+  - DOMAIN,ad.hpplay.cn
   - DOMAIN,ad.partner.gifshow.com
   - DOMAIN,ad.qingting.fm
   - DOMAIN,ad.qq.com
@@ -41,10 +40,9 @@ payload:
   - DOMAIN,ad.toutiao.com
   - DOMAIN,ad.v3mh.com
   - DOMAIN,ad.winrar.com.cn
-  - DOMAIN,ad.xelements.cn
-  - DOMAIN,ad.xiaomi.com
   - DOMAIN,ad.ximalaya.com
   - DOMAIN,ad.zijieapi.com
+  - DOMAIN,ad2.ettoday.net
   - DOMAIN,adapi.izuiyou.com
   - DOMAIN,adapi.yynetwk.com
   - DOMAIN,adashbc.ut.taobao.com
@@ -55,35 +53,31 @@ payload:
   - DOMAIN,adclick.tencentmusic.com
   - DOMAIN,adcolony.com
   - DOMAIN,addata.jd.com
+  - DOMAIN,adeng.hpplay.cn
   - DOMAIN,adexpo.tencentmusic.com
   - DOMAIN,adfilter.imtt.qq.com
   - DOMAIN,adfstat.yandex.ru
   - DOMAIN,adguanggao.eee114.com
   - DOMAIN,adjust.cn
   - DOMAIN,adjust.com
-  - DOMAIN,adkwai.com
   - DOMAIN,adlink-api.huan.tv
   - DOMAIN,adm.funshion.com
   - DOMAIN,ads-api-o.api.leiniao.com
   - DOMAIN,ads-api.tiktok.com
   - DOMAIN,ads-api.twitter.com
   - DOMAIN,ads-img-qc.xhscdn.com
-  - DOMAIN,ads-jp.tiktok.com
   - DOMAIN,ads-marketing-vivofs.vivo.com.cn
   - DOMAIN,ads-sg.tiktok.com
-  - DOMAIN,ads-us.tiktok.com
   - DOMAIN,ads-video-al.xhscdn.com
   - DOMAIN,ads-video-qc.xhscdn.com
   - DOMAIN,ads.95516.com
   - DOMAIN,ads.flurry.com
   - DOMAIN,ads.google.cn
-  - DOMAIN,ads.heytapmobi.com
   - DOMAIN,ads.huan.tv
   - DOMAIN,ads.huantest.com
   - DOMAIN,ads.icloseli.cn
   - DOMAIN,ads.linkedin.com
   - DOMAIN,ads.music.126.net
-  - DOMAIN,ads.oppomobile.com
   - DOMAIN,ads.pinterest.com
   - DOMAIN,ads.pubmatic.com
   - DOMAIN,ads.servebom.com
@@ -91,6 +85,7 @@ payload:
   - DOMAIN,ads.tiktok.com
   - DOMAIN,ads.v3mh.com
   - DOMAIN,ads.youtube.com
+  - DOMAIN,ads.zhinengxiyifang.cn
   - DOMAIN,ads3-normal-hl.zijieapi.com
   - DOMAIN,ads3-normal-lf.zijieapi.com
   - DOMAIN,ads3-normal-lq.zijieapi.com
@@ -105,7 +100,6 @@ payload:
   - DOMAIN,adsebs.ximalaya.com
   - DOMAIN,adsense.google.cn
   - DOMAIN,adserver.unityads.unity3d.com
-  - DOMAIN,adservice.google.cn
   - DOMAIN,adservice.google.com
   - DOMAIN,adservice.sigmob.cn
   - DOMAIN,adserviceretry.kugou.com
@@ -128,11 +122,9 @@ payload:
   - DOMAIN,adtago.s3.amazonaws.com
   - DOMAIN,adtech.yahooinc.com
   - DOMAIN,adtrack.quark.cn
-  - DOMAIN,adukwai.com
   - DOMAIN,adv.fjtv.net
   - DOMAIN,adv.sec.intl.miui.com
   - DOMAIN,adv.sec.miui.com
-  - DOMAIN,advertiseonbing.azureedge.net
   - DOMAIN,advertising-api-eu.amazon.com
   - DOMAIN,advertising-api-fe.amazon.com
   - DOMAIN,advertising-api.amazon.com
@@ -150,7 +142,6 @@ payload:
   - DOMAIN,adx.ads.heytapmobi.com
   - DOMAIN,adx.ads.oppomobile.com
   - DOMAIN,adxlog-adnet.vivo.com.cn
-  - DOMAIN,adxlog-adnet.vivo.com.cn.dsa.dnsv1.com.cn
   - DOMAIN,adxserver.ad.cmvideo.cn
   - DOMAIN,aegis.qq.com
   - DOMAIN,afs.googlesyndication.com
@@ -160,11 +151,9 @@ payload:
   - DOMAIN,alogus.umeng.com
   - DOMAIN,als.baidu.com
   - DOMAIN,amdcopen.m.taobao.com
-  - DOMAIN,amdcopen.m.umeng.com
   - DOMAIN,an.facebook.com
   - DOMAIN,analysis.yozocloud.cn
   - DOMAIN,analytics-api.samsunghealthcn.com
-  - DOMAIN,analytics.126.net
   - DOMAIN,analytics.google.com
   - DOMAIN,analytics.pinterest.com
   - DOMAIN,analytics.pointdrive.linkedin.com
@@ -175,6 +164,7 @@ payload:
   - DOMAIN,analytics.woozooo.com
   - DOMAIN,analyticsengine.s3.amazonaws.com
   - DOMAIN,analyze.lemurbrowser.com
+  - DOMAIN,android.bugly.qq.com
   - DOMAIN,andrqd.play.aiseet.atianqi.com
   - DOMAIN,ap.dongqiudi.com
   - DOMAIN,apd-pcdnwxlogin.teg.tencent-cloud.net
@@ -185,7 +175,6 @@ payload:
   - DOMAIN,api-access.pangolin-sdk-toutiao2.com
   - DOMAIN,api-access.pangolin-sdk-toutiao3.com
   - DOMAIN,api-access.pangolin-sdk-toutiao4.com
-  - DOMAIN,api-access.pangolin-sdk-toutiao5.com
   - DOMAIN,api-ad-product.huxiu.com
   - DOMAIN,api-adservices.apple.com
   - DOMAIN,api-gd.hiaiabc.com
@@ -195,25 +184,21 @@ payload:
   - DOMAIN,api.htp.hubcloud.com.cn
   - DOMAIN,api.hzsanjiaomao.com
   - DOMAIN,api.installer.xiaomi.com
-  - DOMAIN,api.jietuhb.com
   - DOMAIN,api.kingdata.ksyun.com
   - DOMAIN,api.statsig.com
   - DOMAIN,api.touch-moblie.com
+  - DOMAIN,api.yfanads.com
   - DOMAIN,api5-normal-quic-lf.ixigua.com
   - DOMAIN,apiyd.my91app.com
-  - DOMAIN,apks.webxiaobai.top
   - DOMAIN,app-measurement.com
   - DOMAIN,appcfg.v.qq.com
-  - DOMAIN,appcloud2.in.zhihu.com
   - DOMAIN,applog.lc.quark.cn
   - DOMAIN,applog.uc.cn
   - DOMAIN,applog.zijieapi.com
   - DOMAIN,aspect-upush.umeng.com
-  - DOMAIN,ata-sdk-uuid-report.dreport.meituan.net
   - DOMAIN,auction.unityads.unity3d.com
   - DOMAIN,audid-api.taobao.com
   - DOMAIN,audid.umeng.com
-  - DOMAIN,azr.footprintdns.com
   - DOMAIN,b1-data.ads.heytapmobi.com
   - DOMAIN,baichuan-sdk.alicdn.com
   - DOMAIN,baichuan-sdk.taobao.com
@@ -251,8 +236,8 @@ payload:
   - DOMAIN,cdn-ad.wtzw.com
   - DOMAIN,cdn-ads.oss-cn-shanghai.aliyuncs.com
   - DOMAIN,cdn-plugin-sync-upgrade-juui.hismarttv.com
-  - DOMAIN,cdn.ad.xiaomi.com
   - DOMAIN,cdn.aiclk.com
+  - DOMAIN,cdn.hpplay.com.cn
   - DOMAIN,cdn.ynuf.aliapp.org
   - DOMAIN,cfg.imtt.qq.com
   - DOMAIN,chat1.jd.com
@@ -262,11 +247,13 @@ payload:
   - DOMAIN,click.googleanalytics.com
   - DOMAIN,click.oneplus.cn
   - DOMAIN,clog.miguvideo.com
+  - DOMAIN,cn-api.anythinktech.com
   - DOMAIN,cnlogs.umeng.com
   - DOMAIN,cnlogs.umengcloud.com
   - DOMAIN,cnzz.com
   - DOMAIN,collect.kugou.com
   - DOMAIN,commdata.v.qq.com
+  - DOMAIN,conf.hpplay.cn
   - DOMAIN,config.chsmarttv.com
   - DOMAIN,config.unityads.unity3d.com
   - DOMAIN,cpc-service-square.aiclk.com
@@ -280,7 +267,9 @@ payload:
   - DOMAIN,data.mistat.india.xiaomi.com
   - DOMAIN,data.mistat.rus.xiaomi.com
   - DOMAIN,data.mistat.xiaomi.com
+  - DOMAIN,datk.anythinktech.com
   - DOMAIN,dc.sigmob.cn
+  - DOMAIN,de.tynt.com
   - DOMAIN,diagnosis.ad.xiaomi.com
   - DOMAIN,dig.bdurl.net
   - DOMAIN,dl.zuimeitianqi.com
@@ -294,7 +283,6 @@ payload:
   - DOMAIN,dsp-x.jd.com
   - DOMAIN,dsp.fcbox.com
   - DOMAIN,dualstack-logs.amap.com
-  - DOMAIN,dutils.com
   - DOMAIN,dxp.baidu.com
   - DOMAIN,e.ad.xiaomi.com
   - DOMAIN,eclick.baidu.com
@@ -314,8 +302,7 @@ payload:
   - DOMAIN,flurry.com
   - DOMAIN,frontend-perf-service.e.kuaishou.com
   - DOMAIN,fxgate.baidu.com
-  - DOMAIN,g-adnet.hiaiabc.com
-  - DOMAIN,g-staic.ganjingworld.com
+  - DOMAIN,g.dtv.cn.miaozhen.com
   - DOMAIN,g2.ganjing.world
   - DOMAIN,game.loveota.com
   - DOMAIN,gdfp.gifshow.com
@@ -323,40 +310,37 @@ payload:
   - DOMAIN,geo.yahoo.com
   - DOMAIN,getui.cn
   - DOMAIN,getui.com
-  - DOMAIN,getui.net
   - DOMAIN,ggx.cmvideo.cn
   - DOMAIN,ggx01.miguvideo.com
   - DOMAIN,ggx03.miguvideo.com
-  - DOMAIN,globalapi.ad.xiaomi.com
   - DOMAIN,google-analytics.com
   - DOMAIN,googleads.g.doubleclick.net
   - DOMAIN,googleadservices-cn.com
   - DOMAIN,googleadservices.com
   - DOMAIN,googletagservices-cn.com
-  - DOMAIN,googletagservices.com
   - DOMAIN,gorgon.youdao.com
   - DOMAIN,gromore.pangolin-sdk-toutiao.com
   - DOMAIN,grs.dbankcloud.com
   - DOMAIN,grs.hicloud.com
-  - DOMAIN,grs.platform.dbankcloud.ru
+  - DOMAIN,gslb.hpplay.cn
   - DOMAIN,gvideo.qpic.cn
   - DOMAIN,h-adashx.ut.taobao.com
   - DOMAIN,h.trace.qq.com
+  - DOMAIN,h5.hpplay.com.cn
   - DOMAIN,hanlanad.com
   - DOMAIN,heads-ak.spotify.com.edgesuite.net
   - DOMAIN,heads-fa.spotify.com
   - DOMAIN,hexagon-analytics.com
   - DOMAIN,hm.baidu.com
   - DOMAIN,hmma.baidu.com
+  - DOMAIN,hotupgrade.hpplay.cn
   - DOMAIN,houyi.kkmh.com
-  - DOMAIN,hpplay.cn
   - DOMAIN,httpdns.bcelive.com
   - DOMAIN,httpdns.ocloud.oppomobile.com
   - DOMAIN,hugelog.fcbox.com
   - DOMAIN,huichuan.sm.cn
   - DOMAIN,hw-ot-ad.a.yximgs.com
   - DOMAIN,hwpub-s01-drcn.cloud.dbankcloud.cn
-  - DOMAIN,hya.comp.360os.com
   - DOMAIN,hybrid.miniapp.taobao.com
   - DOMAIN,hye.comp.360os.com
   - DOMAIN,hyt.comp.360os.com
@@ -366,24 +350,20 @@ payload:
   - DOMAIN,iadworkbench.apple.com
   - DOMAIN,ifacelog.iqiyi.com
   - DOMAIN,ifs.tanx.com
-  - DOMAIN,igexin.com
   - DOMAIN,ii.gdt.qq.com
-  - DOMAIN,imag8.pubmatic.com
-  - DOMAIN,imag86.pubmatic.com
   - DOMAIN,image-ad.sm.cn
-  - DOMAIN,imageplus.baidu.com
+  - DOMAIN,image.hpplay.cn
   - DOMAIN,images.outbrainimg.com
   - DOMAIN,images.pinduoduo.com
+  - DOMAIN,imdns.hpplay.cn
   - DOMAIN,img-c.heytapimage.com
   - DOMAIN,img-x.jd.com
-  - DOMAIN,img.adnyg.com
   - DOMAIN,img.adnyg.com.w.kunlungr.com
-  - DOMAIN,imtmp.net
+  - DOMAIN,in.treasuredata.com
   - DOMAIN,iot-eu-logser.realme.com
   - DOMAIN,iot-logser.realme.com
   - DOMAIN,ipv4.kkmh.com
   - DOMAIN,irc.qubiankeji.com
-  - DOMAIN,itv2-up.openspeech.cn
   - DOMAIN,ixav-cse.avlyun.com
   - DOMAIN,iyfbodn.com
   - DOMAIN,janapi.jd.com
@@ -426,11 +406,11 @@ payload:
   - DOMAIN,log.amemv.com
   - DOMAIN,log.appstore3.huan.tv
   - DOMAIN,log.avlyun.com
-  - DOMAIN,log.avlyun.sec.intl.miui.com
   - DOMAIN,log.byteoversea.com
   - DOMAIN,log.fc.yahoo.com
   - DOMAIN,log.kuwo.cn
   - DOMAIN,log.pinterest.com
+  - DOMAIN,log.popin.cc
   - DOMAIN,log.snssdk.com
   - DOMAIN,log.stat.kugou.com
   - DOMAIN,log.tagtic.cn
@@ -447,16 +427,13 @@ payload:
   - DOMAIN,logtj.kugou.com
   - DOMAIN,logupdate.avlyun.sec.miui.com
   - DOMAIN,luimg.baidu.com
-  - DOMAIN,m-adnet.hiaiabc.com
   - DOMAIN,m.ad.zhangyue.com
   - DOMAIN,m.atm.youku.com
-  - DOMAIN,m.kubiqq.com
   - DOMAIN,m1.ad.10010.com
   - DOMAIN,mapi.m.jd.com
   - DOMAIN,masdkv6.3g.qq.com
   - DOMAIN,mazu.m.qq.com
   - DOMAIN,mbdlog.iqiyi.com
-  - DOMAIN,metrics.apple.com
   - DOMAIN,metrics.data.hicloud.com
   - DOMAIN,metrics.icloud.com
   - DOMAIN,metrics.mzstatic.com
@@ -465,7 +442,6 @@ payload:
   - DOMAIN,mi.gdt.qq.com
   - DOMAIN,miav-cse.avlyun.com
   - DOMAIN,mime.baidu.com
-  - DOMAIN,mine.baidu.com
   - DOMAIN,mission-pub.smart-tv.cn
   - DOMAIN,miui-fxcse.avlyun.com
   - DOMAIN,mmgame.qpic.cn
@@ -476,7 +452,6 @@ payload:
   - DOMAIN,mobads.baidu.com
   - DOMAIN,mobile.da.mgtv.com
   - DOMAIN,mobilelog.upqzfile.com
-  - DOMAIN,mobileservice.cn
   - DOMAIN,mon.zijieapi.com
   - DOMAIN,monitor-ads-test.huan.tv
   - DOMAIN,monitor-uu.play.aiseet.atianqi.com
@@ -509,26 +484,19 @@ payload:
   - DOMAIN,outlookads.live.com
   - DOMAIN,p.l.qq.com
   - DOMAIN,p.s.360.cn
-  - DOMAIN,p1-be-pack-sign.pglstatp-toutiao.com
   - DOMAIN,p1-lm.adkwai.com
-  - DOMAIN,p2-be-pack-sign.pglstatp-toutiao.com
   - DOMAIN,p2-lm.adkwai.com
-  - DOMAIN,p2p.huya.com
   - DOMAIN,p3-be-pack-sign.pglstatp-toutiao.com
   - DOMAIN,p3-lm.adkwai.com
   - DOMAIN,p3-tt.byteimg.com
-  - DOMAIN,p4-be-pack-sign.pglstatp-toutiao.com
-  - DOMAIN,p5-be-pack-sign.pglstatp-toutiao.com
   - DOMAIN,p6-be-pack-sign.pglstatp-toutiao.com
   - DOMAIN,pagead2.googleadservices.com
   - DOMAIN,pagead2.googlesyndication.com
-  - DOMAIN,pangolin-sdk-toutiao-b.com
-  - DOMAIN,pay.sboot.cn
   - DOMAIN,pcm-img.zhls.qq.com
   - DOMAIN,pgdt.gtimg.cn
   - DOMAIN,pgdt.ugdtimg.com
-  - DOMAIN,pglstatp-toutiao.com
   - DOMAIN,pig.pupuapi.com
+  - DOMAIN,pin.hpplay.cn
   - DOMAIN,pixon.ads-pixiv.net
   - DOMAIN,pkoplink.com
   - DOMAIN,plbslog.umeng.com
@@ -539,25 +507,20 @@ payload:
   - DOMAIN,public.gdtimg.com
   - DOMAIN,q.i.gdt.qq.com
   - DOMAIN,qqdata.ab.qq.com
-  - DOMAIN,qwapi.apple.com
   - DOMAIN,qzs.gdtimg.com
   - DOMAIN,recommend-drcn.hms.dbankcloud.cn
   - DOMAIN,report.tv.kohesport.qq.com
-  - DOMAIN,res.hubcloud.com.cn
   - DOMAIN,res1.hubcloud.com.cn
-  - DOMAIN,res2.hubcloud.com.cn
-  - DOMAIN,res3.hubcloud.com.cn
   - DOMAIN,resolve.umeng.com
-  - DOMAIN,rev.aiclk.com
   - DOMAIN,review.gdtimg.com
+  - DOMAIN,rlog.popin.cc
   - DOMAIN,rms-drcn.platform.dbankcloud.cn
   - DOMAIN,roi.soulapp.cn
+  - DOMAIN,rp.hpplay.cn
   - DOMAIN,rpt.gdt.qq.com
   - DOMAIN,rtb.voiceads.cn
   - DOMAIN,s.amazon-adsystem.com
-  - DOMAIN,s1.qq.com
-  - DOMAIN,s2.qq.com
-  - DOMAIN,s3.qq.com
+  - DOMAIN,s8t.teads.tv
   - DOMAIN,saad.ms.zhangyue.net
   - DOMAIN,samsung-com.112.2o7.net
   - DOMAIN,samsungads.com
@@ -568,11 +531,11 @@ payload:
   - DOMAIN,sdk-cache.video.ptqy.gitv.tv
   - DOMAIN,sdk.1rtb.net
   - DOMAIN,sdk.beizi.biz
-  - DOMAIN,sdk.cferw.com
   - DOMAIN,sdk.e.qq.com
   - DOMAIN,sdk.hzsanjiaomao.com
   - DOMAIN,sdk.markmedia.com.cn
   - DOMAIN,sdk.mobads.adwangmai.com
+  - DOMAIN,sdkauth.hpplay.cn
   - DOMAIN,sdkconf.avlyun.com
   - DOMAIN,sdkconfig.ad.intl.xiaomi.com
   - DOMAIN,sdkconfig.ad.xiaomi.com
@@ -580,7 +543,6 @@ payload:
   - DOMAIN,sdkconfig.video.qq.com
   - DOMAIN,sdkoptedge.chinanetcenter.com
   - DOMAIN,sdktmp.hubcloud.com.cn
-  - DOMAIN,sdownload.stargame.com
   - DOMAIN,search.ixigua.com
   - DOMAIN,search3-search.ixigua.com
   - DOMAIN,search5-search-hl.ixigua.com
@@ -593,12 +555,11 @@ payload:
   - DOMAIN,sf16-static.i18n-pglstatp.com
   - DOMAIN,sf3-fe-tos.pglstatp-toutiao.com
   - DOMAIN,shouji.sogou.com
-  - DOMAIN,sigmob.cn
   - DOMAIN,sigmob.com
   - DOMAIN,skdisplay.jd.com
+  - DOMAIN,sl.hpplay.cn
   - DOMAIN,slb-p2p.vcloud.ks-live.com
   - DOMAIN,smad.ms.zhangyue.net
-  - DOMAIN,smart-tv.cn
   - DOMAIN,smartad.10010.com
   - DOMAIN,smetrics.samsung.com
   - DOMAIN,sms.ads.oppomobile.com
@@ -607,7 +568,6 @@ payload:
   - DOMAIN,stat.dongqiudi.com
   - DOMAIN,stat.y.qq.com
   - DOMAIN,static.ads-twitter.com
-  - DOMAIN,static.wxqcloud.qq.com.cn
   - DOMAIN,statics.woozooo.com
   - DOMAIN,stats.qiumibao.com
   - DOMAIN,stats.wp.com
@@ -617,10 +577,10 @@ payload:
   - DOMAIN,syh-imp.cdnjtzy.com
   - DOMAIN,szbdyd.com
   - DOMAIN,t-dsp.pinduoduo.com
-  - DOMAIN,t.l.qq.com
+  - DOMAIN,t.teads.tv
   - DOMAIN,t.track.ad.xiaomi.com
-  - DOMAIN,t002.ottcn.com
   - DOMAIN,t1.a.market.xiaomi.com
+  - DOMAIN,t1.teads.tv
   - DOMAIN,t2.a.market.xiaomi.com
   - DOMAIN,t3.a.market.xiaomi.com
   - DOMAIN,tangram.e.qq.com
@@ -630,7 +590,6 @@ payload:
   - DOMAIN,tencent-dtv.m.cn.miaozhen.com
   - DOMAIN,terms-drcn.platform.dbankcloud.cn
   - DOMAIN,test.ad.xiaomi.com
-  - DOMAIN,test.e.ad.xiaomi.com
   - DOMAIN,tj.b.qq.com
   - DOMAIN,tj.video.qq.com
   - DOMAIN,tmead.y.qq.com
@@ -639,12 +598,10 @@ payload:
   - DOMAIN,tmfmazu.m.qq.com
   - DOMAIN,tmfsdk.m.qq.com
   - DOMAIN,tmfsdktcpv4.m.qq.com
-  - DOMAIN,tnc3-aliec1.toutiaoapi.com
   - DOMAIN,tnc3-aliec2.bytedance.com
   - DOMAIN,tnc3-aliec2.toutiaoapi.com
   - DOMAIN,tnc3-alisc1.bytedance.com
   - DOMAIN,tnc3-alisc1.zijieapi.com
-  - DOMAIN,tnc3-alisc2.zijieapi.com
   - DOMAIN,tnc3-bjlgy.bytedance.com
   - DOMAIN,tnc3-bjlgy.toutiaoapi.com
   - DOMAIN,tnc3-bjlgy.zijieapi.com
@@ -659,6 +616,7 @@ payload:
   - DOMAIN,tracking.miui.com
   - DOMAIN,tracking.rus.miui.com
   - DOMAIN,tsvrv.com
+  - DOMAIN,tvapp.hpplay.cn
   - DOMAIN,tvuser-ch.cedock.com
   - DOMAIN,tx-ad.a.yximgs.com
   - DOMAIN,tx-kmpaudio.pull.yximgs.com
@@ -675,7 +633,6 @@ payload:
   - DOMAIN,umengacs.m.taobao.com
   - DOMAIN,umengjmacs.m.taobao.com
   - DOMAIN,umini.shujupie.com
-  - DOMAIN,umsns.com
   - DOMAIN,union.baidu.cn
   - DOMAIN,union.baidu.com
   - DOMAIN,update.avlyun.sec.miui.com
@@ -697,6 +654,7 @@ payload:
   - DOMAIN,video-ad.sm.cn
   - DOMAIN,video-dsp.pddpic.com
   - DOMAIN,video.dispatch.tc.qq.com
+  - DOMAIN,vipauth.hpplay.cn
   - DOMAIN,virusinfo-cloudscan-cn.heytapmobi.com
   - DOMAIN,vlive.qqvideo.tc.qq.com
   - DOMAIN,volc.bj.ad.track.66mobi.com
@@ -719,7 +677,7 @@ payload:
   - DOMAIN,wn.x.jd.com
   - DOMAIN,ws-keyboard.shouji.sogou.com
   - DOMAIN,ws.sj.qq.com
-  - DOMAIN,www42.zskwai.com
+  - DOMAIN,wwads.cn
   - DOMAIN,wxa.wxs.qq.com
   - DOMAIN,wxaintpcos.wxqcloud.qq.com.cn
   - DOMAIN,wximg.wxs.qq.com
@@ -730,8 +688,6 @@ payload:
   - DOMAIN,wxsnsdythumb.wxs.qq.com
   - DOMAIN,xc.gdt.qq.com
   - DOMAIN,xiaomi-dtv.m.cn.miaozhen.com
-  - DOMAIN,xlivrdr.com
-  - DOMAIN,xlmzc.cnjp-exp.com
   - DOMAIN,xlog.jd.com
   - DOMAIN,xlviiirdr.com
   - DOMAIN,xlviirdr.com
@@ -739,7 +695,6 @@ payload:
   - DOMAIN,ykad-data.youku.com
   - DOMAIN,ykad-gateway.youku.com
   - DOMAIN,youku-acs.m.taobao.com
-  - DOMAIN,youxi.kugou.com
   - DOMAIN,zeus.ad.xiaomi.com
   - DOMAIN,zhihu-web-analytics.zhihu.com
   - DOMAIN-REGEX,^.*\.*\.shouji\.sogou\.com$
