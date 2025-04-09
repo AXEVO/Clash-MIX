@@ -1,16 +1,15 @@
 #Title: AWAvenue Ads Rule
 #--------------------------------------
-#Total lines: 700
+#Total lines: 714
 #Version: 1.5.9-release
-#Update time: 2025-03-23 00:17:14 UTC+8
-#Update content: 添加读取原始规则的合法性 有效性校验以及修复之前的部分错误，对dns层拦截的插件添加ipv6屏蔽兼容
+#Update time: 2025-04-09 19:27:42 UTC+8
+#Update content: Block more ads and remove invalid domain names. #130 #131
 
 #Homepage: https://github.com/TG-Twilight/AWAvenue-Ads-Rule
 #License: https://github.com/TG-Twilight/AWAvenue-Ads-Rule/blob/main/LICENSE
 
 
 payload:
-  - DOMAIN,1010pic.com
   - DOMAIN,1500020991.vodplayer.wxamedia.com
   - DOMAIN,1500026601.vodplayer.wxamedia.com
   - DOMAIN,8le8le.com
@@ -54,6 +53,8 @@ payload:
   - DOMAIN,adcolony.com
   - DOMAIN,addata.jd.com
   - DOMAIN,adeng.hpplay.cn
+  - DOMAIN,adexp.chinaliftoff.io
+  - DOMAIN,adexp.liftoff.io
   - DOMAIN,adexpo.tencentmusic.com
   - DOMAIN,adfilter.imtt.qq.com
   - DOMAIN,adfstat.yandex.ru
@@ -184,6 +185,7 @@ payload:
   - DOMAIN,api.htp.hubcloud.com.cn
   - DOMAIN,api.hzsanjiaomao.com
   - DOMAIN,api.installer.xiaomi.com
+  - DOMAIN,api.jietuhb.com
   - DOMAIN,api.kingdata.ksyun.com
   - DOMAIN,api.statsig.com
   - DOMAIN,api.touch-moblie.com
@@ -200,6 +202,7 @@ payload:
   - DOMAIN,audid-api.taobao.com
   - DOMAIN,audid.umeng.com
   - DOMAIN,b1-data.ads.heytapmobi.com
+  - DOMAIN,badjs.weixinbridge.com
   - DOMAIN,baichuan-sdk.alicdn.com
   - DOMAIN,baichuan-sdk.taobao.com
   - DOMAIN,bdad.123pan.cn
@@ -237,15 +240,20 @@ payload:
   - DOMAIN,cdn-ads.oss-cn-shanghai.aliyuncs.com
   - DOMAIN,cdn-plugin-sync-upgrade-juui.hismarttv.com
   - DOMAIN,cdn.aiclk.com
+  - DOMAIN,cdn.chinaliftoff-creatives.io
   - DOMAIN,cdn.hpplay.com.cn
+  - DOMAIN,cdn.liftoff-creatives.io
   - DOMAIN,cdn.ynuf.aliapp.org
   - DOMAIN,cfg.imtt.qq.com
   - DOMAIN,chat1.jd.com
   - DOMAIN,chiq-cloud.com
   - DOMAIN,cj.qidian.com
   - DOMAIN,ck.ads.oppomobile.com
+  - DOMAIN,click.chinaliftoff.io
   - DOMAIN,click.googleanalytics.com
+  - DOMAIN,click.liftoff.io
   - DOMAIN,click.oneplus.cn
+  - DOMAIN,click4.chinaliftoff.io
   - DOMAIN,clog.miguvideo.com
   - DOMAIN,cn-api.anythinktech.com
   - DOMAIN,cnlogs.umeng.com
@@ -258,7 +266,6 @@ payload:
   - DOMAIN,config.unityads.unity3d.com
   - DOMAIN,cpc-service-square.aiclk.com
   - DOMAIN,cpro.baidustatic.com
-  - DOMAIN,crashlytics.com
   - DOMAIN,crashlyticsreports-pa.googleapis.com
   - DOMAIN,csjplatform.com
   - DOMAIN,cws-cctv.conviva.com
@@ -301,6 +308,7 @@ payload:
   - DOMAIN,firebaselogging-pa.googleapis.com
   - DOMAIN,flurry.com
   - DOMAIN,frontend-perf-service.e.kuaishou.com
+  - DOMAIN,fundingchoicesmessages.google.com
   - DOMAIN,fxgate.baidu.com
   - DOMAIN,g.dtv.cn.miaozhen.com
   - DOMAIN,g2.ganjing.world
@@ -314,6 +322,7 @@ payload:
   - DOMAIN,ggx01.miguvideo.com
   - DOMAIN,ggx03.miguvideo.com
   - DOMAIN,google-analytics.com
+  - DOMAIN,googleads.g.doubleclick-cn.net
   - DOMAIN,googleads.g.doubleclick.net
   - DOMAIN,googleadservices-cn.com
   - DOMAIN,googleadservices.com
@@ -335,6 +344,7 @@ payload:
   - DOMAIN,hmma.baidu.com
   - DOMAIN,hotupgrade.hpplay.cn
   - DOMAIN,houyi.kkmh.com
+  - DOMAIN,hpplay.cdn.cibn.cc
   - DOMAIN,httpdns.bcelive.com
   - DOMAIN,httpdns.ocloud.oppomobile.com
   - DOMAIN,hugelog.fcbox.com
@@ -359,6 +369,8 @@ payload:
   - DOMAIN,img-c.heytapimage.com
   - DOMAIN,img-x.jd.com
   - DOMAIN,img.adnyg.com.w.kunlungr.com
+  - DOMAIN,impression-asia.chinaliftoff.io
+  - DOMAIN,impression-asia.liftoff.io
   - DOMAIN,in.treasuredata.com
   - DOMAIN,iot-eu-logser.realme.com
   - DOMAIN,iot-logser.realme.com
@@ -383,6 +395,7 @@ payload:
   - DOMAIN,launcherimg.smart-tv.cn
   - DOMAIN,lf3-ad-union-sdk.pglstatp-toutiao.com
   - DOMAIN,lf6-ad-union-sdk.pglstatp-toutiao.com
+  - DOMAIN,lh3.googleadsserving.cn
   - DOMAIN,litchiads.com
   - DOMAIN,liveats-vod.video.ptqy.gitv.tv
   - DOMAIN,livemonitor.huan.tv
@@ -467,8 +480,8 @@ payload:
   - DOMAIN,notes-analytics-events.apple.com
   - DOMAIN,nsclick.baidu.com
   - DOMAIN,o2o.api.xiaomi.com
-  - DOMAIN,oauth-login-drcn.platform.dbankcloud.com
   - DOMAIN,offerwall.yandex.net
+  - DOMAIN,ogads-pa.clients6.google.com
   - DOMAIN,omgmta.play.aiseet.atianqi.com
   - DOMAIN,open.e.kuaishou.cn
   - DOMAIN,open.e.kuaishou.com
@@ -606,6 +619,8 @@ payload:
   - DOMAIN,tnc3-bjlgy.toutiaoapi.com
   - DOMAIN,tnc3-bjlgy.zijieapi.com
   - DOMAIN,toblog.ctobsnssdk.com
+  - DOMAIN,tpc.googlesyndication-cn.com
+  - DOMAIN,tpc.googlesyndication.com
   - DOMAIN,trace.qq.com
   - DOMAIN,tracelog-debug.aiclk.com
   - DOMAIN,tracelog-debug.qquanquan.com
@@ -615,7 +630,6 @@ payload:
   - DOMAIN,tracker.gitee.com
   - DOMAIN,tracking.miui.com
   - DOMAIN,tracking.rus.miui.com
-  - DOMAIN,tsvrv.com
   - DOMAIN,tvapp.hpplay.cn
   - DOMAIN,tvuser-ch.cedock.com
   - DOMAIN,tx-ad.a.yximgs.com
