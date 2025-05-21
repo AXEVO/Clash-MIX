@@ -22,7 +22,7 @@ fi
 #配置软链接
 ln -sf "$sdcard_dir/Clash/Clash配置.yaml" "$MODPATH/Proxy/config.yaml"
 #适配KSU
-if [ "$KSU" = true ]; then
+if [ "$KSU" ] || [ "$APATCH" ]; then
   ln -sf /data/adb/modules/Clash/Proxy/WebUI/ZashBoard $MODPATH/webroot
 fi
 #---
