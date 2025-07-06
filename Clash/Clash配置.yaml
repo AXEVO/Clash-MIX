@@ -7,9 +7,10 @@ allow-lan: true
 unified-delay: false
 tcp-concurrent: true
 find-process-mode: always
-log-level: info
+log-level: warning
+#interface-name: tun0  如果需要配合VPN嵌套使用，需使用此功能
 ipv6: true
-#关掉后可能在部分手机上出现dns泄露，volte不可用等问题，目前IPv6可以正常使用，不建议关闭
+#关掉后可能在部分三星手机上出现dns泄露，volte不可用等问题，目前IPv6可以正常使用，不建议关闭
 external-controller: 0.0.0.0:9090
 external-ui: WebUI/ZashBoard
 #两个面板可选：ZashBoard和MetacubeXD（https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip）
@@ -27,7 +28,7 @@ profile:
   store-selected: true
   store-fake-ip: true
 
-#嗅探器关掉后可能出现本机上网异常，连接本机热点的设备无法上网的问题
+#嗅探器关闭后可能出现连接本机热点的设备无法上网的问题
 sniffer:
   enable: true
   override-destination: false
@@ -72,20 +73,26 @@ tun:
     - com.sec.epdg
     - com.sec.imsservice
 #exclude-package内填写的包名，网络流量不经过tun，相当于黑名单
+#但是该应用的dns请求仍会被clash处理，这可能导致问题
 #默认添加MIUI镜像服务以及三星电话服务，避免系统功能不可用
 #如果想仅代理指定应用，请将exclude-package改为include-package
 #然后填上想要走代理的包名，不要忘了英文冒号和缩进。
 #目前分流规则已足够完善，白名单可能存在问题，不建议使用
+  route-exclude-address-set: 
+    - 0.0.0.0/8
+    - 127.0.0.0/8
+    - 192.168.0.0/16
+    - '::/128'
+    - '::1/128'
+    - fc70::/10
+    - fe80::/10
 
 dns:
   enable: true
-  perfer-h3: false
   ipv6: true
   ipv6-timeout: 300
-  respect-rules: false
   enhanced-mode: redir-host
-  # redir-host / fake-ip 可切换，建议使用redir-host避免出现莫名其妙的bug
-  fake-ip-range: 198.18.0.1/16
+# redir-host / fake-ip 可切换，建议使用redir-host避免出现莫名其妙的bug
 #如果删除了user策略组，需要在dns这里也删除，否则内核无法启动
   nameserver-policy:
     'rule-set:userDirect':
@@ -107,77 +114,61 @@ dns:
   proxy-server-nameserver:
     - "https://223.5.5.5/dns-query#中国网站"
     - "https://120.53.53.53/dns-query#中国网站"
-#------------------------------------------------------------------------------
-proxies:
+
+#-----------------------------------------------------------------------------
+#机场订阅全局设置
+pp: &pp
+  type: http
+  interval: 21600
+  health-check:
+    enable: true
+    url: https://www.gstatic.com/generate_204
+    interval: 900
+    timeout: 3000
+    lazy: true
+    expected-status: 204
+
 proxy-providers:
 #如果想要修改机场名（机场1等），需要全改，建议使用编辑器的查找替换功能
 #如果想要删除几个机场，在下面的策略组也要删除对应部分，否则内核无法启动
+
   机场1:
-    type: http
+    <<: *pp
     url: "订阅链接"
     path: ./proxy_providers/机场1.yaml
-    interval: 21600
-    health-check:
-      enable: true
-      url: https://www.gstatic.com/generate_204
-      interval: 900
-      timeout: 3000
-      lazy: true
-      expected-status: 204
 
   机场2:
-    type: http
+    <<: *pp
     url: "订阅链接"
     path: ./proxy_providers/机场2.yaml
-    interval: 21600
-    health-check:
-      enable: true
-      url: https://www.gstatic.com/generate_204
-      interval: 900
-      timeout: 3000
-      lazy: true
-      expected-status: 204
 
   机场3:
-    type: http
+    <<: *pp
     url: "订阅链接"
     path: ./proxy_providers/机场3.yaml
-    interval: 21600
-    health-check:
-      enable: true
-      url: https://www.gstatic.com/generate_204
-      interval: 900
-      timeout: 3000
-      lazy: true
-      expected-status: 204
 
   机场4:
-    type: http
+    <<: *pp
     url: "订阅链接"
     path: ./proxy_providers/机场4.yaml
-    interval: 21600
-    health-check:
-      enable: true
-      url: https://www.gstatic.com/generate_204
-      interval: 900
-      timeout: 3000
-      lazy: true
-      expected-status: 204
-
+    
   机场5:
-    type: http
+    <<: *pp
     url: "订阅链接"
     path: ./proxy_providers/机场5.yaml
-    interval: 21600
-    health-check:
-      enable: true
-      url: https://www.gstatic.com/generate_204
-      interval: 900
-      timeout: 3000
-      lazy: true
-      expected-status: 204
+    
 #------------------------------------------------------------------------------
+#代理组全局设置
+pg: &pg
+    interval: 300
+    lazy: true
+    timeout: 3000
+    max-failed-times: 5
+    expected-status: 204
+    url: 'https://www.gstatic.com/generate_204'
+#代理组
 proxy-groups:
+
   - name: 代理
     type: select
     proxies:
@@ -195,148 +186,123 @@ proxy-groups:
       - 自动切换负载均衡
       
   - name: 机场1
+    <<: *pg
     type: select
     use:
       - 机场1
-    url: 'https://www.gstatic.com/generate_204'
-    interval: 300
-    lazy: true
-    timeout: 3000
-    max-failed-times: 5
-    expected-status: 204
-
+ 
   - name: 机场2
+    <<: *pg
     type: select
     use:
       - 机场2
-    url: 'https://www.gstatic.com/generate_204'
-    interval: 300
-    lazy: true
-    timeout: 3000
-    max-failed-times: 5
-    expected-status: 204
 
   - name: 机场3
+    <<: *pg
     type: select
     use:
       - 机场3
-    url: 'https://www.gstatic.com/generate_204'
-    interval: 300
-    lazy: true
-    timeout: 3000
-    max-failed-times: 5
-    expected-status: 204
 
   - name: 机场4
+    <<: *pg
     type: select
     use:
       - 机场4
-    url: 'https://www.gstatic.com/generate_204'
-    interval: 300
-    lazy: true
-    timeout: 3000
-    max-failed-times: 5
-    expected-status: 204
 
   - name: 机场5
+    <<: *pg
     type: select
     use:
       - 机场5
-    url: 'https://www.gstatic.com/generate_204'
-    interval: 300
-    lazy: true
-    timeout: 3000
-    max-failed-times: 5
-    expected-status: 204
 
 
   - name: 美国节点
+    <<: *pg
     type: select
     include-all: true
     filter: '美国|USA|美國|us|US|United States'
-    url: 'https://www.gstatic.com/generate_204'
-    interval: 300
-    lazy: true
-    timeout: 3000
-    max-failed-times: 5
-    expected-status: 204
+    
 
   - name: 机场1负载均衡
+    <<: *pg
     type: load-balance
     use:
       - 机场1
-    url: 'https://www.gstatic.com/generate_204'
-    interval: 300
-    lazy: true
-    timeout: 3000
-    max-failed-times: 5
-    expected-status: 204
     filter: '美国|USA|美國|us|US|United States'
     strategy: consistent-hashing
+    hidden: true
 
   - name: 机场2负载均衡
+    <<: *pg
     type: load-balance
     use:
       - 机场2
-    url: 'https://www.gstatic.com/generate_204'
-    interval: 300
-    lazy: true
-    timeout: 3000
-    max-failed-times: 5
-    expected-status: 204
     filter: '美国|USA|美國|us|US|United States'
     strategy: consistent-hashing
+    hidden: true
 
   - name: 机场3负载均衡
+    <<: *pg
     type: load-balance
     use:
       - 机场3
-    url: 'https://www.gstatic.com/generate_204'
-    interval: 300
-    lazy: true
-    timeout: 3000
-    max-failed-times: 5
-    expected-status: 204
     filter: '美国|USA|美國|us|US|United States'
     strategy: consistent-hashing
+    hidden: true
 
   - name: 机场4自动选择
+    <<: *pg
     type: url-test
     use:
       - 机场4
-    url: 'https://www.gstatic.com/generate_204'
-    interval: 120
-    lazy: true
-    timeout: 3000
-    max-failed-times: 5
-    expected-status: 204
     filter: '美国|USA|美國|us|US|United States'
     tolerance: 100
+    hidden: true
 
   - name: 机场5自动回退
+    <<: *pg
     type: fallback
     use:
       - 机场5
-    url: 'https://www.gstatic.com/generate_204'
-    interval: 120
-    lazy: true
-    timeout: 3000
-    max-failed-times: 5
-    expected-status: 204
     filter: '美国|USA|美國|us|US|United States'
+    hidden: true
 
   - name: 自动切换负载均衡
+    <<: *pg
     type: fallback
     proxies:
       - 机场1负载均衡
       - 机场2负载均衡
       - 机场3负载均衡
-    url: 'https://www.gstatic.com/generate_204'
-    interval: 120
-    lazy: true
-    timeout: 2000
-    max-failed-times: 5
-    expected-status: 204
+    hidden: true
+#---------------------自定义分流规则------------------------------
+  - name: Google
+    <<: *pg
+    type: select
+    proxies:
+      - 美国节点
+      - 机场1负载均衡
+      - 机场2负载均衡
+      - 机场3负载均衡
+    include-all-providers: true
+    filter: '美国|USA|美國|us|US|United States'
+
+  - name: OpenAI
+    <<: *pg
+    type: select
+    proxies:
+      - 美国节点
+      - 机场1负载均衡
+      - 机场2负载均衡
+      - 机场3负载均衡
+    include-all-providers: true
+    filter: '美国|USA|美國|us|US|United States'
+#----------------------------------------------------------------
+  - name: 广告
+    type: select
+    proxies:
+      - REJECT
+      - PASS
 
   - name: 中国网站
     type: select
@@ -344,14 +310,8 @@ proxy-groups:
       - DIRECT
       - REJECT
       - 代理
-
-  - name: 广告
-    type: select
-    proxies:
-      - REJECT
-      - PASS
 #-------------------------------------------------------------------
-#用户自定义规则，文件在模块目录/rule-provider/
+#用户自定义直连/代理规则，文件在模块目录/rule-provider/
 #如有需要请参考官方文档写入
 #如果想要删除两个自定义规则，需要把上面dns配置内对自定义规则的设置删除，否则内核将无法启动
 
@@ -372,7 +332,7 @@ rule-providers:
     behavior: classical
     format: yaml
     path: ./rule_providers/AWAvenue-Ads-Rule-Clash.yaml
-    url: "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-Clash-classical.yaml"
+    url: "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/refs/heads/main/Filters/AWAvenue-Ads-Rule-Clash-Classical.yaml"
     interval: 86400
 
 rules:
@@ -387,6 +347,11 @@ rules:
 
   - RULE-SET,秋风广告规则,广告
   #- GEOSITE,category-ads-all,广告  #秋风规则足够日用，geodata提供的规则过于冗杂
+
+#--------------------自定义分流规则--------------------
+  - GEOSITE,openai,OpenAI
+  - GEOSITE,google,Google
+#-----------------------------------------------------
 
   - GEOSITE,CN,中国网站
   - GEOIP,CN,中国网站

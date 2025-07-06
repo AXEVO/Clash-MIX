@@ -48,6 +48,13 @@ ipv6: true # 开启 IPv6 总开关，关闭阻断所有 IPv6 链接和屏蔽 DNS
 tls:
   certificate: string # 证书 PEM 格式，或者 证书的路径
   private-key: string # 证书对应的私钥 PEM 格式，或者私钥路径
+  # 如果填写则开启ech（可由 mihomo generate ech-keypair <明文域名> 生成）
+  # ech-key: |
+  #   -----BEGIN ECH KEYS-----
+  #   ACATwY30o/RKgD6hgeQxwrSiApLaCgU+HKh7B6SUrAHaDwBD/g0APwAAIAAgHjzK
+  #   madSJjYQIf9o1N5GXjkW4DEEeb17qMxHdwMdNnwADAABAAEAAQACAAEAAwAIdGVz
+  #   dC5jb20AAA==
+  #   -----END ECH KEYS-----
   custom-certifactes:
     - |
       -----BEGIN CERTIFICATE-----
@@ -338,6 +345,12 @@ proxies:
 # dns 出站会将请求劫持到内部 dns 模块，所有请求均在内部处理
   - name: "dns-out"
     type: dns
+
+  # 配置指定 interface-name 和 fwmark 的 DIRECT
+  - name: en1-direct
+    type: direct
+    interface-name: en1
+    routing-mark: 6667
 proxy-groups:
   # 代理链，目前 relay 可以支持 udp 的只有 vmess/vless/trojan/ss/ssr/tuic
   # wireguard 目前不支持在 relay 中使用，请使用 proxy 中的 dialer-proxy 配置项
@@ -394,14 +407,6 @@ proxy-groups:
       - vmess1
       - auto
 
-  # 配置指定 interface-name 和 fwmark 的 DIRECT
-  - name: en1
-    type: select
-    interface-name: en1
-    routing-mark: 6667
-    proxies:
-      - DIRECT
-
   - name: UseProvider
     type: select
     filter: "HK|TW" # 正则表达式，过滤 provider1 中节点名包含 HK 或 TW
@@ -417,7 +422,7 @@ proxy-providers:
     type: http # http 的 path 可空置，默认储存路径为 homedir 的 proxies 文件夹，文件名为 url 的 md5
     url: "url"
     interval: 3600
-    path: ./provider1.yaml # 默认只允许存储在 mihomo 的 Home Dir，如果想存储到任意位置，添加环境变量 SKIP_SAFE_PATH_CHECK=1
+    path: ./provider1.yaml # 默认只允许存储在 mihomo 的 Home Dir，如果想存储到其他位置，请通过设置 SAFE_PATHS 环境变量指定额外的安全路径。该环境变量的语法同本操作系统的PATH环境变量解析规则（即Windows下以分号分割，其他系统下以冒号分割）
     proxy: DIRECT
     # size-limit: 10240 # 限制下载文件最大为10kb，默认为0即不限制文件大小
     header:
@@ -474,7 +479,7 @@ rule-providers:
   rule1:
     behavior: classical # domain ipcidr
     interval: 259200
-    path: /path/to/save/file.yaml # 默认只允许存储在 mihomo 的 Home Dir，如果想存储到任意位置，添加环境变量 SKIP_SAFE_PATH_CHECK=1
+    path: /path/to/save/file.yaml # 默认只允许存储在 mihomo 的 Home Dir，如果想存储到其他位置，请通过设置 SAFE_PATHS 环境变量指定额外的安全路径。该环境变量的语法同本操作系统的PATH环境变量解析规则（即Windows下以分号分割，其他系统下以冒号分割）
     type: http # http 的 path 可空置，默认储存路径为 homedir 的 rules 文件夹，文件名为 url 的 md5
     url: "url"
     proxy: DIRECT
@@ -561,6 +566,13 @@ listeners:
     # 下面两项如果填写则开启 tls（需要同时填写）
     # certificate: ./server.crt
     # private-key: ./server.key
+    # 如果填写则开启ech（可由 mihomo generate ech-keypair <明文域名> 生成）
+    # ech-key: |
+    #   -----BEGIN ECH KEYS-----
+    #   ACATwY30o/RKgD6hgeQxwrSiApLaCgU+HKh7B6SUrAHaDwBD/g0APwAAIAAgHjzK
+    #   madSJjYQIf9o1N5GXjkW4DEEeb17qMxHdwMdNnwADAABAAEAAQACAAEAAwAIdGVz
+    #   dC5jb20AAA==
+    #   -----END ECH KEYS-----
 
   - name: http-in-1
     type: http
@@ -574,6 +586,13 @@ listeners:
     # 下面两项如果填写则开启 tls（需要同时填写）
     # certificate: ./server.crt
     # private-key: ./server.key
+    # 如果填写则开启ech（可由 mihomo generate ech-keypair <明文域名> 生成）
+    # ech-key: |
+    #   -----BEGIN ECH KEYS-----
+    #   ACATwY30o/RKgD6hgeQxwrSiApLaCgU+HKh7B6SUrAHaDwBD/g0APwAAIAAgHjzK
+    #   madSJjYQIf9o1N5GXjkW4DEEeb17qMxHdwMdNnwADAABAAEAAQACAAEAAwAIdGVz
+    #   dC5jb20AAA==
+    #   -----END ECH KEYS-----
 
   - name: mixed-in-1
     type: mixed #  HTTP(S) 和 SOCKS 代理混合
@@ -588,6 +607,13 @@ listeners:
     # 下面两项如果填写则开启 tls（需要同时填写）
     # certificate: ./server.crt
     # private-key: ./server.key
+    # 如果填写则开启ech（可由 mihomo generate ech-keypair <明文域名> 生成）
+    # ech-key: |
+    #   -----BEGIN ECH KEYS-----
+    #   ACATwY30o/RKgD6hgeQxwrSiApLaCgU+HKh7B6SUrAHaDwBD/g0APwAAIAAgHjzK
+    #   madSJjYQIf9o1N5GXjkW4DEEeb17qMxHdwMdNnwADAABAAEAAQACAAEAAwAIdGVz
+    #   dC5jb20AAA==
+    #   -----END ECH KEYS-----
 
   - name: reidr-in-1
     type: redir
@@ -612,6 +638,15 @@ listeners:
     # proxy: proxy # 如果不为空则直接将该入站流量交由指定 proxy 处理 (当 proxy 不为空时，这里的 proxy 名称必须合法，否则会出错)
     password: vlmpIPSyHH6f4S8WVPdRIHIlzmB+GIRfoH3aNJ/t9Gg=
     cipher: 2022-blake3-aes-256-gcm
+    # shadow-tls:
+    #   enable: false # 设置为true时开启
+    #   version: 3 # 支持v1/v2/v3
+    #   password: password # v2设置项
+    #   users: # v3设置项
+    #     - name: 1
+    #       password: password
+    #   handshake:
+    #     dest: test.com:443
 
   - name: vmess-in-1
     type: vmess
@@ -628,6 +663,13 @@ listeners:
     # 下面两项如果填写则开启 tls（需要同时填写）
     # certificate: ./server.crt
     # private-key: ./server.key
+    # 如果填写则开启ech（可由 mihomo generate ech-keypair <明文域名> 生成）
+    # ech-key: |
+    #   -----BEGIN ECH KEYS-----
+    #   ACATwY30o/RKgD6hgeQxwrSiApLaCgU+HKh7B6SUrAHaDwBD/g0APwAAIAAgHjzK
+    #   madSJjYQIf9o1N5GXjkW4DEEeb17qMxHdwMdNnwADAABAAEAAQACAAEAAwAIdGVz
+    #   dC5jb20AAA==
+    #   -----END ECH KEYS-----
     # 如果填写reality-config则开启reality（注意不可与certificate和private-key同时填写）
     # reality-config:
     #   dest: test.com:443
@@ -636,6 +678,16 @@ listeners:
     #     - 0123456789abcdef
     #   server-names:
     #     - test.com
+    #   #下列两个 limit 为选填，可对未通过验证的回落连接限速，bytesPerSec 默认为 0 即不启用
+    #   #回落限速是一种特征，不建议启用，如果您是面板/一键脚本开发者，务必让这些参数随机化
+    #   limit-fallback-upload:
+    #     after-bytes: 0 # 传输指定字节后开始限速
+    #     bytes-per-sec: 0 # 基准速率（字节/秒）
+    #     burst-bytes-per-sec: 0 # 突发速率（字节/秒），大于 bytesPerSec 时生效
+    #   limit-fallback-download:
+    #     after-bytes: 0 # 传输指定字节后开始限速
+    #     bytes-per-sec: 0 # 基准速率（字节/秒）
+    #     burst-bytes-per-sec: 0 # 突发速率（字节/秒），大于 bytesPerSec 时生效
 
   - name: tuic-in-1
     type: tuic
@@ -650,6 +702,13 @@ listeners:
     #   00000000-0000-0000-0000-000000000001: PASSWORD_1
     #  certificate: ./server.crt
     #  private-key: ./server.key
+    #  如果填写则开启ech（可由 mihomo generate ech-keypair <明文域名> 生成）
+    #  ech-key: |
+    #    -----BEGIN ECH KEYS-----
+    #    ACATwY30o/RKgD6hgeQxwrSiApLaCgU+HKh7B6SUrAHaDwBD/g0APwAAIAAgHjzK
+    #    madSJjYQIf9o1N5GXjkW4DEEeb17qMxHdwMdNnwADAABAAEAAQACAAEAAwAIdGVz
+    #    dC5jb20AAA==
+    #    -----END ECH KEYS-----
     #  congestion-controller: bbr
     #  max-idle-time: 15000
     #  authentication-timeout: 1000
@@ -681,6 +740,13 @@ listeners:
     # 下面两项如果填写则开启 tls（需要同时填写）
     # certificate: ./server.crt
     # private-key: ./server.key
+    # 如果填写则开启ech（可由 mihomo generate ech-keypair <明文域名> 生成）
+    # ech-key: |
+    #   -----BEGIN ECH KEYS-----
+    #   ACATwY30o/RKgD6hgeQxwrSiApLaCgU+HKh7B6SUrAHaDwBD/g0APwAAIAAgHjzK
+    #   madSJjYQIf9o1N5GXjkW4DEEeb17qMxHdwMdNnwADAABAAEAAQACAAEAAwAIdGVz
+    #   dC5jb20AAA==
+    #   -----END ECH KEYS-----
     # 如果填写reality-config则开启reality（注意不可与certificate和private-key同时填写）
     reality-config:
       dest: test.com:443
@@ -689,6 +755,16 @@ listeners:
         - 0123456789abcdef
       server-names:
         - test.com
+      #下列两个 limit 为选填，可对未通过验证的回落连接限速，bytesPerSec 默认为 0 即不启用
+      #回落限速是一种特征，不建议启用，如果您是面板/一键脚本开发者，务必让这些参数随机化
+      limit-fallback-upload:
+        after-bytes: 0 # 传输指定字节后开始限速
+        bytes-per-sec: 0 # 基准速率（字节/秒）
+        burst-bytes-per-sec: 0 # 突发速率（字节/秒），大于 bytesPerSec 时生效
+      limit-fallback-download:
+        after-bytes: 0 # 传输指定字节后开始限速
+        bytes-per-sec: 0 # 基准速率（字节/秒）
+        burst-bytes-per-sec: 0 # 突发速率（字节/秒），大于 bytesPerSec 时生效
     ### 注意，对于vless listener, 至少需要填写 “certificate和private-key” 或 “reality-config” 的其中一项 ###
 
   - name: anytls-in-1
@@ -701,6 +777,13 @@ listeners:
     # "certificate" and "private-key" are required
     certificate: ./server.crt
     private-key: ./server.key
+    # 如果填写则开启ech（可由 mihomo generate ech-keypair <明文域名> 生成）
+    # ech-key: |
+    #   -----BEGIN ECH KEYS-----
+    #   ACATwY30o/RKgD6hgeQxwrSiApLaCgU+HKh7B6SUrAHaDwBD/g0APwAAIAAgHjzK
+    #   madSJjYQIf9o1N5GXjkW4DEEeb17qMxHdwMdNnwADAABAAEAAQACAAEAAwAIdGVz
+    #   dC5jb20AAA==
+    #   -----END ECH KEYS-----
     # padding-scheme: "" # https://github.com/anytls/anytls-go/blob/main/docs/protocol.md#cmdupdatepaddingscheme
 
   - name: trojan-in-1
@@ -717,6 +800,13 @@ listeners:
     # 下面两项如果填写则开启 tls（需要同时填写）
     certificate: ./server.crt
     private-key: ./server.key
+    # 如果填写则开启ech（可由 mihomo generate ech-keypair <明文域名> 生成）
+    # ech-key: |
+    #   -----BEGIN ECH KEYS-----
+    #   ACATwY30o/RKgD6hgeQxwrSiApLaCgU+HKh7B6SUrAHaDwBD/g0APwAAIAAgHjzK
+    #   madSJjYQIf9o1N5GXjkW4DEEeb17qMxHdwMdNnwADAABAAEAAQACAAEAAwAIdGVz
+    #   dC5jb20AAA==
+    #   -----END ECH KEYS-----
     # 如果填写reality-config则开启reality（注意不可与certificate和private-key同时填写）
     # reality-config:
     #   dest: test.com:443
@@ -725,11 +815,53 @@ listeners:
     #     - 0123456789abcdef
     #   server-names:
     #     - test.com
+    #   #下列两个 limit 为选填，可对未通过验证的回落连接限速，bytesPerSec 默认为 0 即不启用
+    #   #回落限速是一种特征，不建议启用，如果您是面板/一键脚本开发者，务必让这些参数随机化
+    #   limit-fallback-upload:
+    #     after-bytes: 0 # 传输指定字节后开始限速
+    #     bytes-per-sec: 0 # 基准速率（字节/秒）
+    #     burst-bytes-per-sec: 0 # 突发速率（字节/秒），大于 bytesPerSec 时生效
+    #   limit-fallback-download:
+    #     after-bytes: 0 # 传输指定字节后开始限速
+    #     bytes-per-sec: 0 # 基准速率（字节/秒）
+    #     burst-bytes-per-sec: 0 # 突发速率（字节/秒），大于 bytesPerSec 时生效
     # ss-option: # like trojan-go's `shadowsocks` config
     #   enabled: false
     #   method: aes-128-gcm # aes-128-gcm/aes-256-gcm/chacha20-ietf-poly1305
     #   password: "example"
     ### 注意，对于trojan listener, 至少需要填写 “certificate和private-key” 或 “reality-config” 或 “ss-option” 的其中一项 ###
+
+  - name: hysteria2-in-1
+    type: hysteria2
+    port: 10820 # 支持使用ports格式，例如200,302 or 200,204,401-429,501-503
+    listen: 0.0.0.0
+    # rule: sub-rule-name1 # 默认使用 rules，如果未找到 sub-rule 则直接使用 rules
+    # proxy: proxy # 如果不为空则直接将该入站流量交由指定 proxy 处理 (当 proxy 不为空时，这里的 proxy 名称必须合法，否则会出错)
+    users:
+      00000000-0000-0000-0000-000000000000: PASSWORD_0
+      00000000-0000-0000-0000-000000000001: PASSWORD_1
+    #  certificate: ./server.crt
+    #  private-key: ./server.key
+    #  如果填写则开启ech（可由 mihomo generate ech-keypair <明文域名> 生成）
+    #  ech-key: |
+    #    -----BEGIN ECH KEYS-----
+    #    ACATwY30o/RKgD6hgeQxwrSiApLaCgU+HKh7B6SUrAHaDwBD/g0APwAAIAAgHjzK
+    #    madSJjYQIf9o1N5GXjkW4DEEeb17qMxHdwMdNnwADAABAAEAAQACAAEAAwAIdGVz
+    #    dC5jb20AAA==
+    #    -----END ECH KEYS-----
+    ##  up 和 down 均不写或为 0 则使用 BBR 流控
+    #  up: "30 Mbps" # 若不写单位，默认为 Mbps
+    #  down: "200 Mbps" # 若不写单位，默认为 Mbps
+    #  obfs: salamander # 默认为空，如果填写则开启 obfs，目前仅支持 salamander
+    #  obfs-password: yourpassword
+    #  max-idle-time: 15000
+    #  alpn:
+    #    - h3
+    #  ignore-client-bandwidth: false
+    # HTTP3 服务器认证失败时的行为 （URL 字符串配置）,如果 masquerade 未配置，则返回 404 页
+    #  masquerade: file:///var/www # 作为文件服务器
+    #  masquerade: http://127.0.0.1:8080	#作为反向代理
+    #  masquerade: https://127.0.0.1:8080	#作为反向代理
 
   - name: tun-in-1
     type: tun

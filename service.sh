@@ -9,4 +9,4 @@ done
 script_path=/data/adb/modules/Clash/Scripts
 
 $script_path/Clash.Service start
-inotifyd $script_path/Clash.Inotify "/data/adb/modules/Clash" >> /dev/null &
+nohup inotifyd $script_path/Clash.Inotify "/data/adb/modules/Clash" >> /dev/null &

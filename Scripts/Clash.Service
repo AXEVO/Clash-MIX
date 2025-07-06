@@ -9,6 +9,8 @@ start() {
 
         iptables -C FORWARD -i Meta -j ACCEPT 2>/dev/null || iptables -I FORWARD -i Meta -j ACCEPT
         iptables -C FORWARD -o Meta -j ACCEPT 2>/dev/null || iptables -I FORWARD -o Meta -j ACCEPT
+        ip6tables -C FORWARD -i Meta -j ACCEPT 2>/dev/null || ip6tables -I FORWARD -i Meta -j ACCEPT
+        ip6tables -C FORWARD -o Meta -j ACCEPT 2>/dev/null || ip6tables -I FORWARD -o Meta -j ACCEPT
         
         echo "Clash内核已启动"
     else
@@ -23,6 +25,8 @@ stop() {
 
         iptables -D FORWARD -i Meta -j ACCEPT 2>/dev/null
         iptables -D FORWARD -o Meta -j ACCEPT 2>/dev/null
+        ip6tables -D FORWARD -i Meta -j ACCEPT 2>/dev/null
+        ip6tables -D FORWARD -o Meta -j ACCEPT 2>/dev/null
 
         echo "Clash内核已关闭并清除iptables规则"
     else

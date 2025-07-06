@@ -21,9 +21,9 @@ if [ -d "$module_dir/Proxy/rule_providers" ]; then
 fi
 #配置软链接
 ln -sf "$sdcard_dir/Clash/Clash配置.yaml" "$MODPATH/Proxy/config.yaml"
-#适配KSU
-if [ "$KSU" = true ]; then
-  ln -sf /data/adb/modules/Clash/Proxy/WebUI/ZashBoard $MODPATH/webroot
+#适配KSU和Apatch
+if [ "$KSU" = true ] || [ "$KERNELPATCH" = true ]; then
+  ln -sf /data/adb/modules/Clash/Proxy/WebUI/ZashBoard "$MODPATH/webroot"
 fi
 #---
 chmod 777 -Rf $MODPATH
