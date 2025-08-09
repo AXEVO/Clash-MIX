@@ -136,26 +136,15 @@ proxy-providers:
     <<: *pp
     url: "订阅链接"
     path: ./proxy_providers/机场1.yaml
-
+    override:
+      additional-suffix: " <机场1>"
   机场2:
     <<: *pp
     url: "订阅链接"
     path: ./proxy_providers/机场2.yaml
-
-  机场3:
-    <<: *pp
-    url: "订阅链接"
-    path: ./proxy_providers/机场3.yaml
-
-  机场4:
-    <<: *pp
-    url: "订阅链接"
-    path: ./proxy_providers/机场4.yaml
-    
-  机场5:
-    <<: *pp
-    url: "订阅链接"
-    path: ./proxy_providers/机场5.yaml
+    override:
+      additional-suffix: " <机场2>"
+  #可无限延伸
     
 #------------------------------------------------------------------------------
 #代理组全局设置
@@ -165,138 +154,89 @@ pg: &pg
     timeout: 3000
     max-failed-times: 5
     expected-status: 204
+    include-all-providers: true
     url: 'https://www.gstatic.com/generate_204'
+pg_us: &pg_us
+    filter: "(?i)美|us|unitedstates|united states"
+pg_hk: &pg_hk
+    filter: "(?i)港|hk|hongkong|hong kong"
 #代理组
 proxy-groups:
 
   - name: 代理
     type: select
     proxies:
-      - 美国节点
-      - 机场1
-      - 机场2
-      - 机场3
-      - 机场4
-      - 机场5
-      - 机场1负载均衡
-      - 机场2负载均衡
-      - 机场3负载均衡
-      - 机场4自动选择
-      - 机场5自动回退
-      - 自动切换负载均衡
-      
-  - name: 机场1
-    <<: *pg
+      - 手动-香港
+      - 手动-美国
+      - 自动-香港
+      - 自动-美国
+      - 均衡-香港
+      - 均衡-美国
+      - 回退-香港
+      - 回退-美国
+  
+  - name: 手动-香港
+    <<: [ *pg , *pg_hk ]
     type: select
-    use:
-      - 机场1
- 
-  - name: 机场2
-    <<: *pg
+
+  - name: 手动-美国
+    <<: [ *pg , *pg_us ]
     type: select
-    use:
-      - 机场2
 
-  - name: 机场3
-    <<: *pg
-    type: select
-    use:
-      - 机场3
-
-  - name: 机场4
-    <<: *pg
-    type: select
-    use:
-      - 机场4
-
-  - name: 机场5
-    <<: *pg
-    type: select
-    use:
-      - 机场5
-
-
-  - name: 美国节点
-    <<: *pg
-    type: select
-    include-all: true
-    filter: '美国|USA|美國|us|US|United States'
-    
-
-  - name: 机场1负载均衡
-    <<: *pg
-    type: load-balance
-    use:
-      - 机场1
-    filter: '美国|USA|美國|us|US|United States'
-    strategy: consistent-hashing
-    hidden: true
-
-  - name: 机场2负载均衡
-    <<: *pg
-    type: load-balance
-    use:
-      - 机场2
-    filter: '美国|USA|美國|us|US|United States'
-    strategy: consistent-hashing
-    hidden: true
-
-  - name: 机场3负载均衡
-    <<: *pg
-    type: load-balance
-    use:
-      - 机场3
-    filter: '美国|USA|美國|us|US|United States'
-    strategy: consistent-hashing
-    hidden: true
-
-  - name: 机场4自动选择
-    <<: *pg
+  - name: 自动-香港
+    <<: [ *pg , *pg_hk ]
     type: url-test
-    use:
-      - 机场4
-    filter: '美国|USA|美國|us|US|United States'
-    tolerance: 100
-    hidden: true
 
-  - name: 机场5自动回退
-    <<: *pg
-    type: fallback
-    use:
-      - 机场5
-    filter: '美国|USA|美國|us|US|United States'
-    hidden: true
+  - name: 自动-美国
+    <<: [ *pg , *pg_us ]
+    type: url-test
 
-  - name: 自动切换负载均衡
-    <<: *pg
-    type: fallback
-    proxies:
-      - 机场1负载均衡
-      - 机场2负载均衡
-      - 机场3负载均衡
-    hidden: true
+  - name: 均衡-香港
+    <<: [ *pg , *pg_hk ]
+    type: load-balance
+    hideen: true
+
+  - name: 均衡-美国
+    <<: [ *pg , *pg_us ]
+    type: load-balance
+    hideen: true
+
+  - name: 回退-香港
+    <<: [ *pg , *pg_hk ]
+    type: load-balance
+    hideen: true
+
+  - name: 回退-美国
+    <<: [ *pg , *pg_us ]
+    type: load-balance
+    hideen: true
+
 #---------------------自定义分流规则------------------------------
   - name: Google
-    <<: *pg
+    <<: [ *pg ]
     type: select
     proxies:
-      - 美国节点
-      - 机场1负载均衡
-      - 机场2负载均衡
-      - 机场3负载均衡
-    include-all-providers: true
-    filter: '美国|USA|美國|us|US|United States'
+      - 手动-香港
+      - 手动-美国
+      - 自动-香港
+      - 自动-美国
+      - 均衡-香港
+      - 均衡-美国
+      - 回退-香港
+      - 回退-美国
 
   - name: OpenAI
-    <<: *pg
+    <<: [ *pg ]
     type: select
     proxies:
-      - 美国节点
-      - 机场1负载均衡
-      - 机场2负载均衡
-      - 机场3负载均衡
-    include-all-providers: true
-    filter: '美国|USA|美國|us|US|United States'
+      - 手动-香港
+      - 手动-美国
+      - 自动-香港
+      - 自动-美国
+      - 均衡-香港
+      - 均衡-美国
+      - 回退-香港
+      - 回退-美国
 #----------------------------------------------------------------
   - name: 广告
     type: select
