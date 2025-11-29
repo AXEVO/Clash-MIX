@@ -23,7 +23,7 @@ fi
 ln -sf "$sdcard_dir/Clash/Clash配置.yaml" "$MODPATH/Proxy/config.yaml"
 #适配KSU和Apatch
 if [ "$KSU" = true ] || [ "$KERNELPATCH" = true ]; then
-  ln -sf /data/adb/modules/Clash/Proxy/WebUI/ZashBoard "$MODPATH/webroot"
+  ln -sf /data/adb/modules/Clash/Proxy/WebUI "$MODPATH/webroot"
 fi
 #---
 chmod 777 -Rf $MODPATH
