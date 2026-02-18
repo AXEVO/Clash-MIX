@@ -135,6 +135,11 @@ proxy-providers:
     <<: *pp
     url: "订阅链接"
     path: ./proxy_providers/机场2.yaml
+
+  机场3:
+    <<: *pp
+    url: "订阅链接"
+    path: ./proxy_providers/机场3.yaml
     
 #------------------------------------------------------------------------------
 proxy-groups:
