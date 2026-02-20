@@ -436,7 +436,7 @@ check_dependencies() {
     fi
 
     local missing=""
-    local required_commands="ip iptables curl"
+    local required_commands="ip iptables"
     local cmd
 
     for cmd in $required_commands; do
@@ -639,6 +639,39 @@ safe_chain_create() {
     fi
 }
 
+detect_busybox() {
+    if [ -f "/data/adb/ksu/bin/busybox" ]; then
+        echo "/data/adb/ksu/bin/busybox"
+    elif [ -f "/data/adb/ap/bin/busybox" ]; then
+        echo "/data/adb/ap/bin/busybox"
+    elif [ -f "/data/adb/magisk/busybox" ]; then
+        echo "/data/adb/magisk/busybox"
+    else
+        echo "busybox"
+    fi
+}
+
+download_file() {
+    local url="$1"
+    local output="$2"
+    if command -v curl > /dev/null 2>&1; then
+        log Debug "[EXEC] curl -fsSL --connect-timeout 10 --retry 3 $url -o $output"
+        if [ "$DRY_RUN" -eq 0 ]; then
+            curl -fsSL --connect-timeout 10 --retry 3 "$url" -o "$output" || return 1
+        fi
+    else
+        local wget_cmd="wget"
+        if ! command -v wget > /dev/null 2>&1; then
+            wget_cmd="$(detect_busybox) wget"
+        fi
+        log Debug "[EXEC] $wget_cmd -q -T 10 -t 3 -O $output $url"
+        if [ "$DRY_RUN" -eq 0 ]; then
+            $wget_cmd -q -T 10 -t 3 -O "$output" "$url" || return 1
+        fi
+    fi
+    return 0
+}
+
 download_cn_ip_list() {
     if [ "$BYPASS_CN_IP" -eq 0 ]; then
         log Debug "CN IP bypass is disabled, download skipped"
@@ -651,17 +684,11 @@ download_cn_ip_list() {
     if [ ! -f "$CONFIG_DIR/$CN_IP_FILE" ] || [ "$(find "$CONFIG_DIR/$CN_IP_FILE" -mtime +7 2> /dev/null)" ]; then
         log Info "Fetching latest China IP list from $CN_IP_URL"
 
-        log Debug "[EXEC] curl -fsSL --connect-timeout 10 --retry 3 $CN_IP_URL -o $CONFIG_DIR/$CN_IP_FILE.tmp"
-        if [ "$DRY_RUN" -eq 0 ]; then
-            if ! curl -fsSL --connect-timeout 10 --retry 3 \
-                "$CN_IP_URL" \
-                -o "$CONFIG_DIR/$CN_IP_FILE.tmp"; then
-                log Error "Failed to download China IP list"
-
-                log Debug "[EXEC] rm -f $CONFIG_DIR/$CN_IP_FILE.tmp"
-                rm -f "$CONFIG_DIR/$CN_IP_FILE.tmp"
-                return 1
-            fi
+        if ! download_file "$CN_IP_URL" "$CONFIG_DIR/$CN_IP_FILE.tmp"; then
+            log Error "Failed to download China IP list"
+            log Debug "[EXEC] rm -f $CONFIG_DIR/$CN_IP_FILE.tmp"
+            rm -f "$CONFIG_DIR/$CN_IP_FILE.tmp"
+            return 1
         fi
 
         log Debug "[EXEC] mv $CONFIG_DIR/$CN_IP_FILE.tmp $CONFIG_DIR/$CN_IP_FILE"
@@ -679,17 +706,11 @@ download_cn_ip_list() {
         if [ ! -f "$CONFIG_DIR/$CN_IPV6_FILE" ] || [ "$(find "$CONFIG_DIR/$CN_IPV6_FILE" -mtime +7 2> /dev/null)" ]; then
             log Info "Fetching latest China IPv6 list from $CN_IPV6_URL"
 
-            log Debug "[EXEC] curl -fsSL --connect-timeout 10 --retry 3 $CN_IPV6_URL -o $CONFIG_DIR/$CN_IPV6_FILE.tmp"
-            if [ "$DRY_RUN" -eq 0 ]; then
-                if ! curl -fsSL --connect-timeout 10 --retry 3 \
-                    "$CN_IPV6_URL" \
-                    -o "$CONFIG_DIR/$CN_IPV6_FILE.tmp"; then
-                    log Error "Failed to download China IPv6 list"
-
-                    log Debug "[EXEC] rm -f $CONFIG_DIR/$CN_IPV6_FILE.tmp"
-                    rm -f "$CONFIG_DIR/$CN_IPV6_FILE.tmp"
-                    return 1
-                fi
+            if ! download_file "$CN_IPV6_URL" "$CONFIG_DIR/$CN_IPV6_FILE.tmp"; then
+                log Error "Failed to download China IPv6 list"
+                log Debug "[EXEC] rm -f $CONFIG_DIR/$CN_IPV6_FILE.tmp"
+                rm -f "$CONFIG_DIR/$CN_IPV6_FILE.tmp"
+                return 1
             fi
 
             log Debug "[EXEC] mv $CONFIG_DIR/$CN_IPV6_FILE.tmp $CONFIG_DIR/$CN_IPV6_FILE"

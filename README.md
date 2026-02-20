@@ -12,7 +12,10 @@
 3. **日志输出和配置管理便捷**  
    模块的日志输出和配置文件存放在 `/内部存储/Android/Clash` 文件夹中，现在可以更加方便地编辑配置文件和查看日志了。
 
-4. **常用功能全支持**    
+4. **tproxy.sh 与上游保持一致**  
+   模块内 `Scripts/tproxy.sh` 直接同步自 AndroidTProxyShell 上游脚本，便于后续差异排查和版本升级。
+
+5. **常用功能全支持**    
    - 在 Magisk 或 KSU 管理器内一键更新  
    - Action 按键支持快速重启内核
    - KSU管理器内置网页面板支持  
@@ -49,6 +52,11 @@
    - 模块目录 `Scripts/tproxy.conf` 为 TProxy 主配置文件。  
    - 若设备不支持 TPROXY，可将 `PROXY_MODE` 调整为 `0`（自动）或 `2`（REDIRECT 仅 TCP）。  
    - 若出现 IPv6 异常，可将 `PROXY_IPV6=0` 后重启内核。
+
+4. **三星 OneUI 兼容建议（默认已预置）**  
+   - 模块已在 `tproxy.conf` 中预置 `BYPASS_APPS_LIST`，绕过 `com.sec.imsservice`、`com.sec.epdg`、拨号与通话 UI 等系统应用，以降低 VoLTE/来电异常风险。  
+   - 如果你不是三星设备，可按需删减该列表。  
+   - 若仍有待机耗电或唤醒锁异常，可继续尝试 `PROXY_IPV6=0` 或 `DNS_HIJACK_ENABLE=0`。
 
 ---
 
