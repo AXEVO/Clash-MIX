@@ -38,3 +38,30 @@
   1. 先关闭 IPv6 代理（`PROXY_IPV6=0`）再观察 24h。
   2. 再尝试关闭 DNS 劫持（`DNS_HIJACK_ENABLE=0`）做 A/B 对照。
   3. 保持代理核心与规则不变，仅改 1 个变量，方便定位。
+
+
+## 本次新增结论：蓝牙唤醒锁（`hal_Bluetooth_lock` / `898000.qcom,qup_uart`）
+
+### 线上资料结论（截至本次调研）
+- 社区（XDA/Pixel 社区/Reddit）存在大量同类现象报告，但**没有一个稳定、通用、且无需改内核/厂商蓝牙栈的“直接一键修复”方案**。
+- 现有“有效案例”大多是：
+  1. 关闭特定蓝牙外设特性（高频心跳/通知同步）；
+  2. 避免代理链路干预蓝牙相关网络流量；
+  3. 在系统层做更细粒度绕过后功耗恢复。
+
+### 对本模块可落地的措施
+1. 增加 `BLUETOOTH_BYPASS_ENABLE`（默认开）与 `BLUETOOTH_UID`：
+   - 默认值 `1002`，来源于 AOSP 的 `AID_BLUETOOTH`；
+   - 支持 `BLUETOOTH_UID=auto`，脚本会从 `/system/etc/passwd` 或 `/vendor/etc/passwd` 自动探测蓝牙 UID；
+   - 让 Android 蓝牙系统 UID（`AID_BLUETOOTH`）流量在 OUTPUT 侧直接 bypass，避免进入代理链。
+2. 与既有 OneUI 方案叠加：
+   - 保留 IMS/电话/短信相关包名绕过；
+   - 若仍异常，继续做单变量 A/B：`PROXY_IPV6=0`、`DNS_HIJACK_ENABLE=0`。
+
+### 资料来源（用于确认“暂无直接通用修复”）
+- XDA 讨论：`hal_bluetooth_lock` 长时间唤醒（机型/ROM相关，缺乏统一修复）
+  - <https://xdaforums.com/t/hal_bluetooth_lock-wakelock.3753994/>
+- Google Pixel 社区：`hal_bluetooth_lock active 100%` 反馈
+  - <https://support.google.com/pixelphone/thread/235709034/hal-bluetooth-lock-active-100-of-the-time-on-pixel-7a>
+- 社区聚合讨论：`qup_uart` 与蓝牙并发时待机耗电
+  - <https://xdaforums.com/tags/qup_uart/>

@@ -74,6 +74,12 @@ readonly DEFAULT_BYPASS_APPS_LIST=""
 readonly DEFAULT_APP_PROXY_MODE="blacklist"
 # "blacklist" or "whitelist"
 
+# Bluetooth stack bypass (AID_BLUETOOTH=1002)
+# When enabled, traffic from Bluetooth UID will bypass proxy rules.
+readonly DEFAULT_BLUETOOTH_BYPASS_ENABLE=1
+readonly DEFAULT_BLUETOOTH_UID=1002
+readonly DEFAULT_BLUETOOTH_UID_AUTO=0
+
 # CN IP bypass configuration
 readonly DEFAULT_BYPASS_CN_IP=0
 # CN IP list file name
@@ -197,6 +203,8 @@ load_config() {
     PROXY_APPS_LIST="${PROXY_APPS_LIST:-$DEFAULT_PROXY_APPS_LIST}"
     BYPASS_APPS_LIST="${BYPASS_APPS_LIST:-$DEFAULT_BYPASS_APPS_LIST}"
     APP_PROXY_MODE="${APP_PROXY_MODE:-$DEFAULT_APP_PROXY_MODE}"
+    BLUETOOTH_BYPASS_ENABLE="${BLUETOOTH_BYPASS_ENABLE:-$DEFAULT_BLUETOOTH_BYPASS_ENABLE}"
+    BLUETOOTH_UID="${BLUETOOTH_UID:-$DEFAULT_BLUETOOTH_UID}"
     BYPASS_CN_IP="${BYPASS_CN_IP:-$DEFAULT_BYPASS_CN_IP}"
     CN_IP_FILE="${CN_IP_FILE:-$DEFAULT_CN_IP_FILE}"
     CN_IPV6_FILE="${CN_IPV6_FILE:-$DEFAULT_CN_IPV6_FILE}"
@@ -243,6 +251,8 @@ load_config() {
         log Debug "PROXY_APPS_LIST: $PROXY_APPS_LIST"
         log Debug "BYPASS_APPS_LIST: $BYPASS_APPS_LIST"
         log Debug "APP_PROXY_MODE: $APP_PROXY_MODE"
+        log Debug "BLUETOOTH_BYPASS_ENABLE: $BLUETOOTH_BYPASS_ENABLE"
+        log Debug "BLUETOOTH_UID: $BLUETOOTH_UID"
         log Debug "BYPASS_CN_IP: $BYPASS_CN_IP"
         log Debug "CN_IP_FILE: $CN_IP_FILE"
         log Debug "CN_IPV6_FILE: $CN_IPV6_FILE"
@@ -339,6 +349,24 @@ init_kernel_config_cache() {
     fi
 }
 
+resolve_bluetooth_uid() {
+    local uid_line
+
+    uid_line=$(awk -F: '/^bluetooth:/ {print $3; exit}' /system/etc/passwd 2> /dev/null || true)
+    if [ -n "$uid_line" ] && echo "$uid_line" | grep -E '^[0-9]+$' > /dev/null; then
+        echo "$uid_line"
+        return 0
+    fi
+
+    uid_line=$(awk -F: '/^bluetooth:/ {print $3; exit}' /vendor/etc/passwd 2> /dev/null || true)
+    if [ -n "$uid_line" ] && echo "$uid_line" | grep -E '^[0-9]+$' > /dev/null; then
+        echo "$uid_line"
+        return 0
+    fi
+
+    return 1
+}
+
 validate_config() {
     log Debug "Validating configuration..."
 
@@ -394,6 +422,27 @@ validate_config() {
         log Warn "Empty user or group detected, Using default user:group 'root:net_admin'"
         CORE_USER="root"
         CORE_GROUP="net_admin"
+    fi
+
+    if ! echo "$BLUETOOTH_BYPASS_ENABLE" | grep -E '^[0-1]$' > /dev/null; then
+        log Error "Invalid BLUETOOTH_BYPASS_ENABLE: $BLUETOOTH_BYPASS_ENABLE (must be 0 or 1)"
+        return 1
+    fi
+
+    if [ "$BLUETOOTH_UID" = "auto" ] || [ "$BLUETOOTH_UID" = "AUTO" ]; then
+        if BLUETOOTH_UID=$(resolve_bluetooth_uid); then
+            BLUETOOTH_UID_AUTO=1
+            log Info "Auto detected bluetooth UID: $BLUETOOTH_UID"
+        else
+            BLUETOOTH_UID="$DEFAULT_BLUETOOTH_UID"
+            BLUETOOTH_UID_AUTO=0
+            log Warn "Failed to auto detect bluetooth UID, fallback to default UID: $BLUETOOTH_UID"
+        fi
+    fi
+
+    if ! echo "$BLUETOOTH_UID" | grep -E '^[0-9]+$' > /dev/null; then
+        log Error "Invalid BLUETOOTH_UID: $BLUETOOTH_UID"
+        return 1
     fi
 
     case "$APP_PROXY_MODE" in
@@ -1107,6 +1156,20 @@ setup_proxy_chain() {
 
     local uids
     local uid
+
+    if [ "$BLUETOOTH_BYPASS_ENABLE" -eq 1 ]; then
+        if check_kernel_feature "NETFILTER_XT_MATCH_OWNER"; then
+            $cmd -t "$table" -A "APP_CHAIN$suffix" -m owner --uid-owner "$BLUETOOTH_UID" -j ACCEPT
+            if [ "$BLUETOOTH_UID_AUTO" -eq 1 ]; then
+                log Info "Added Bluetooth UID bypass (auto detected UID: $BLUETOOTH_UID)"
+            else
+                log Info "Added Bluetooth UID bypass (configured UID: $BLUETOOTH_UID)"
+            fi
+        else
+            log Warn "Bluetooth UID bypass requires NETFILTER_XT_MATCH_OWNER kernel feature"
+        fi
+    fi
+
     if [ "$APP_PROXY_ENABLE" -eq 1 ]; then
         if check_kernel_feature "NETFILTER_XT_MATCH_OWNER"; then
             log Info "Setting up application filter rules in $APP_PROXY_MODE mode"

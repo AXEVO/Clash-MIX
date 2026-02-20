@@ -57,6 +57,8 @@
    - 模块已在 `tproxy.conf` 中预置 `BYPASS_APPS_LIST`，绕过 `com.sec.imsservice`、`com.sec.epdg`、拨号与通话 UI 等系统应用，以降低 VoLTE/来电异常风险。  
    - 如果你不是三星设备，可按需删减该列表。  
    - 若仍有待机耗电或唤醒锁异常，可继续尝试 `PROXY_IPV6=0` 或 `DNS_HIJACK_ENABLE=0`。
+   - 新增 `BLUETOOTH_BYPASS_ENABLE=1`（默认开启），可让蓝牙系统 UID（默认 1002）绕过代理，缓解 `hal_Bluetooth_lock` / `898000.qcom,qup_uart` 持续唤醒。
+   - `1002` 来自 Android AOSP 的 `AID_BLUETOOTH` 约定；若厂商ROM有改动，可将 `BLUETOOTH_UID=auto` 自动探测。
 
 ---
 
