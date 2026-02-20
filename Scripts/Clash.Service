@@ -1,37 +1,83 @@
 #!/system/bin/sh
 Module_dir="/data/adb/modules/Clash"
 sdcard_dir="/sdcard/Android/Clash"
+script_dir="$Module_dir/Scripts"
+tproxy_log="$sdcard_dir/tproxy日志.txt"
+core_log="$sdcard_dir/内核日志.txt"
+core_pattern='Clash.Core -d /data/adb/modules/Clash/Proxy'
+
+ensure_dirs() {
+    [ -d "$sdcard_dir" ] || mkdir -p "$sdcard_dir"
+}
+
+is_core_running() {
+    pgrep -f "$core_pattern" > /dev/null 2>&1
+}
+
+start_core() {
+    if ! is_core_running; then
+        nohup "$Module_dir/Proxy/Clash.Core" -d "$Module_dir/Proxy" > "$core_log" 2>&1 &
+        sleep 1
+        if is_core_running; then
+            echo "Clash内核已启动"
+            return 0
+        fi
+        echo "Clash内核启动失败，请查看$core_log"
+        return 1
+    fi
+
+    echo "Clash内核正在运行中"
+    return 0
+}
+
+stop_core() {
+    if is_core_running; then
+        pgrep -f "$core_pattern" | xargs kill -15 2>/dev/null
+        sleep 1
+        echo "Clash内核已关闭"
+    else
+        echo "Clash内核未在运行"
+    fi
+}
+
+start_tproxy() {
+    if [ ! -x "$script_dir/tproxy.sh" ]; then
+        echo "tproxy.sh 不存在或不可执行"
+        return 1
+    fi
+
+    "$script_dir/tproxy.sh" -d "$script_dir" start >> "$tproxy_log" 2>&1
+}
+
+stop_tproxy() {
+    if [ -x "$script_dir/tproxy.sh" ]; then
+        "$script_dir/tproxy.sh" -d "$script_dir" stop >> "$tproxy_log" 2>&1
+    fi
+}
 
 start() {
-    
-    if ! (ps -ef | grep -- 'Clash.Core -d' | grep -vE 'inotifyd|grep') > /dev/null ; then
-        nohup $Module_dir/Proxy/Clash.Core -d $Module_dir/Proxy > $sdcard_dir/内核日志.txt 2>&1 &
+    ensure_dirs
 
-        iptables -C FORWARD -i Meta -j ACCEPT 2>/dev/null || iptables -I FORWARD -i Meta -j ACCEPT
-        iptables -C FORWARD -o Meta -j ACCEPT 2>/dev/null || iptables -I FORWARD -o Meta -j ACCEPT
-        ip6tables -C FORWARD -i Meta -j ACCEPT 2>/dev/null || ip6tables -I FORWARD -i Meta -j ACCEPT
-        ip6tables -C FORWARD -o Meta -j ACCEPT 2>/dev/null || ip6tables -I FORWARD -o Meta -j ACCEPT
-        
-        echo "Clash内核已启动"
+    # 防止规则残留导致重复链或策略冲突
+    stop_tproxy
+
+    start_core || return 1
+
+    if start_tproxy; then
+        echo "TPROXY规则已加载"
     else
-        echo "Clash内核正在运行中，不执行启动命令"
+        echo "TPROXY规则加载失败，请查看$tproxy_log"
+        stop_tproxy
+        stop_core
+        return 1
     fi
 }
 
 stop() {
-    if (ps -ef | grep -- 'Clash.Core -d' | grep -vE 'inotifyd|grep') > /dev/null ; then
-        pid=$(pgrep -f 'Clash.Core -d')
-        kill -15 $pid
-
-        iptables -D FORWARD -i Meta -j ACCEPT 2>/dev/null
-        iptables -D FORWARD -o Meta -j ACCEPT 2>/dev/null
-        ip6tables -D FORWARD -i Meta -j ACCEPT 2>/dev/null
-        ip6tables -D FORWARD -o Meta -j ACCEPT 2>/dev/null
-
-        echo "Clash内核已关闭并清除iptables规则"
-    else
-        echo "Clash内核未在运行，不执行停止命令"
-    fi
+    ensure_dirs
+    stop_tproxy
+    stop_core
+    echo "已尝试清理TPROXY规则"
 }
 
 case "$1" in
