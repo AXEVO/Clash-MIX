@@ -2,6 +2,8 @@
 #修改配置后如果内核不能启动，请查看日志，日志中会告诉你配置第几行写错
 #或者使用在线yaml检测器进行检测（https://www.bejson.com/validators/yaml_editor/）
 mixed-port: 7890
+tproxy-port: 7893
+redir-port: 7892
 mode: rule
 allow-lan: true
 unified-delay: false
@@ -42,16 +44,15 @@ sniffer:
       ports: [443, 8443]
   skip-domain:
 
-#tun必须开启，否则将无法代理流量，如网页打开慢，电报卡连接中，
-#可以尝试更换堆栈，同一堆栈在不同设备上体验不同，自行尝试。
-#更换为非gvisor堆栈可能导致IPv6出现问题
+#当前模块使用 tproxy 透明代理，tun 默认关闭。
+#如需回退 tun 方案，请自行改为 enable: true 并调整路由设置。
 
 tun:
-  enable: true
+  enable: false
   stack: gvisor
   device: Meta
   udp-timeout: 300
-  auto-route: true
+  auto-route: false
   auto-redirect: false
   auto-detect-interface: true
   strict-route: false
@@ -84,6 +85,7 @@ tun:
 
 dns:
   enable: true
+  listen: 0.0.0.0:1053
   ipv6: true
   ipv6-timeout: 300
   enhanced-mode: redir-host
