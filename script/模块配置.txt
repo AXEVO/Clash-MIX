@@ -1,0 +1,66 @@
+# Clash MIX 模块配置（会软链接为 script/tproxy.conf）
+# 端口需与 Clash 配置一致
+PROXY_TCP_PORT=7893
+PROXY_UDP_PORT=7893
+DNS_PORT=1053
+
+# 自动检测内核是否支持 TPROXY，不支持则回退 REDIRECT
+PROXY_MODE=0
+
+# 仅代理常用网络，减少额外开销
+PROXY_MOBILE=1
+PROXY_WIFI=1
+PROXY_HOTSPOT=0
+PROXY_USB=0
+PROXY_TCP=1
+PROXY_UDP=1
+PROXY_IPV6=0
+
+# 降低功耗相关开关
+PERFORMANCE_MODE=0
+BYPASS_CN_IP=0
+BLOCK_QUIC=0
+DNS_HIJACK_ENABLE=1
+
+pre_start_hook() {
+    local module_dir="/data/adb/modules/Clash"
+    local core_bin="$module_dir/Proxy/Clash.Core"
+    local core_args="-d $module_dir/Proxy"
+    local log_file="/sdcard/Android/Clash/内核日志.txt"
+
+    local pids
+    pids=$(pgrep -f 'Clash.Core -d')
+    if [ -n "$pids" ]; then
+        local count
+        count=$(echo "$pids" | wc -l)
+        if [ "$count" -gt 1 ]; then
+            log Warn "检测到多个 Clash 内核进程，先清理异常进程"
+            kill -9 $pids 2>/dev/null
+            sleep 1
+        else
+            log Info "Clash 内核已在运行，跳过重复启动"
+            return 0
+        fi
+    fi
+
+    log Info "启动 Clash 内核"
+    nohup "$core_bin" $core_args > "$log_file" 2>&1 &
+    sleep 2
+
+    if ! pgrep -f 'Clash.Core -d' >/dev/null; then
+        log Error "Clash 内核未正常启动，终止 TProxy 规则下发"
+        exit 1
+    fi
+}
+
+post_stop_hook() {
+    local pids
+    pids=$(pgrep -f 'Clash.Core -d')
+    if [ -n "$pids" ]; then
+        log Info "停止 Clash 内核"
+        kill -15 $pids 2>/dev/null
+        sleep 1
+        pids=$(pgrep -f 'Clash.Core -d')
+        [ -n "$pids" ] && kill -9 $pids 2>/dev/null
+    fi
+}

@@ -9,7 +9,7 @@ tcp-concurrent: true
 find-process-mode: always
 log-level: warning
 #interface-name: tun0  如果需要配合VPN嵌套使用，需使用此功能
-ipv6: true
+ipv6: false
 #关掉后可能在部分手机上出现dns泄露，volte不可用等问题，目前IPv6可以正常使用，不建议关闭
 external-controller: 0.0.0.0:9090
 external-ui: WebUI
@@ -21,8 +21,8 @@ geox-url:
   geoip: "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat"
   geosite: "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat"
   asn: "https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb"
-geo-auto-update: true
-geo-update-interval: 48
+geo-auto-update: false
+geo-update-interval: 168
 
 profile:
   store-selected: true
@@ -30,7 +30,7 @@ profile:
 
 #嗅探器关闭后可能出现连接本机热点的设备无法上网的问题
 sniffer:
-  enable: true
+  enable: false
   force-dns-mapping: true
   parse-pure-ip: true
   sniff:
@@ -46,8 +46,10 @@ sniffer:
 #可以尝试更换堆栈，同一堆栈在不同设备上体验不同，自行尝试。
 #更换为非gvisor堆栈可能导致IPv6出现问题
 
+tproxy-port: 7893
+
 tun:
-  enable: true
+  enable: false
   stack: gvisor
   device: Meta
   udp-timeout: 300
@@ -84,30 +86,30 @@ tun:
 
 dns:
   enable: true
-  ipv6: true
+  ipv6: false
   ipv6-timeout: 300
   enhanced-mode: redir-host
 # redir-host / fake-ip 可切换，建议使用redir-host避免出现莫名其妙的bug
 #如果删除了user策略组，需要在dns这里也删除，否则内核无法启动
   nameserver-policy:
     'rule-set:userDirect':
-      - https://dns.alidns.com/dns-query#中国网站
-      - https://doh.pub/dns-query#中国网站
+      - 223.5.5.5#中国网站
+      - 119.29.29.29#中国网站
 
     'rule-set:userProxy': 
-      - https://cloudflare-dns.com/dns-query#代理
-      - https://dns.google/dns-query#代理
+      - 1.1.1.1#代理
+      - 8.8.8.8#代理
 
     'geosite:cn,private,googlefcm':
-      - https://dns.alidns.com/dns-query#中国网站
-      - https://doh.pub/dns-query#中国网站
+      - 223.5.5.5#中国网站
+      - 119.29.29.29#中国网站
   nameserver:
-    - https://cloudflare-dns.com/dns-query#代理
-    - https://dns.google/dns-query#代理
+    - 1.1.1.1#代理
+    - 8.8.8.8#代理
 
   proxy-server-nameserver:
-    - https://dns.alidns.com/dns-query#中国网站
-    - https://doh.pub/dns-query#中国网站
+    - 223.5.5.5#中国网站
+    - 119.29.29.29#中国网站
 
 #-----------------------------------------------------------------------------
 #机场订阅全局设置
@@ -117,7 +119,7 @@ pp: &pp
   health-check:
     enable: true
     url: https://www.gstatic.com/generate_204
-    interval: 900
+    interval: 1800
     timeout: 3000
     lazy: true
     expected-status: 204
