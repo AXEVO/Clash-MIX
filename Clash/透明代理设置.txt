@@ -1,0 +1,103 @@
+CORE_USER_GROUP=root:root
+PROXY_TCP_PORT=7893
+PROXY_UDP_PORT=7893
+PROXY_MODE=1
+DNS_HIJACK_ENABLE=1
+DNS_PORT=1053
+BLOCK_QUIC=1
+BYPASS_CN_IP=0
+PROXY_HOTSPOT=1
+PROXY_IPV6=1
+APP_PROXY_ENABLE=1
+APP_PROXY_MODE=blacklist
+BYPASS_APPS_LIST="0:com.samsung.android.messaging 0:com.samsung.android.app.telephonyui 0:com.samsung.android.dialer 0:com.samsung.android.incallui 0:com.samsung.android.smartcallprovider 0:com.samsung.android.intellivoiceservice 0:com.android.settings 0:com.qti.qcc 0:com.sec.epdg 0:com.sec.imsservice"
+
+
+pre_start_hook() {
+    MODULE_DIR="/data/adb/modules/Clash"
+    SDCARD_DIR="/sdcard/Android/Clash"
+
+    CORE_BIN="$MODULE_DIR/Proxy/Clash.Core"
+    CORE_WORKDIR="$MODULE_DIR/Proxy"
+    CORE_LOG="$SDCARD_DIR/内核日志.txt"
+    CORE_PID_FILE="$MODULE_DIR/Proxy/Clash.Core.pid"
+
+    log Info "pre_start_hook: 检查 Clash 内核状态"
+
+    # 核心文件检查
+    if [ ! -x "$CORE_BIN" ]; then
+        log Error "Clash内核不存在或不可执行: $CORE_BIN"
+        return 1
+    fi
+
+    # 已有 PID 文件时，检查对应进程是否仍然存在
+    if [ -f "$CORE_PID_FILE" ]; then
+        old_pid="$(cat "$CORE_PID_FILE" 2>/dev/null)"
+        if [ -n "$old_pid" ] && kill -0 "$old_pid" 2>/dev/null; then
+            log Info "Clash内核正在运行中，不执行启动命令"
+            return 0
+        fi
+
+        # PID 文件失效则清理
+        rm -f "$CORE_PID_FILE"
+    fi
+
+    mkdir -p "$SDCARD_DIR"
+
+    log Info "启动 Clash 内核"
+    nohup "$CORE_BIN" -d "$CORE_WORKDIR" >"$CORE_LOG" 2>&1 &
+    new_pid=$!
+    echo "$new_pid" > "$CORE_PID_FILE"
+
+    # 等待进程稳定启动
+    sleep 2
+
+    if kill -0 "$new_pid" 2>/dev/null; then
+        log Info "Clash内核已启动"
+        return 0
+    fi
+
+    rm -f "$CORE_PID_FILE"
+    log Error "Clash内核启动失败，请检查日志: $CORE_LOG"
+    return 1
+}
+
+post_stop_hook() {
+    MODULE_DIR="/data/adb/modules/Clash"
+    CORE_PID_FILE="$MODULE_DIR/Proxy/Clash.Core.pid"
+
+    log Info "post_stop_hook: 停止 Clash 内核"
+
+    if [ ! -f "$CORE_PID_FILE" ]; then
+        log Info "Clash内核未在运行，不执行停止命令"
+        return 0
+    fi
+
+    pid="$(cat "$CORE_PID_FILE" 2>/dev/null)"
+
+    if [ -z "$pid" ]; then
+        rm -f "$CORE_PID_FILE"
+        log Info "PID 文件为空，已清理"
+        return 0
+    fi
+
+    if ! kill -0 "$pid" 2>/dev/null; then
+        rm -f "$CORE_PID_FILE"
+        log Info "Clash内核进程不存在，已清理失效 PID 文件"
+        return 0
+    fi
+
+    # 先优雅退出
+    kill -15 "$pid" 2>/dev/null
+    sleep 1
+
+    # 若仍未退出，则强制结束
+    if kill -0 "$pid" 2>/dev/null; then
+        kill -9 "$pid" 2>/dev/null
+        sleep 1
+    fi
+
+    rm -f "$CORE_PID_FILE"
+    log Info "Clash内核已关闭"
+    return 0
+}

@@ -8,5 +8,5 @@ done
 
 script_path=/data/adb/modules/Clash/Scripts
 
-$script_path/Clash.Service start
+$script_path/Tproxy.sh start
 nohup inotifyd $script_path/Clash.Inotify "/data/adb/modules/Clash" >> /dev/null &

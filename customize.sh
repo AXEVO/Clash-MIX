@@ -21,6 +21,7 @@ if [ -d "$module_dir/Proxy/rule_providers" ]; then
 fi
 #配置软链接
 ln -sf "$sdcard_dir/Clash/Clash配置.yaml" "$MODPATH/Proxy/config.yaml"
+ln -sf "$sdcard_dir/Clash/透明代理设置.txt" "$MODPATH/Scripts/tproxy.conf"
 #适配KSU和Apatch
 if [ "$KSU" = true ] || [ "$KERNELPATCH" = true ]; then
   ln -sf /data/adb/modules/Clash/Proxy/WebUI "$MODPATH/webroot"

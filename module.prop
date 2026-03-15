@@ -3,5 +3,5 @@ name=Clash MIX
 version=V4.0
 versionCode=20250701
 author=GFW Fucker
-description=Clash透明代理[Tun]   面板: http://127.0.0.1:9090/ui
+description=Clash透明代理[TPROXY测试版]   面板: http://127.0.0.1:9090/ui
 updateJson=https://raw.githubusercontent.com/AXEVO/Clash-MIX/refs/heads/Archive/Update/4.0Update.json

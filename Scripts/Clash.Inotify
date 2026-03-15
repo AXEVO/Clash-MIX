@@ -6,8 +6,8 @@ monitor_file=$3
 
 if [ "$monitor_file" = "disable" ]; then
     if [ "$events" = "n" ]; then
-        $script_path/Clash.Service stop
+        $script_path/Tproxy.sh stop
     elif [ "$events" = "d" ]; then
-        $script_path/Clash.Service start
+        $script_path/Tproxy.sh start
     fi
 fi
