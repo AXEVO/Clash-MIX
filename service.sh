@@ -5,7 +5,7 @@ done
 until [ -d "/sdcard/Android" ]; do
     sleep 2
 done
-
+sleep 10
 script_path=/data/adb/modules/Clash/Scripts
 
 $script_path/Clash.Service start
