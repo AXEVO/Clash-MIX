@@ -1,48 +1,110 @@
 #!/system/bin/sh
 Module_dir="/data/adb/modules/Clash"
 sdcard_dir="/sdcard/Android/Clash"
+core_path="$Module_dir/Proxy/Clash.Core"
+log_path="$sdcard_dir/内核日志.txt"
+tun_name="Meta"
+
+is_core_running() {
+    pgrep -f "Clash.Core -d" > /dev/null
+}
+
+has_meta_tun() {
+    ip link show "$tun_name" > /dev/null 2>&1
+}
 
 start() {
-    
-    if ! (ps -ef | grep -- 'Clash.Core -d' | grep -vE 'inotifyd|grep') > /dev/null ; then
-        nohup $Module_dir/Proxy/Clash.Core -d $Module_dir/Proxy > $sdcard_dir/内核日志.txt 2>&1 &
-
-        iptables -C FORWARD -i Meta -j ACCEPT 2>/dev/null || iptables -I FORWARD -i Meta -j ACCEPT
-        iptables -C FORWARD -o Meta -j ACCEPT 2>/dev/null || iptables -I FORWARD -o Meta -j ACCEPT
-        ip6tables -C FORWARD -i Meta -j ACCEPT 2>/dev/null || ip6tables -I FORWARD -i Meta -j ACCEPT
-        ip6tables -C FORWARD -o Meta -j ACCEPT 2>/dev/null || ip6tables -I FORWARD -o Meta -j ACCEPT
-        
-        echo "Clash内核已启动"
-    else
+    if is_core_running; then
         echo "Clash内核正在运行中，不执行启动命令"
+        return 2
     fi
+
+    nohup "$core_path" -d "$Module_dir/Proxy" > "$log_path" 2>&1 &
+
+    # 添加规则
+    iptables -C FORWARD -i "$tun_name" -j ACCEPT 2>/dev/null || iptables -I FORWARD -i "$tun_name" -j ACCEPT
+    iptables -C FORWARD -o "$tun_name" -j ACCEPT 2>/dev/null || iptables -I FORWARD -o "$tun_name" -j ACCEPT
+    ip6tables -C FORWARD -i "$tun_name" -j ACCEPT 2>/dev/null || ip6tables -I FORWARD -i "$tun_name" -j ACCEPT
+    ip6tables -C FORWARD -o "$tun_name" -j ACCEPT 2>/dev/null || ip6tables -I FORWARD -o "$tun_name" -j ACCEPT
+
+    # 等待启动就绪（最多5秒）
+    for i in 1 2 3 4 5; do
+        if is_core_running \
+            && has_meta_tun \
+            && iptables -C FORWARD -i "$tun_name" -j ACCEPT > /dev/null 2>&1 \
+            && iptables -C FORWARD -o "$tun_name" -j ACCEPT > /dev/null 2>&1; then
+            echo "Clash内核已启动，Meta tun和热点转发规则均正常"
+            return 0
+        fi
+        sleep 1
+    done
+
+    # 回滚规则
+    iptables -D FORWARD -i "$tun_name" -j ACCEPT 2>/dev/null
+    iptables -D FORWARD -o "$tun_name" -j ACCEPT 2>/dev/null
+    ip6tables -D FORWARD -i "$tun_name" -j ACCEPT 2>/dev/null
+    ip6tables -D FORWARD -o "$tun_name" -j ACCEPT 2>/dev/null
+
+    echo "Clash内核启动异常，请检查日志"
+    return 1
 }
 
 stop() {
-    if (ps -ef | grep -- 'Clash.Core -d' | grep -vE 'inotifyd|grep') > /dev/null ; then
-        pid=$(pgrep -f 'Clash.Core -d')
-        kill -15 $pid
-
-        iptables -D FORWARD -i Meta -j ACCEPT 2>/dev/null
-        iptables -D FORWARD -o Meta -j ACCEPT 2>/dev/null
-        ip6tables -D FORWARD -i Meta -j ACCEPT 2>/dev/null
-        ip6tables -D FORWARD -o Meta -j ACCEPT 2>/dev/null
-
-        echo "Clash内核已关闭并清除iptables规则"
-    else
+    if ! is_core_running; then
         echo "Clash内核未在运行，不执行停止命令"
+        return 2
     fi
+
+    pkill -15 -f "Clash.Core -d"
+
+    # 等待优雅退出（最多5秒）
+    for i in 1 2 3 4 5; do
+        if ! is_core_running && ! has_meta_tun; then
+            break
+        fi
+        sleep 1
+    done
+
+    # 若仍未退出，强制结束
+    if is_core_running || has_meta_tun; then
+        pkill -9 -f "Clash.Core -d"
+
+        # 再等待（最多5秒）
+        for i in 1 2 3 4 5; do
+            if ! is_core_running && ! has_meta_tun; then
+                break
+            fi
+            sleep 1
+        done
+    fi
+
+    # 删除规则
+    iptables -D FORWARD -i "$tun_name" -j ACCEPT 2>/dev/null
+    iptables -D FORWARD -o "$tun_name" -j ACCEPT 2>/dev/null
+    ip6tables -D FORWARD -i "$tun_name" -j ACCEPT 2>/dev/null
+    ip6tables -D FORWARD -o "$tun_name" -j ACCEPT 2>/dev/null
+
+    # 最终判定
+    if ! is_core_running && ! has_meta_tun; then
+        echo "Clash内核已停止，Meta tun和热点转发规则均已清除"
+        return 0
+    fi
+
+    echo "Clash内核停止异常，请检查当前进程或Meta tun状态"
+    return 1
 }
 
 case "$1" in
     start)
         start
+        exit $?
         ;;
     stop)
         stop
+        exit $?
         ;;
     *)
-        echo "只能使用start|stop两个参数控制内核启动或停止"
+        echo "只能使用start|stop两个参数控制内核"
         exit 1
         ;;
 esac
