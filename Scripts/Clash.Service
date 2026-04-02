@@ -5,17 +5,17 @@ core_path="$Module_dir/Proxy/Clash.Core"
 log_path="$sdcard_dir/内核日志.txt"
 tun_name="Meta"
 
-is_core_running() {
+Core_Check() {
     pgrep -f "Clash.Core -d" > /dev/null
 }
 
-has_meta_tun() {
+Tun_Check() {
     ip link show "$tun_name" > /dev/null 2>&1
 }
 
 start() {
-    if is_core_running; then
-        echo "Clash内核正在运行中，不执行启动命令"
+    if Core_Check; then
+        echo "Clash内核正在运行，不执行启动命令"
         return 2
     fi
 
@@ -29,11 +29,11 @@ start() {
 
     # 等待启动就绪（最多5秒）
     for i in 1 2 3 4 5; do
-        if is_core_running \
-            && has_meta_tun \
+        if Core_Check \
+            && Tun_Check \
             && iptables -C FORWARD -i "$tun_name" -j ACCEPT > /dev/null 2>&1 \
             && iptables -C FORWARD -o "$tun_name" -j ACCEPT > /dev/null 2>&1; then
-            echo "Clash内核已启动，Meta tun和热点转发规则均正常"
+            echo "Clash内核已启动"
             return 0
         fi
         sleep 1
@@ -50,7 +50,7 @@ start() {
 }
 
 stop() {
-    if ! is_core_running; then
+    if ! Core_Check; then
         echo "Clash内核未在运行，不执行停止命令"
         return 2
     fi
@@ -59,19 +59,19 @@ stop() {
 
     # 等待优雅退出（最多5秒）
     for i in 1 2 3 4 5; do
-        if ! is_core_running && ! has_meta_tun; then
+        if ! Core_Check && ! Tun_Check; then
             break
         fi
         sleep 1
     done
 
     # 若仍未退出，强制结束
-    if is_core_running || has_meta_tun; then
+    if Core_Check || Tun_Check; then
         pkill -9 -f "Clash.Core -d"
 
         # 再等待（最多5秒）
         for i in 1 2 3 4 5; do
-            if ! is_core_running && ! has_meta_tun; then
+            if ! Core_Check && ! Tun_Check; then
                 break
             fi
             sleep 1
@@ -85,12 +85,12 @@ stop() {
     ip6tables -D FORWARD -o "$tun_name" -j ACCEPT 2>/dev/null
 
     # 最终判定
-    if ! is_core_running && ! has_meta_tun; then
-        echo "Clash内核已停止，Meta tun和热点转发规则均已清除"
+    if ! Core_Check && ! Tun_Check; then
+        echo "Clash内核已停止"
         return 0
     fi
 
-    echo "Clash内核停止异常，请检查当前进程或Meta tun状态"
+    echo "Clash内核停止异常"
     return 1
 }
 
