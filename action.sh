@@ -118,14 +118,14 @@ case "$?" in
         sh "$service_script" start >/dev/null 2>&1
         case "$?" in
             0)
-                echo "[完成]Clash内核启动成功"
+                echo "🟩Clash内核启动成功"
                 exit 0
                 ;;
             1)
                 if check_clash_config; then
                     echo "🟥Clash内核启动失败，但配置文件测试正常"
                 else
-                    echo "🟥Clash内核启动失败，且检测到配置文件存在问题"
+                    echo "🟥Clash内核启动失败，且检测到配置文件存在问题，请修正配置"
                     echo "$error_log"
                 fi
                 exit 1
@@ -151,9 +151,9 @@ case "$?" in
                 ;;
             1)
                 if check_clash_config; then
-                    echo "🟥Clash内核重新启动失败，但配置文件测试正常，请检查模块状态和内核日志"
+                    echo "🟥Clash内核重新启动失败，但配置文件测试正常"
                 else
-                    echo "🟥Clash内核重新启动失败，且检测到配置文件存在问题"
+                    echo "🟥Clash内核重新启动失败，且检测到配置文件存在问题，请修正配置"
                     echo "$error_log"
                 fi
                 exit 1
