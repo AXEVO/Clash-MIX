@@ -1,208 +1,179 @@
 #!/system/bin/sh
 
-script_path="/data/adb/modules/Clash/Scripts"
-module_dir="/data/adb/modules/Clash"
+Module_dir="/data/adb/modules/Clash"
+script_path="$Module_dir/Scripts"
 service_script="$script_path/Clash.Service"
 inotify_script="$script_path/Clash.Inotify"
-core_pattern='Clash.Core -d'
-log_candidates="/sdcard/Android/Clash/内核日志.txt $module_dir/Clash/内核日志.txt"
-tmp_output="/data/local/tmp/clash_action.$$.$RANDOM.log"
+core_path="$Module_dir/Proxy/Clash.Core"
+work_dir="$Module_dir/Proxy"
+config_path="$work_dir/config.yaml"
 
-line() {
-    echo "=================================================="
+check_inotifyd() {
+    rm -f "$Module_dir/Inotifyd_test" "$Module_dir/Inotifyd_OK" || return 1
+    touch "$Module_dir/Inotifyd_test" || return 1
+    sleep 1
+
+    if [ -f "$Module_dir/Inotifyd_OK" ]; then
+        rm -f "$Module_dir/Inotifyd_OK" || return 1
+        return 0
+    else
+        return 1
+    fi
 }
 
-info() {
-    echo "[INFO] $1"
-}
+check_clash_config() {
+    clash_test_msg=""
+    error_log=""
 
-ok() {
-    echo "[ OK ] $1"
-}
+    output=$("$core_path" -t -d "$work_dir" 2>&1)
+    status=$?
 
-warn() {
-    echo "[WARN] $1"
-}
-
-err() {
-    echo "[FAIL] $1"
-}
-
-exists_cmd() {
-    command -v "$1" >/dev/null 2>&1
-}
-
-grep_pids() {
-    pattern="$1"
-    if exists_cmd pgrep; then
-        pgrep -f "$pattern" 2>/dev/null
+    if [ "$status" -eq 0 ]; then
         return 0
     fi
 
-    ps -ef 2>/dev/null | grep -- "$pattern" | grep -vE 'grep|inotifyd' | awk '{print $2}'
+    clash_test_msg=$(printf '%s\n' "$output" | sed -n '
+        /msg="/ {
+            s/.*msg="\([^"]*\)".*/\1/
+            p
+            b
+        }
+        p
+    ')
+
+    # 使用 printf 构造多行字符串，避免缩进和对齐问题
+    error_log=$(printf '%s\n%s\n%s' \
+        "🟥🟥🟥🟥🟥🟥内核日志🟥🟥🟥🟥🟥" \
+        "$clash_test_msg" \
+        "🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥")
+
+    return 1
 }
 
-count_lines() {
-    echo "$1" | sed '/^$/d' | wc -l | tr -d ' '
+
+
+
+get_inotify_status() {
+    inotify_pids=$(pgrep -f '/data/adb/modules/Clash/Scripts/Clash.Inotify')
+    pid_count=$(echo "$inotify_pids" | sed '/^$/d' | wc -l | tr -d ' ')
 }
 
-kernel_pids() {
-    grep_pids "$core_pattern"
-}
 
-is_kernel_running() {
-    [ -n "$(kernel_pids)" ]
-}
 
-show_kernel_error_output() {
-    if [ -s "$tmp_output" ]; then
-        echo "----- Clash.Service 输出（最近 25 行） -----"
-        tail -n 25 "$tmp_output"
-        echo "--------------------------------------------"
-        return
+
+get_inotify_status
+
+if [ "$pid_count" -eq 0 ]; then
+    nohup inotifyd "$inotify_script" "$Module_dir:n,d" >/dev/null 2>&1 &
+    sleep 1
+    get_inotify_status
+
+    if [ "$pid_count" -eq 1 ] && check_inotifyd; then
+        echo "[检测]inotifyd 未运行，已重新拉起，本次不重启内核。"
+        exit 0
+    else
+        echo "[模块故障]inotifyd 未运行，尝试拉起后仍异常，请重启手机后再试。"
+        exit 1
     fi
 
-    for log_path in $log_candidates; do
-        if [ -f "$log_path" ]; then
-            echo "----- 内核日志：$log_path（最近 25 行） -----"
-            tail -n 25 "$log_path"
-            echo "--------------------------------------------"
-            return
+elif [ "$pid_count" -gt 1 ]; then
+    echo "$inotify_pids" | xargs -r kill -9 -- >/dev/null 2>&1
+    nohup inotifyd "$inotify_script" "$Module_dir:n,d" >/dev/null 2>&1 &
+    sleep 1
+    get_inotify_status
+
+    if [ "$pid_count" -eq 1 ] && check_inotifyd; then
+        echo "[检测]发现多个 inotifyd 进程，已清理并重新拉起，本次不重启内核。"
+        exit 0
+    else
+        echo "[模块故障]inotifyd 清理重建后仍异常，可能存在僵尸进程或其他异常，请重启手机后再试。"
+        exit 1
+    fi
+
+elif [ "$pid_count" -eq 1 ]; then
+    if check_inotifyd; then
+        :
+    else
+        echo "$inotify_pids" | xargs -r kill -9 -- >/dev/null 2>&1
+        nohup inotifyd "$inotify_script" "$Module_dir:n,d" >/dev/null 2>&1 &
+        sleep 1
+        get_inotify_status
+
+        if [ "$pid_count" -eq 1 ] && check_inotifyd; then
+            echo "[检测]inotifyd 进程工作异常，已重新拉起，本次不重启内核。"
+            exit 0
+        else
+            echo "[模块故障]inotifyd 进程存在但工作异常，且重建后仍异常，请重启手机后再试。"
+            exit 1
         fi
-    done
-
-    warn "未找到可用日志，请手动检查 Clash.Service 与内核文件路径。"
-}
-
-start_kernel() {
-    : > "$tmp_output"
-    sh "$service_script" start >"$tmp_output" 2>&1
-    rc=$?
-
-    sleep 2
-    if is_kernel_running; then
-        ok "Clash 内核启动成功"
-        return 0
     fi
+fi
 
-    err "Clash 内核启动失败（返回码：$rc）"
-    warn "以下为可用报错输出："
-    show_kernel_error_output
-    return 1
-}
 
-stop_kernel() {
-    sh "$service_script" stop >"$tmp_output" 2>&1
-    rc=$?
-
-    sleep 1
-    if is_kernel_running; then
-        err "Clash 内核停止失败，仍检测到进程"
-        return 1
-    fi
-
-    if [ "$rc" -eq 0 ]; then
-        ok "Clash 内核已停止"
-    else
-        warn "停止命令返回非 0，但内核进程已退出"
-    fi
-    return 0
-}
-
-restart_kernel() {
-    info "检测到内核正在运行，准备重启"
-
-    if ! stop_kernel; then
-        warn "停止失败，为避免重复实例与端口冲突，本次不继续启动"
-        show_kernel_error_output
-        return 1
-    fi
-
-    info "等待 3 秒后重新启动内核"
-    sleep 3
-    start_kernel
-}
-
-inotify_pids() {
-    grep_pids 'inotifyd.*Clash.Inotify'
-}
-
-pid_state() {
-    ps -o stat= -p "$1" 2>/dev/null | tr -d ' '
-}
-
-is_zombie_pid() {
-    state="$(pid_state "$1")"
-    echo "$state" | grep -q 'Z'
-}
-
-start_inotify() {
-    nohup inotifyd "$inotify_script" "$module_dir" >/dev/null 2>&1 &
-    sleep 1
-
-    pids_now="$(inotify_pids)"
-    count_now="$(count_lines "$pids_now")"
-    if [ "$count_now" -eq 1 ]; then
-        ok "inotifyd 已正常运行（PID: $pids_now）"
-        return 0
-    fi
-
-    err "inotifyd 重建后状态仍异常（数量: $count_now）"
-    return 1
-}
-
-repair_inotify_if_needed() {
-    pids="$(inotify_pids)"
-    count="$(count_lines "$pids")"
-
-    if [ "$count" -eq 0 ]; then
-        warn "inotifyd 未运行，正在重建"
-        start_inotify
-        return
-    fi
-
-    if [ "$count" -gt 1 ]; then
-        warn "检测到 inotifyd 重复进程（数量: $count），正在清理"
-        echo "$pids" | xargs kill -9 >/dev/null 2>&1
-        start_inotify
-        return
-    fi
-
-    only_pid="$pids"
-    if is_zombie_pid "$only_pid"; then
-        parent_pid="$(ps -o ppid= -p "$only_pid" 2>/dev/null | tr -d ' ')"
-        warn "检测到 inotifyd 僵尸进程（PID: $only_pid, PPID: ${parent_pid:-未知}）"
-        warn "僵尸进程需父进程回收，现尝试重建 inotifyd"
-        kill -9 "$only_pid" >/dev/null 2>&1
-        start_inotify
-        return
-    fi
-
-    ok "inotifyd 当前状态正常（PID: $only_pid）"
-}
-
-main() {
-    line
-    info "Clash 操作按钮已触发"
-    line
-
-    if [ ! -f "$service_script" ]; then
-        err "找不到服务脚本：$service_script"
-        return 1
-    fi
-
-    if is_kernel_running; then
-        restart_kernel
-    else
-        info "内核当前未运行，开始启动"
-        start_kernel
-    fi
-
-    line
-    repair_inotify_if_needed
-    line
-
-    rm -f "$tmp_output" >/dev/null 2>&1
-}
-
-main "$@"
+#------------------------------------------------------------------
+sh "$service_script" stop
+case "$?" in
+    1)
+        echo "[模块故障]Clash内核停止异常，本次不继续启动，请检查模块状态。"
+        exit 1
+        ;;
+    2)
+        echo "[检测]Clash内核当前未运行，直接执行启动。"
+        sh "$service_script" start
+        case "$?" in
+            0)
+                echo "[完成]Clash内核启动成功。"
+                exit 0
+                ;;
+            1)
+                if check_clash_config; then
+                    echo "[模块故障]Clash内核启动失败，但配置文件测试正常，请检查模块状态和内核日志。"
+                else
+                    echo "[配置错误]Clash内核启动失败，且检测到配置文件存在问题。"
+                    echo "$error_log"
+                fi
+                exit 1
+                ;;
+            2)
+                echo "[状态异常]启动脚本判断 Clash 内核已在运行，请检查模块状态。"
+                exit 1
+                ;;
+            *)
+                echo "[模块故障]启动脚本返回未知状态码，请检查模块状态。"
+                exit 1
+                ;;
+        esac
+        ;;
+    0)
+        echo "[检测]Clash内核已停止，1 秒后执行启动。"
+        sleep 1
+        sh "$service_script" start
+        case "$?" in
+            0)
+                echo "[完成]Clash内核重启成功。"
+                exit 0
+                ;;
+            1)
+                if check_clash_config; then
+                    echo "[模块故障]Clash内核重新启动失败，但配置文件测试正常，请检查模块状态和内核日志。"
+                else
+                    echo "[配置错误]Clash内核重新启动失败，且检测到配置文件存在问题。"
+                    echo "$error_log"
+                fi
+                exit 1
+                ;;
+            2)
+                echo "[状态异常]停止后重新启动时，启动脚本判断 Clash 内核已在运行，请检查模块状态。"
+                exit 1
+                ;;
+            *)
+                echo "[模块故障]重新启动阶段返回未知状态码，请检查模块状态。"
+                exit 1
+                ;;
+        esac
+        ;;
+    *)
+        echo "[模块故障]停止脚本返回未知状态码，请检查模块状态。"
+        exit 1
+        ;;
+esac

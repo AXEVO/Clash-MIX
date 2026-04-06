@@ -1,3 +1,5 @@
+#version：20260401
+#-----------------------------------------
 mixed-port: 7890
 mode: rule
 allow-lan: true
@@ -63,16 +65,17 @@ dns:
   ipv6-timeout: 300
   enhanced-mode: fake-ip
   fake-ip-filter:
-     - RULE-SET:userDirect
+     - RULE-SET:自定义直连
+     #- RULE-SET:中国域名
      - RULE-SET:Fake-IP-Filter
      - RULE-SET:私有地址
    
   nameserver-policy:
-    'rule-set:userDirect,中国域名,私有地址,GoogleFCM':
+    'rule-set:自定义直连,中国域名,私有地址,GoogleFCM':
       - 223.5.5.5#中国网站
       - 119.29.29.29#中国网站
 
-    'rule-set:userProxy': 
+    'rule-set:自定义代理': 
       - 1.1.1.1#代理
       - 8.8.8.8#代理
 
@@ -164,12 +167,12 @@ proxy-groups:
 
 rule-providers:
 
-  userDirect:
+  自定义直连:
     type: file
     behavior: classical
     path: ./rule_providers/userDirect.yaml
 
-  userProxy:
+  自定义代理:
     type: file
     behavior: classical
     path: ./rule_providers/userProxy.yaml
@@ -226,8 +229,8 @@ rule-providers:
 
 rules:
 
-  - RULE-SET,userProxy,代理
-  - RULE-SET,userDirect,中国网站
+  - RULE-SET,自定义代理,代理
+  - RULE-SET,自定义直连,中国网站
   
   - RULE-SET,GoogleFCM,中国网站
   

@@ -19,7 +19,25 @@ start() {
         return 2
     fi
 
+    backup_log_path="$sdcard_dir/上一次内核日志.txt"
+    rm -f "$backup_log_path"
+    if [ -f "$log_path" ]; then
+        cp -f "$log_path" "$backup_log_path"
+    fi
+
     nohup "$core_path" -d "$Module_dir/Proxy" > "$log_path" 2>&1 &
+
+    for i in 1 2 3 4 5 6 7 8 9 10; do
+        if Core_Check && Tun_Check; then
+            break
+        fi
+        sleep 1
+    done
+
+    if ! Core_Check || ! Tun_Check; then
+        echo "Clash内核启动异常，请检查日志"
+        return 1
+    fi
 
     # 添加规则
     iptables -C FORWARD -i "$tun_name" -j ACCEPT 2>/dev/null || iptables -I FORWARD -i "$tun_name" -j ACCEPT
@@ -27,26 +45,8 @@ start() {
     ip6tables -C FORWARD -i "$tun_name" -j ACCEPT 2>/dev/null || ip6tables -I FORWARD -i "$tun_name" -j ACCEPT
     ip6tables -C FORWARD -o "$tun_name" -j ACCEPT 2>/dev/null || ip6tables -I FORWARD -o "$tun_name" -j ACCEPT
 
-    # 等待启动就绪（最多5秒）
-    for i in 1 2 3 4 5; do
-        if Core_Check \
-            && Tun_Check \
-            && iptables -C FORWARD -i "$tun_name" -j ACCEPT > /dev/null 2>&1 \
-            && iptables -C FORWARD -o "$tun_name" -j ACCEPT > /dev/null 2>&1; then
-            echo "Clash内核已启动"
-            return 0
-        fi
-        sleep 1
-    done
-
-    # 回滚规则
-    iptables -D FORWARD -i "$tun_name" -j ACCEPT 2>/dev/null
-    iptables -D FORWARD -o "$tun_name" -j ACCEPT 2>/dev/null
-    ip6tables -D FORWARD -i "$tun_name" -j ACCEPT 2>/dev/null
-    ip6tables -D FORWARD -o "$tun_name" -j ACCEPT 2>/dev/null
-
-    echo "Clash内核启动异常，请检查日志"
-    return 1
+    echo "Clash内核已启动"
+    return 0
 }
 
 stop() {
