@@ -9,4 +9,4 @@ sleep 10
 script_path=/data/adb/modules/Clash/Scripts
 
 $script_path/Clash.Service start
-nohup inotifyd "$script_path/Clash.Inotify" "/data/adb/modules/Clash:n,d" >/dev/null 2>&1 &
+nohup inotifyd "$script_path/Clash.Inotify" "/data/adb/modules/Clash" >/dev/null 2>&1 &

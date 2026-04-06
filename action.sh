@@ -64,7 +64,7 @@ get_inotify_status() {
 get_inotify_status
 
 if [ "$pid_count" -eq 0 ]; then
-    nohup inotifyd "$inotify_script" "$Module_dir:n,d" >/dev/null 2>&1 &
+    nohup inotifyd "$inotify_script" "$Module_dir" >/dev/null 2>&1 &
     sleep 1
     get_inotify_status
 
@@ -78,7 +78,7 @@ if [ "$pid_count" -eq 0 ]; then
 
 elif [ "$pid_count" -gt 1 ]; then
     echo "$inotify_pids" | xargs -r kill -9 -- >/dev/null 2>&1
-    nohup inotifyd "$inotify_script" "$Module_dir:n,d" >/dev/null 2>&1 &
+    nohup inotifyd "$inotify_script" "$Module_dir" >/dev/null 2>&1 &
     sleep 1
     get_inotify_status
 
@@ -95,7 +95,7 @@ elif [ "$pid_count" -eq 1 ]; then
         :
     else
         echo "$inotify_pids" | xargs -r kill -9 -- >/dev/null 2>&1
-        nohup inotifyd "$inotify_script" "$Module_dir:n,d" >/dev/null 2>&1 &
+        nohup inotifyd "$inotify_script" "$Module_dir" >/dev/null 2>&1 &
         sleep 1
         get_inotify_status
 
