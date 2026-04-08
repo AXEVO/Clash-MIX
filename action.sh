@@ -42,7 +42,7 @@ check_clash_config() {
     ')
 
     # 使用 printf 构造多行字符串，避免缩进和对齐问题
-    error_log=$(printf '%s\n%s\n%s' \
+    error_log=$(printf '\n%s\n%s\n%s' \
         "🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥错误日志🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥" \
         "$clash_test_msg" \
         "🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥")
@@ -52,7 +52,7 @@ check_clash_config() {
 
 
 get_inotify_status() {
-    inotify_pids=$(pgrep -f '/data/adb/modules/Clash/Scripts/Clash.Inotify')
+    inotify_pids=$(pgrep -f "^inotifyd $inotify_script $Module_dir\$")
     pid_count=$(echo "$inotify_pids" | sed '/^$/d' | wc -l | tr -d ' ')
 }
 
@@ -65,10 +65,10 @@ if [ "$pid_count" -eq 0 ]; then
     get_inotify_status
 
     if [ "$pid_count" -eq 1 ] && check_inotifyd; then
-        echo "🟨inotifyd 未运行，已重新拉起，本次不重启内核"
+        echo "🟨inotifyd 未运行 已修复 本次不重启内核"
         exit 0
     else
-        echo "🟥inotifyd 未运行，尝试拉起后仍异常"
+        echo "🟥inotifyd 未运行且修复失败，请检查模块状态"
         exit 1
     fi
 
@@ -79,10 +79,10 @@ elif [ "$pid_count" -gt 1 ]; then
     get_inotify_status
 
     if [ "$pid_count" -eq 1 ] && check_inotifyd; then
-        echo "🟨发现多个 inotifyd 进程，已清理并重新拉起，本次不重启内核"
+        echo "🟨发现多个 inotifyd 进程 已修复 本次不重启内核"
         exit 0
     else
-        echo "🟥inotifyd 清理重建后仍异常，可能存在僵尸进程或其他故障，请重启手机"
+        echo "🟥inotifyd 修复失败，可能存在僵尸进程或其他故障，请重启手机"
         exit 1
     fi
 
@@ -96,10 +96,10 @@ elif [ "$pid_count" -eq 1 ]; then
         get_inotify_status
 
         if [ "$pid_count" -eq 1 ] && check_inotifyd; then
-            echo "🟨inotifyd 进程工作异常，已重新拉起，本次不重启内核"
+            echo "🟨inotifyd 进程异常 已修复 本次不重启内核"
             exit 0
         else
-            echo "🟥inotifyd失效，且重建后仍异常，请重启手机后再试"
+            echo "🟥inotifyd失效 修复失败 请重启手机后再试"
             exit 1
         fi
     fi
@@ -125,13 +125,13 @@ case "$?" in
                 if check_clash_config; then
                     echo "🟥Clash内核启动失败，但配置文件测试正常"
                 else
-                    echo "🟥Clash内核启动失败，且检测到配置文件存在问题，请修正配置"
+                    echo "🟥Clash内核启动失败，配置文件可能存在问题"
                     echo "$error_log"
                 fi
                 exit 1
                 ;;
             2)
-                echo "🟥启动脚本判断 Clash 内核已在运行，请检查模块状态"
+                echo "🟥尝试启动时检测到Clash内核已在运行，请检查模块状态"
                 exit 1
                 ;;
             *)
@@ -153,13 +153,13 @@ case "$?" in
                 if check_clash_config; then
                     echo "🟥Clash内核重新启动失败，但配置文件测试正常"
                 else
-                    echo "🟥Clash内核重新启动失败，且检测到配置文件存在问题，请修正配置"
+                    echo "🟥Clash内核启动失败，配置文件可能存在问题"
                     echo "$error_log"
                 fi
                 exit 1
                 ;;
             2)
-                echo "🟥停止后重新启动时，启动脚本判断 Clash 内核已在运行，请检查模块状态"
+                echo "🟥重新启动时检测到Clash内核已在运行，请检查模块状态"
                 exit 1
                 ;;
             *)
