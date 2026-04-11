@@ -10,8 +10,8 @@ should_keep_old_config() {
   [ -f "$old_cfg" ] || return 1
   [ -f "$new_cfg" ] || return 0
 
-  old_ver="$(sed -n 's/^# *version[：:] *\([0-9][0-9]*\).*$/\1/p' "$old_cfg" 2>/dev/null | head -n 1)"
-  new_ver="$(sed -n 's/^# *version[：:] *\([0-9][0-9]*\).*$/\1/p' "$new_cfg" 2>/dev/null | head -n 1)"
+  old_ver="$(grep -i -m 1 '^[[:space:]]*# *version' "$old_cfg" 2>/dev/null | tr -cd '0-9')"
+  new_ver="$(grep -i -m 1 '^[[:space:]]*# *version' "$new_cfg" 2>/dev/null | tr -cd '0-9')"
 
   [ -z "$old_ver" ] && return 1
   [ -z "$new_ver" ] && return 0
@@ -20,7 +20,7 @@ should_keep_old_config() {
   return 0
 }
 
-ui_print "- 解压模块文件到 MODPATH"
+
 unzip -o "$ZIPFILE" -x 'META-INF/*' -d "$MODPATH" >&2
 
 install_mode="fresh"
@@ -35,11 +35,9 @@ else
   fi
 fi
 
-ui_print "- 安装模式：$install_mode"
 
 case "$install_mode" in
   update)
-    ui_print "- 保留更新前的用户配置"
 
     if [ -f "$sdcard_work/工具/自定义代理.yaml" ]; then
       cp -af "$sdcard_work/工具/自定义代理.yaml" "$MODPATH/Clash/工具/自定义代理.yaml"
@@ -50,15 +48,16 @@ case "$install_mode" in
     fi
 
     if should_keep_old_config "$sdcard_work/Clash配置.yaml" "$MODPATH/Clash/Clash配置.yaml"; then
-      ui_print "- 保留原有 Clash配置.yaml"
+      ui_print "🟩配置文件无更新 保留原有 Clash配置.yaml🟩"
+      ui_print "🟩配置模板请在[/Android/Clash/资料]内查看🟩"
       cp -af "$sdcard_work/Clash配置.yaml" "$MODPATH/Clash/Clash配置.yaml"
     else
-      ui_print "- 使用模块内置 Clash配置.yaml"
+      ui_print "🟨Clash配置.yaml已更新 请重新填写订阅链接🟨"
     fi
     ;;
 
   restore)
-    ui_print "- 检测到卸载备份：$(basename "$backup_dir")"
+    ui_print "🟨检测到卸载备份：$(basename "$backup_dir")🟨"
 
     if [ -f "$backup_dir/自定义代理.yaml" ]; then
       cp -af "$backup_dir/自定义代理.yaml" "$MODPATH/Clash/工具/自定义代理.yaml"
@@ -69,25 +68,25 @@ case "$install_mode" in
     fi
 
     if should_keep_old_config "$backup_dir/Clash配置.yaml" "$MODPATH/Clash/Clash配置.yaml"; then
-      ui_print "- 保留备份中的 Clash配置.yaml"
+      ui_print "🟩配置文件无更新 使用备份中的 Clash配置.yaml🟩"
       cp -af "$backup_dir/Clash配置.yaml" "$MODPATH/Clash/Clash配置.yaml"
     else
-      ui_print "- 使用模块内置 Clash配置.yaml"
+      ui_print "🟨Clash配置.yaml已更新 请重新填写订阅链接🟨"
     fi
     ;;
 
   fresh)
-    ui_print "- 全新安装，使用模块内置配置"
+    ui_print "🟨全新安装 请安装完成后填写订阅链接并重启手机🟨"
     ;;
 esac
 
-ui_print "- 部署内部存储工作目录"
+
 rm -rf "$sdcard_work"
 mkdir -p /sdcard/Android
 cp -af "$MODPATH/Clash" /sdcard/Android/
 rm -rf "$MODPATH/Clash"
 
-ui_print "- 配置软链接"
+
 mkdir -p "$MODPATH/Proxy/rule_providers"
 ln -sf "$sdcard_work/Clash配置.yaml" "$MODPATH/Proxy/config.yaml"
 ln -sf "$sdcard_work/工具/自定义代理.yaml" "$MODPATH/Proxy/rule_providers/userProxy.yaml"
@@ -96,7 +95,7 @@ if [ "$KSU" = true ] || [ "$KERNELPATCH" = true ]; then
   ln -sf /data/adb/modules/Clash/Proxy/WebUI "$MODPATH/webroot"
 fi
 
-ui_print "- 设置权限"
+
 chmod 777 -Rf "$MODPATH"
 
-ui_print "- Clash MIX 安装完成"
+
