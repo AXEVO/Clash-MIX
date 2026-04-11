@@ -1,6 +1,5 @@
 SKIPUNZIP=1
 
-module_dir="/data/adb/modules/Clash"
 sdcard_work="/sdcard/Android/Clash"
 
 should_keep_old_config() {
@@ -23,60 +22,55 @@ should_keep_old_config() {
 
 unzip -o "$ZIPFILE" -x 'META-INF/*' -d "$MODPATH" >&2
 
-install_mode="fresh"
-backup_dir=""
+backup_dir="$(ls -dt /sdcard/Android/Clash卸载备份-* 2>/dev/null | head -n 1)"
 
-if [ -d "$sdcard_work" ]; then
+if [ -f "$sdcard_work/Clash配置.yaml" ]; then
   install_mode="update"
+elif [ -n "$backup_dir" ] && [ -f "$backup_dir/Clash配置.yaml" ]; then
+  install_mode="restore"
 else
-  backup_dir="$(ls -dt /sdcard/Android/Clash卸载备份-* 2>/dev/null | head -n 1)"
-  if [ -n "$backup_dir" ] && [ -d "$backup_dir" ]; then
-    install_mode="restore"
-  fi
+  install_mode="fresh"
 fi
 
 
 case "$install_mode" in
   update)
 
-    if [ -f "$sdcard_work/工具/自定义代理.yaml" ]; then
-      cp -af "$sdcard_work/工具/自定义代理.yaml" "$MODPATH/Clash/工具/自定义代理.yaml"
-    fi
-
-    if [ -f "$sdcard_work/工具/自定义直连.yaml" ]; then
-      cp -af "$sdcard_work/工具/自定义直连.yaml" "$MODPATH/Clash/工具/自定义直连.yaml"
-    fi
+    cp -af "$sdcard_work/工具/自定义代理.yaml" "$MODPATH/Clash/工具/自定义代理.yaml" 2>/dev/null
+    cp -af "$sdcard_work/工具/自定义直连.yaml" "$MODPATH/Clash/工具/自定义直连.yaml" 2>/dev/null
 
     if should_keep_old_config "$sdcard_work/Clash配置.yaml" "$MODPATH/Clash/Clash配置.yaml"; then
       ui_print "🟩配置文件无更新 保留原有 Clash配置.yaml🟩"
-      ui_print "🟩配置模板请在[/Android/Clash/资料]内查看🟩"
+      ui_print "🟩配置模板请在[内部存储/Android/Clash/资料]内查看🟩"
       cp -af "$sdcard_work/Clash配置.yaml" "$MODPATH/Clash/Clash配置.yaml"
     else
-      ui_print "🟨Clash配置.yaml已更新 请重新填写订阅链接🟨"
+      cp -af "$sdcard_work/Clash配置.yaml" "$MODPATH/Clash/更新前配置.yaml"
+      ui_print "🟨Clash配置.yaml已更新 需要重新填写订阅链接🟨"
+      ui_print "🟨旧配置已备份到[内部存储/Android/Clash/更新前配置.yaml]🟨"
+      ui_print "🟨请从旧配置中复制订阅链接后 再填写到新配置🟨"
     fi
     ;;
 
   restore)
     ui_print "🟨检测到卸载备份：$(basename "$backup_dir")🟨"
 
-    if [ -f "$backup_dir/自定义代理.yaml" ]; then
-      cp -af "$backup_dir/自定义代理.yaml" "$MODPATH/Clash/工具/自定义代理.yaml"
-    fi
-
-    if [ -f "$backup_dir/自定义直连.yaml" ]; then
-      cp -af "$backup_dir/自定义直连.yaml" "$MODPATH/Clash/工具/自定义直连.yaml"
-    fi
+    cp -af "$backup_dir/自定义代理.yaml" "$MODPATH/Clash/工具/自定义代理.yaml" 2>/dev/null
+    cp -af "$backup_dir/自定义直连.yaml" "$MODPATH/Clash/工具/自定义直连.yaml" 2>/dev/null
 
     if should_keep_old_config "$backup_dir/Clash配置.yaml" "$MODPATH/Clash/Clash配置.yaml"; then
-      ui_print "🟩配置文件无更新 使用备份中的 Clash配置.yaml🟩"
+      ui_print "🟩配置文件无更新 使用卸载备份中的 Clash配置.yaml🟩"
+      ui_print "🟩配置模板请在[内部存储/Android/Clash/资料]内查看🟩"
       cp -af "$backup_dir/Clash配置.yaml" "$MODPATH/Clash/Clash配置.yaml"
     else
-      ui_print "🟨Clash配置.yaml已更新 请重新填写订阅链接🟨"
+      cp -af "$backup_dir/Clash配置.yaml" "$MODPATH/Clash/卸载备份配置.yaml"
+      ui_print "🟨Clash配置.yaml已更新 卸载备份已移动到[内部存储/Android/Clash/]🟨"
+      ui_print "🟨请从旧配置中复制订阅链接后 再填写到新配置🟨"
     fi
     ;;
 
   fresh)
     ui_print "🟨全新安装 请安装完成后填写订阅链接并重启手机🟨"
+    ui_print "🟨配置文件位置 [内部存储/Android/Clash/Clash配置.yaml]🟨"
     ;;
 esac
 
@@ -87,7 +81,6 @@ cp -af "$MODPATH/Clash" /sdcard/Android/
 rm -rf "$MODPATH/Clash"
 
 
-mkdir -p "$MODPATH/Proxy/rule_providers"
 ln -sf "$sdcard_work/Clash配置.yaml" "$MODPATH/Proxy/config.yaml"
 ln -sf "$sdcard_work/工具/自定义代理.yaml" "$MODPATH/Proxy/rule_providers/userProxy.yaml"
 ln -sf "$sdcard_work/工具/自定义直连.yaml" "$MODPATH/Proxy/rule_providers/userDirect.yaml"
@@ -95,7 +88,4 @@ if [ "$KSU" = true ] || [ "$KERNELPATCH" = true ]; then
   ln -sf /data/adb/modules/Clash/Proxy/WebUI "$MODPATH/webroot"
 fi
 
-
 chmod 777 -Rf "$MODPATH"
-
-
