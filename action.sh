@@ -82,7 +82,8 @@ elif [ "$pid_count" -gt 1 ]; then
         echo "🟨发现多个 inotifyd 进程 已修复 本次不重启内核"
         exit 0
     else
-        echo "🟥inotifyd 修复失败，可能存在僵尸进程或其他故障，请重启手机"
+        echo "🟥inotifyd 修复失败，可能存在僵尸进程"
+        echo "🟥或模块故障，请重启手机或卸载重装模块"
         exit 1
     fi
 

@@ -19,7 +19,7 @@ start() {
         return 2
     fi
 
-    backup_log_path="$sdcard_dir/上一次内核日志.txt"
+    backup_log_path="$sdcard_dir/旧内核日志备份.txt"
     rm -f "$backup_log_path"
     if [ -f "$log_path" ]; then
         cp -f "$log_path" "$backup_log_path"
@@ -27,7 +27,7 @@ start() {
 
     nohup "$core_path" -d "$Module_dir/Proxy" > "$log_path" 2>&1 &
 
-    for i in 1 2 3 4 5 6 7 8 9 10; do
+    for i in 1 2 3 4 5; do
         if Core_Check && Tun_Check; then
             break
         fi
