@@ -1,38 +1,27 @@
-#开始编辑配置时，心中牢记缩进和冒号引号，任何不懂，查看官方wiki：https://wiki.metacubex.one
-#修改配置后如果内核不能启动，请查看日志，日志中会告诉你配置第几行写错
-#或者使用在线yaml检测器进行检测（https://www.bejson.com/validators/yaml_editor/）
+#version：20260401
+#-----------------------------------------
 mixed-port: 7890
 mode: rule
 allow-lan: true
 unified-delay: false
-tcp-concurrent: true
-find-process-mode: always
+tcp-concurrent: false
+find-process-mode: strict
 log-level: warning
-#interface-name: tun0  如果需要配合VPN嵌套使用，需使用此功能
 ipv6: true
-#关掉后可能在部分手机上出现dns泄露，volte不可用等问题，目前IPv6可以正常使用，不建议关闭
 external-controller: 0.0.0.0:9090
 external-ui: WebUI
 external-ui-url: "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip"
 
 
-geodata-mode: true
-geox-url:
-  geoip: "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat"
-  geosite: "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat"
-  asn: "https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb"
-geo-auto-update: true
-geo-update-interval: 48
-
 profile:
   store-selected: true
   store-fake-ip: true
 
-#嗅探器关闭后可能出现连接本机热点的设备无法上网的问题
 sniffer:
   enable: true
   force-dns-mapping: true
   parse-pure-ip: true
+  override-destination: true
   sniff:
     HTTP:
       ports: [80, 8080-8880]
@@ -41,10 +30,7 @@ sniffer:
     QUIC:
       ports: [443, 8443]
   skip-domain:
-
-#tun必须开启，否则将无法代理流量，如网页打开慢，电报卡连接中，
-#可以尝试更换堆栈，同一堆栈在不同设备上体验不同，自行尝试。
-#更换为非gvisor堆栈可能导致IPv6出现问题
+    - "Mijia Cloud"
 
 tun:
   enable: true
@@ -60,8 +46,6 @@ tun:
     - tcp://any:53
   exclude-uid:
   exclude-package:
-    - com.xiaomi.mirror
-    - com.xiaomi.mi_connect_service
     - com.samsung.android.messaging
     - com.samsung.android.app.telephonyui
     - com.samsung.android.dialer
@@ -74,41 +58,37 @@ tun:
     - com.sec.imsservice
   exclude-interface:
   exclude-uid-range:
-    - 1000:9999
-#exclude-package内填写的包名，网络流量不经过tun，相当于黑名单
-#但是该应用的dns请求仍会被clash处理，这可能导致问题
-#默认添加MIUI镜像服务以及三星电话服务，避免系统功能不可用
-#如果想仅代理指定应用，请将exclude-package改为include-package
-#然后填上想要走代理的包名，不要忘了英文冒号和缩进。
-#目前分流规则已足够完善，白名单可能存在问题，不建议使用
 
 dns:
   enable: true
   ipv6: true
   ipv6-timeout: 300
-  enhanced-mode: redir-host
-# redir-host / fake-ip 可切换，建议使用redir-host避免出现莫名其妙的bug
-#如果删除了user策略组，需要在dns这里也删除，否则内核无法启动
+  enhanced-mode: fake-ip
+  fake-ip-filter:
+     - RULE-SET:自定义直连
+     #- RULE-SET:中国域名
+     - RULE-SET:Fake-IP-Filter
+     - RULE-SET:私有地址
+   
   nameserver-policy:
-    'rule-set:userDirect':
-      - https://dns.alidns.com/dns-query#中国网站
-      - https://doh.pub/dns-query#中国网站
+    'rule-set:自定义直连,中国域名,私有地址,GoogleFCM':
+      - 223.5.5.5#中国网站
+      - 119.29.29.29#中国网站
 
-    'rule-set:userProxy': 
-      - https://cloudflare-dns.com/dns-query#代理
-      - https://dns.google/dns-query#代理
+    'rule-set:自定义代理': 
+      - 1.1.1.1#代理
+      - 8.8.8.8#代理
 
-    'geosite:cn,private,googlefcm':
-      - https://dns.alidns.com/dns-query#中国网站
-      - https://doh.pub/dns-query#中国网站
   nameserver:
-    - https://cloudflare-dns.com/dns-query#代理
-    - https://dns.google/dns-query#代理
+    - 1.1.1.1#代理
+    - 8.8.8.8#代理
 
   proxy-server-nameserver:
-    - https://dns.alidns.com/dns-query#中国网站
-    - https://doh.pub/dns-query#中国网站
-
+    - 223.5.5.5#中国网站
+    - 119.29.29.29#中国网站
+    
+  proxy-server-nameserver-policy:
+   
 #-----------------------------------------------------------------------------
 #机场订阅全局设置
 pp: &pp
@@ -117,14 +97,12 @@ pp: &pp
   health-check:
     enable: true
     url: https://www.gstatic.com/generate_204
-    interval: 900
+    interval: 3600
     timeout: 3000
     lazy: true
     expected-status: 204
 
 proxy-providers:
-#如果想要修改机场名（机场1等），需要全改，建议使用编辑器的查找替换功能
-#如果想要删除几个机场，在下面的策略组也要删除对应部分，否则内核无法启动
 
   机场1:
     <<: *pp
@@ -147,9 +125,19 @@ proxy-groups:
   - name: 代理
     type: select
     proxies:
+      - 手动选择
+      - 全部节点
       - 自动切换
       - 智能选择
 
+  - name: 手动选择
+    type: select
+    include-all: true
+    filter: '美国|USA|美國|us|US|United States'
+
+  - name: 全部节点
+    type: select
+    include-all: true
 
   - name: 自动切换
     type: fallback
@@ -165,11 +153,11 @@ proxy-groups:
 
   - name: 智能选择
     type: smart
-    policy-priority: "US:1.2,美国:0.9"
+    policy-priority: "IEPL:1.5"
     uselightgbm: true
     collectdata: false
     strategy: sticky-sessions
-    prefer-asn: true
+    prefer-asn: false
     include-all: true
     filter: '美国|USA|美國|us|US|United States'
 
@@ -186,18 +174,15 @@ proxy-groups:
       - DIRECT
       - 代理
 #-------------------------------------------------------------------
-#用户自定义直连/代理规则，文件在模块目录/rule-provider/
-#如有需要请参考官方文档写入
-#如果想要删除两个自定义规则，需要把上面dns配置内对自定义规则的设置删除，否则内核将无法启动
 
 rule-providers:
 
-  userDirect:
+  自定义直连:
     type: file
     behavior: classical
     path: ./rule_providers/userDirect.yaml
 
-  userProxy:
+  自定义代理:
     type: file
     behavior: classical
     path: ./rule_providers/userProxy.yaml
@@ -210,20 +195,59 @@ rule-providers:
     url: "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/refs/heads/main/Filters/AWAvenue-Ads-Rule-Clash-Classical.yaml"
     interval: 86400
 
+  中国域名:
+    type: http
+    behavior: domain
+    format: yaml
+    path : ./rule_providers/中国域名.yaml
+    url : https://cdn.jsdelivr.net/gh/Accademia/Additional_Rule_For_Clash@latest/China/China_Domain.yaml
+    interval: 86400
+
+  中国IP:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    path: ./rule_providers/中国IP.mrs
+    url: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo-lite/geoip/cn.mrs"
+    interval: 86400
+
+  私有地址:
+    type: http
+    behavior: classical
+    format: text
+    path: ./rule_providers/私有地址.txt
+    url: https://raw.githubusercontent.com/QuixoticHeart/rule-set/refs/heads/ruleset/meta/private.list
+    interval: 86400
+
+
+  GoogleFCM:
+    type: http
+    behavior: classical
+    format: yaml
+    path: ./rule_providers/GoogleFCM.yaml
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GoogleFCM/GoogleFCM.yaml"
+    interval: 86400
+
+  Fake-IP-Filter:
+    type: http
+    behavior: domain
+    format: mrs
+    path: ./rule_providers/Fake-IP-Filter.mrs
+    url: "https://github.com/DustinWin/ruleset_geodata/raw/refs/heads/mihomo-ruleset/fakeip-filter.mrs"
+    interval: 86400
+
+
 rules:
 
-  - RULE-SET,userProxy,代理
-  - RULE-SET,userDirect,中国网站
-  
-  - GEOSITE,googlefcm,DIRECT
-  
-  - GEOSITE,private,DIRECT
-  - GEOIP,private,DIRECT
+  - RULE-SET,自定义代理,代理
+  - RULE-SET,自定义直连,中国网站
+  - RULE-SET,私有地址,DIRECT
+
+  - RULE-SET,GoogleFCM,中国网站
 
   - RULE-SET,秋风广告规则,广告
-  #- GEOSITE,category-ads-all,广告  #秋风规则足够日用，geodata提供的规则过于冗杂
 
-  - GEOSITE,CN,中国网站
-  - GEOIP,CN,中国网站,no-resolve
+  - RULE-SET,中国域名,中国网站
+  - RULE-SET,中国IP,中国网站
 
   - MATCH,代理

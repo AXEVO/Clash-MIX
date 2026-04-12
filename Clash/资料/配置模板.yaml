@@ -1,0 +1,253 @@
+#version：20260401
+#-----------------------------------------
+mixed-port: 7890
+mode: rule
+allow-lan: true
+unified-delay: false
+tcp-concurrent: false
+find-process-mode: strict
+log-level: warning
+ipv6: true
+external-controller: 0.0.0.0:9090
+external-ui: WebUI
+external-ui-url: "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip"
+
+
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+sniffer:
+  enable: true
+  force-dns-mapping: true
+  parse-pure-ip: true
+  override-destination: true
+  sniff:
+    HTTP:
+      ports: [80, 8080-8880]
+    TLS:
+      ports: [443, 8443]
+    QUIC:
+      ports: [443, 8443]
+  skip-domain:
+    - "Mijia Cloud"
+
+tun:
+  enable: true
+  stack: gvisor
+  device: Meta
+  udp-timeout: 300
+  auto-route: true
+  auto-redirect: false
+  auto-detect-interface: true
+  strict-route: false
+  dns-hijack: 
+    - any:53
+    - tcp://any:53
+  exclude-uid:
+  exclude-package:
+    - com.samsung.android.messaging
+    - com.samsung.android.app.telephonyui
+    - com.samsung.android.dialer
+    - com.samsung.android.incallui
+    - com.samsung.android.smartcallprovider
+    - com.samsung.android.intellivoiceservice
+    - com.android.settings
+    - com.qti.qcc
+    - com.sec.epdg
+    - com.sec.imsservice
+  exclude-interface:
+  exclude-uid-range:
+
+dns:
+  enable: true
+  ipv6: true
+  ipv6-timeout: 300
+  enhanced-mode: fake-ip
+  fake-ip-filter:
+     - RULE-SET:自定义直连
+     #- RULE-SET:中国域名
+     - RULE-SET:Fake-IP-Filter
+     - RULE-SET:私有地址
+   
+  nameserver-policy:
+    'rule-set:自定义直连,中国域名,私有地址,GoogleFCM':
+      - 223.5.5.5#中国网站
+      - 119.29.29.29#中国网站
+
+    'rule-set:自定义代理': 
+      - 1.1.1.1#代理
+      - 8.8.8.8#代理
+
+  nameserver:
+    - 1.1.1.1#代理
+    - 8.8.8.8#代理
+
+  proxy-server-nameserver:
+    - 223.5.5.5#中国网站
+    - 119.29.29.29#中国网站
+    
+  proxy-server-nameserver-policy:
+   
+#-----------------------------------------------------------------------------
+#机场订阅全局设置
+pp: &pp
+  type: http
+  interval: 21600
+  health-check:
+    enable: true
+    url: https://www.gstatic.com/generate_204
+    interval: 3600
+    timeout: 3000
+    lazy: true
+    expected-status: 204
+
+proxy-providers:
+
+  机场1:
+    <<: *pp
+    url: "订阅链接"
+    path: ./proxy_providers/机场1.yaml
+
+  机场2:
+    <<: *pp
+    url: "订阅链接"
+    path: ./proxy_providers/机场2.yaml
+
+  机场3:
+    <<: *pp
+    url: "订阅链接"
+    path: ./proxy_providers/机场3.yaml
+    
+#------------------------------------------------------------------------------
+proxy-groups:
+
+  - name: 代理
+    type: select
+    proxies:
+      - 手动选择
+      - 全部节点
+      - 自动切换
+      - 智能选择
+
+  - name: 手动选择
+    type: select
+    include-all: true
+    filter: '美国|USA|美國|us|US|United States'
+
+  - name: 全部节点
+    type: select
+    include-all: true
+
+  - name: 自动切换
+    type: fallback
+    include-all: true
+    filter: '美国|USA|美國|us|US|United States'
+    interval: 300
+    lazy: true
+    timeout: 3000
+    max-failed-times: 5
+    expected-status: 204
+    url: 'https://www.gstatic.com/generate_204'
+
+
+  - name: 智能选择
+    type: smart
+    policy-priority: "IEPL:1.5"
+    uselightgbm: true
+    collectdata: false
+    strategy: sticky-sessions
+    prefer-asn: false
+    include-all: true
+    filter: '美国|USA|美國|us|US|United States'
+
+#----------------------------------------------------------------
+  - name: 广告
+    type: select
+    proxies:
+      - REJECT-DROP 
+      - PASS
+
+  - name: 中国网站
+    type: select
+    proxies:
+      - DIRECT
+      - 代理
+#-------------------------------------------------------------------
+
+rule-providers:
+
+  自定义直连:
+    type: file
+    behavior: classical
+    path: ./rule_providers/userDirect.yaml
+
+  自定义代理:
+    type: file
+    behavior: classical
+    path: ./rule_providers/userProxy.yaml
+
+  秋风广告规则:
+    type: http
+    behavior: classical
+    format: yaml
+    path: ./rule_providers/AWAvenue-Ads-Rule-Clash.yaml
+    url: "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/refs/heads/main/Filters/AWAvenue-Ads-Rule-Clash-Classical.yaml"
+    interval: 86400
+
+  中国域名:
+    type: http
+    behavior: domain
+    format: yaml
+    path : ./rule_providers/中国域名.yaml
+    url : https://cdn.jsdelivr.net/gh/Accademia/Additional_Rule_For_Clash@latest/China/China_Domain.yaml
+    interval: 86400
+
+  中国IP:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    path: ./rule_providers/中国IP.mrs
+    url: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo-lite/geoip/cn.mrs"
+    interval: 86400
+
+  私有地址:
+    type: http
+    behavior: classical
+    format: text
+    path: ./rule_providers/私有地址.txt
+    url: https://raw.githubusercontent.com/QuixoticHeart/rule-set/refs/heads/ruleset/meta/private.list
+    interval: 86400
+
+
+  GoogleFCM:
+    type: http
+    behavior: classical
+    format: yaml
+    path: ./rule_providers/GoogleFCM.yaml
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GoogleFCM/GoogleFCM.yaml"
+    interval: 86400
+
+  Fake-IP-Filter:
+    type: http
+    behavior: domain
+    format: mrs
+    path: ./rule_providers/Fake-IP-Filter.mrs
+    url: "https://github.com/DustinWin/ruleset_geodata/raw/refs/heads/mihomo-ruleset/fakeip-filter.mrs"
+    interval: 86400
+
+
+rules:
+
+  - RULE-SET,自定义代理,代理
+  - RULE-SET,自定义直连,中国网站
+  - RULE-SET,私有地址,DIRECT
+
+  - RULE-SET,GoogleFCM,中国网站
+
+  - RULE-SET,秋风广告规则,广告
+
+  - RULE-SET,中国域名,中国网站
+  - RULE-SET,中国IP,中国网站
+
+  - MATCH,代理

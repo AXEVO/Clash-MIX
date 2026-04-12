@@ -1,13 +1,33 @@
 #!/system/bin/sh
-script_path=/data/adb/modules/Clash/Scripts
+script_path="/data/adb/modules/Clash/Scripts"
+module_dir="/data/adb/modules/Clash"
 
-events=$1
-monitor_file=$3
+events="$1"
+monitor_file="$3"
 
-if [ "$monitor_file" = "disable" ]; then
-    if [ "$events" = "n" ]; then
-        $script_path/Clash.Service stop
-    elif [ "$events" = "d" ]; then
-        $script_path/Clash.Service start
-    fi
+# 只处理 Inotifyd_test 的创建事件
+if [ "$monitor_file" = "Inotifyd_test" ]; then
+    [ "$events" = "n" ] || exit 4
+    rm -f "$module_dir/Inotifyd_test"
+    touch "$module_dir/Inotifyd_OK"
+    exit 3
 fi
+
+# 只处理 disable
+if [ "$monitor_file" = "disable" ]; then
+    case "$events" in
+        n)
+            sh "$script_path/Clash.Service" stop
+            exit $?
+            ;;
+        d)
+            sh "$script_path/Clash.Service" start
+            exit $?
+            ;;
+        *)
+            exit 5
+            ;;
+    esac
+fi
+
+exit 5
