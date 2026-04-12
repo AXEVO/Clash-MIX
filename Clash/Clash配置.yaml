@@ -125,9 +125,19 @@ proxy-groups:
   - name: 代理
     type: select
     proxies:
+      - 手动选择
+      - 全部节点
       - 自动切换
       - 智能选择
 
+  - name: 手动选择
+    type: select
+    include-all: true
+    filter: '美国|USA|美國|us|US|United States'
+
+  - name: 全部节点
+    type: select
+    include-all: true
 
   - name: 自动切换
     type: fallback
@@ -185,7 +195,7 @@ rule-providers:
     url: "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/refs/heads/main/Filters/AWAvenue-Ads-Rule-Clash-Classical.yaml"
     interval: 86400
 
-  中国域名:            
+  中国域名:
     type: http
     behavior: domain
     format: yaml
@@ -213,9 +223,9 @@ rule-providers:
   GoogleFCM:
     type: http
     behavior: classical
-    format: text
-    path: ./rule_providers/GoogleFCM.txt
-    url: "https://raw.githubusercontent.com/QuixoticHeart/rule-set/refs/heads/ruleset/meta/googlefcm.list"
+    format: yaml
+    path: ./rule_providers/GoogleFCM.yaml
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GoogleFCM/GoogleFCM.yaml"
     interval: 86400
 
   Fake-IP-Filter:
@@ -231,10 +241,10 @@ rules:
 
   - RULE-SET,自定义代理,代理
   - RULE-SET,自定义直连,中国网站
-  
-  - RULE-SET,GoogleFCM,中国网站
-  
   - RULE-SET,私有地址,DIRECT
+
+  - RULE-SET,GoogleFCM,中国网站
+
   - RULE-SET,秋风广告规则,广告
 
   - RULE-SET,中国域名,中国网站
